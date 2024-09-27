@@ -1,9 +1,9 @@
 (defsystem #:stripe
   :description "A client for the Stripe payment API."
   :author ("Michael Fiano <mail@mfiano.net>")
-  :maintainer "Atlas Engineer LLC"
+  :maintainer "boogsbunny"
   :license "MIT"
-  :homepage "https://github.com/atlas-engineer/stripe"
+  :homepage "https://github.com/boogsbunny/stripe"
   :encoding :utf-8
   :depends-on (#:alexandria
                #:com.inuoe.jzon
