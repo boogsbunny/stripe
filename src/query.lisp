@@ -83,10 +83,8 @@
         :append (post-parameter k v)))
 
 (defun query (endpoint method &optional content)
-  (let ((yason:*parse-object-as* :plist)
-        (yason:*parse-object-key-fn* #'normalize-json-key)
-        (url (format nil "~a/~a" *base-url* endpoint)))
-    (yason:parse
+  (let ((url (format nil "~a/~a" *base-url* endpoint)))
+    (jzon:parse
      (handler-case
          (dex:request url
                       :method method
@@ -95,7 +93,8 @@
                       :content content)
        (dex:http-request-failed (condition)
          (u:mvlet ((stripe-condition message (decode-error condition)))
-           (error stripe-condition :message message)))))))
+           (error stripe-condition :message message))))
+     :key-fn #'normalize-json-key)))
 
 (defun generate-url (template url-args query-args)
   (let* ((query (u:alist->plist (apply #'post-parameters query-args)))
@@ -129,6 +128,6 @@
                                     ,@(when post-p
                                         `(,content)))))
              ,@(case type
-                 (list `((decode-list ,response)))
+                 (vector `((decode-hash-table ,response)))
                  ((nil) `(,response))
                  (t `((make-instance ',type :data ,response))))))))))

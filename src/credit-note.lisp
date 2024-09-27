@@ -16,13 +16,16 @@
   status
   (type :reader credit-note-type))
 
-(defmethod initialize-instance :after ((instance credit-note) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created))))
+(defmethod initialize-instance :after ((instance credit-note) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created)
+                 (decode-timestamp value))))))))
 
 (define-query create-credit-note (:type credit-note)
   (:post "credit-notes")
@@ -44,7 +47,7 @@
 (define-query void-credit-note (:type credit-note)
   (:post "credit-notes/~a/void" credit-note))
 
-(define-query list-credit-notes (:type list)
+(define-query list-credit-notes (:type vector)
   (:get "credit-notes")
   ending-before
   invoice

@@ -49,25 +49,38 @@
   total
   webhooks-delivered-at)
 
-(defmethod initialize-instance :after ((instance invoice) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created customer-address customer-shipping
-                         discount due-date next-payment-attempt period-end
-                         period-start status-transitions
-                       &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created)
-     :customer-address (make-instance 'address :data customer-address)
-     :customer-shipping (make-instance 'shipping :data customer-shipping)
-     :discount (make-instance 'discount :data discount)
-     :due-date (decode-timestamp due-date)
-     :next-payment-attempt (decode-timestamp next-payment-attempt)
-     :period-end (decode-timestamp period-end)
-     :period-start (decode-timestamp period-start)
-     :status-transitions (make-instance 'invoice-status-transitions
-                                        :data status-transitions))))
+(defmethod initialize-instance :after ((instance invoice) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:customer-address
+           (unless (eql 'null value)
+             (setf (slot-value instance '%customer-address) (make-instance 'address :data value))))
+          (:customer-shipping
+           (unless (eql 'null value)
+             (setf (slot-value instance '%customer-shipping) (make-instance 'shipping :data value))))
+          (:discount
+           (unless (eql 'null value)
+             (setf (slot-value instance '%discount) (make-instance 'discount :data value))))
+          (:due-date
+           (setf (slot-value instance '%due-date) (decode-timestamp value)))
+          (:next-payment-attempt
+           (setf (slot-value instance '%next-payment-attempt) (decode-timestamp value)))
+          (:period-end
+           (setf (slot-value instance '%period-end) (decode-timestamp value)))
+          (:period-start
+           (setf (slot-value instance '%period-start) (decode-timestamp value)))
+          (:status-transitions
+           (unless (eql 'null value)
+             (setf (slot-value instance '%status-transitions)
+                   (make-instance 'invoice-status-transition :data value))))
+          (:webhooks-delivered-at
+           (setf (slot-value instance '%webhooks-delivered-at) (decode-timestamp value))))))))
 
 (define-object invoice-status-transition ()
   finalized-at
@@ -77,15 +90,20 @@
 
 (defmethod initialize-instance :after ((instance invoice-status-transition)
                                        &key data &allow-other-keys)
-  (destructuring-bind (&key finalized-at marked-uncollectible-at paid-at
-                         voided-at)
-      data
-    (reinitialize-instance
-     instance
-     :finalized-at (decode-timestamp finalized-at)
-     :marked-uncollectible-at (decode-timestamp marked-uncollectible-at)
-     :paid-at (decode-timestamp paid-at)
-     :voided-at (decode-timestamp voided-at))))
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:finalized-at
+           (setf (slot-value instance '%finalized-at) (decode-timestamp value)))
+          (:marked-uncollectible-at
+           (setf (slot-value instance '%marked-uncollectible-at) (decode-timestamp value)))
+          (:paid-at
+           (setf (slot-value instance '%paid-at) (decode-timestamp value)))
+          (:voided-at
+           (setf (slot-value instance '%voided-at) (decode-timestamp value))))))))
 
 (define-object invoice-line ()
   id
@@ -154,7 +172,7 @@
 (define-query mark-invoice-uncollectible (:type invoie)
   (:post "invoices/~a/mark-uncollectible" invoice))
 
-(define-query retrieve-invoice-lines (:type list)
+(define-query retrieve-invoice-lines (:type vector)
   (:get "invoices/~a/lines" invoice)
   ending-before
   limit
@@ -178,7 +196,7 @@
   subscription-trial-end
   subscription-trial-from-plan)
 
-(define-query retrieve-upcoming-invoice-lines (:type list)
+(define-query retrieve-upcoming-invoice-lines (:type vector)
   (:get "invoices/upcoming/lines")
   coupon
   customer
@@ -199,7 +217,7 @@
   subscription-trial-end
   subscription-trial-from-plan)
 
-(define-query list-invoices (:type list)
+(define-query list-invoices (:type vector)
   (:get "invoices")
   collection-method
   created

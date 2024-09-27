@@ -52,12 +52,17 @@
   three-d-secure
   wallet)
 
-(defmethod initialize-instance :after ((instance charge-card-details) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key checks &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :checks (make-instance 'charge-card-checks :data checks))))
+(defmethod initialize-instance :after ((instance charge-card-details) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:checks
+           (when value
+             (setf (slot-value instance '%checks)
+                   (make-instance 'charge-card-checks :data value)))))))))
 
 (define-object charge-card-checks ()
   address-line1-check
@@ -68,21 +73,37 @@
   stripe-report
   user-report)
 
-(defmethod initialize-instance :after ((instance charge) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key billing-details created fraud-details outcome
-                         payment-method-details refunds &allow-other-keys)
-      data
-    (destructuring-bind (&key card &allow-other-keys) payment-method-details
-      (reinitialize-instance
-       instance
-       :billing-details (make-instance 'billing-details :data billing-details)
-       :created (decode-timestamp created)
-       :fraud-details (make-instance 'charge-fraud-details :data fraud-details)
-       :outcome (make-instance 'charge-outcome :data outcome)
-       :payment-method-details (make-instance 'charge-card-details
-                                              :data card)
-       :refunds (decode-list refunds)))))
+(defmethod initialize-instance :after ((instance charge) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:billing-details
+           (unless (eql 'null value)
+             (setf (slot-value instance '%billing-details)
+                   (make-instance 'billing-details :data value))))
+          (:created
+           (setf (slot-value instance '%created)
+                 (decode-timestamp value)))
+          (:fraud-details
+           (unless (eql 'null value)
+             (setf (slot-value instance '%fraud-details)
+                   (make-instance 'charge-fraud-details :data value))))
+          (:outcome
+           (unless (eql 'null value)
+             (setf (slot-value instance '%outcome)
+                   (make-instance 'charge-outcome :data value))))
+          (:payment-method-details
+           (let ((card (gethash :card value)))
+             (unless (eql 'null card)
+               (setf (slot-value instance '%payment-method-details)
+                     (make-instance 'charge-card-details :data card)))))
+          (:refunds
+           (when value
+             (setf (slot-value instance '%refunds)
+                   (decode-hash-table value)))))))))
 
 (define-query create-charge (:type charge)
   (:post "charges")
@@ -104,7 +125,7 @@
   description
   fraud-details)
 
-(define-query list-charges (:type list)
+(define-query list-charges (:type vector)
   (:get "charges")
   created
   customer

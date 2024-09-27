@@ -14,12 +14,15 @@
   trial-period-days
   usage-type)
 
-(defmethod initialize-instance :after ((instance plan) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created))))
+(defmethod initialize-instance :after ((instance plan) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value))))))))
 
 (define-query create-plan (:type plan)
   (:post "plans")
@@ -48,7 +51,7 @@
 (define-query delete-plan ()
   (:delete "plans/~a" plan))
 
-(define-query list-plans (:type list)
+(define-query list-plans (:type vector)
   (:get "plans")
   active
   created

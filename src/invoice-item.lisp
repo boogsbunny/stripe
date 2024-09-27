@@ -19,16 +19,21 @@
   unified-proration
   unit-amount)
 
-(defmethod initialize-instance :after ((instance invoice-item) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key date period plan &allow-other-keys) data
-    (destructuring-bind (&key end start) period
-      (reinitialize-instance
-       instance
-       :date (decode-timestamp date)
-       :period-end end
-       :period-start start
-       :plan (make-instance 'plan :data plan)))))
+(defmethod initialize-instance :after ((instance invoice-item) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:date
+           (setf (slot-value instance '%date) (decode-timestamp value)))
+          (:period
+           (setf (slot-value instance '%period-end) (decode-timestamp (gethash :end value))
+                 (slot-value instance '%period-start) (decode-timestamp (gethash :start value))))
+          (:plan
+           (unless (eql 'null value)
+             (setf (slot-value instance '%plan) (make-instance 'plan :data value)))))))))
 
 (define-query create-invoice-item (:type invoice-item)
   (:post "invoiceitems")
@@ -58,7 +63,7 @@
 (define-query delete-invoice-item ()
   (:delete "invoiceitems/~a" invoice-item))
 
-(define-query list-invoice-items (:type list)
+(define-query list-invoice-items (:type vector)
   (:get "invoiceitems")
   created
   customer

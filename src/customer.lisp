@@ -17,18 +17,31 @@
   sources
   subscriptions)
 
-(defmethod initialize-instance :after ((instance customer) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created address shipping sources
-                         subscriptions &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created)
-     :address (make-instance 'address :data address)
-     :shipping (make-instance 'shipping :data shipping)
-     :sources (decode-list sources)
-     :subscriptions (decode-list subscriptions))))
+(defmethod initialize-instance :after ((instance customer) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:address
+           (unless (eql 'null value)
+             (setf (slot-value instance '%address)
+                   (make-instance 'address :data value))))
+          (:shipping
+           (unless (eql 'null value)
+             (setf (slot-value instance '%shipping)
+                   (make-instance 'shipping :data value))))
+          (:sources
+           (when value
+             (setf (slot-value instance '%sources)
+                   (decode-hash-table value))))
+          (:subscriptions
+           (when value
+             (setf (slot-value instance '%subscriptions)
+                   (decode-hash-table value)))))))))
 
 (define-query create-customer (:type customer)
   (:post "customers")
@@ -60,7 +73,7 @@
 (define-query delete-customer ()
   (:delete "customers/~a" customer))
 
-(define-query list-customers (:type list)
+(define-query list-customers (:type vector)
   (:get "customers")
   created
   email

@@ -13,13 +13,15 @@
   receipt-number
   status)
 
-(defmethod initialize-instance :after ((instance refund) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created))))
+(defmethod initialize-instance :after ((instance refund) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value))))))))
 
 (define-query create-refund (:type refund)
   (:post "refunds")
@@ -30,7 +32,7 @@
 (define-query retrieve-refund (:type refund)
   (:get "refunds/~a" refund))
 
-(define-query list-refunds (:type list)
+(define-query list-refunds (:type vector)
   (:get "refunds")
   charge
   created

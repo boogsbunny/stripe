@@ -19,13 +19,17 @@
   status
   (type :reader payout-type))
 
-(defmethod initialize-instance :after ((instance payout) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key arrival-date created &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :arrival-date (decode-timestamp arrival-date)
-     :created (decode-timestamp created))))
+(defmethod initialize-instance :after ((instance payout) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:arrival-date
+           (setf (slot-value instance '%arrival-date) (decode-timestamp value)))
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value))))))))
 
 (define-query create-payout (:type payout)
   (:post "payouts")
@@ -40,7 +44,7 @@
 (define-query retrieve-payout (:type payout)
   (:get "payouts" payout))
 
-(define-query list-payouts (:type list)
+(define-query list-payouts (:type vector)
   (:get "payouts")
   arrival-date
   created

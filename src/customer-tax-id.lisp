@@ -14,13 +14,19 @@
   verified-address
   verified-name)
 
-(defmethod initialize-instance :after ((instance customer-tax-id) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created verification &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created)
-     :verification (make-instance 'tax-id-verification :data verification))))
+(defmethod initialize-instance :after ((instance customer-tax-id) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:verification
+           (when value
+             (setf (slot-value instance '%verification)
+                   (make-instance 'tax-id-verification :data value)))))))))
 
 (define-query create-customer-tax-id (:type customer-tax-id)
   (:post "customers/~a/tax-ids" customer)

@@ -17,38 +17,44 @@
   id
   items
   latest-invoice
-  plan
   quantity
   schedule
-  start
   start-date
   status
   trial-end
   trial-start)
 
-(defmethod initialize-instance :after ((instance subscription) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key billing-cycle-anchor cancel-at
-                         canceled-at created current-period-end
-                         current-period-start discount ended-at items plan start
-                         start-date trial-end trial-start &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :billing-cycle-anchor (decode-timestamp billing-cycle-anchor)
-     :cancel-at (decode-timestamp cancel-at)
-     :canceled-at (decode-timestamp canceled-at)
-     :created (decode-timestamp created)
-     :current-period-end (decode-timestamp current-period-end)
-     :current-period-start (decode-timestamp current-period-start)
-     :discount (make-instance 'discount :data discount)
-     :ended-at (decode-timestamp ended-at)
-     :items (decode-list items)
-     :plan (make-instance 'plan :data plan)
-     :start (decode-timestamp start)
-     :start-date (decode-timestamp start-date)
-     :trial-end (decode-timestamp trial-end)
-     :trial-start (decode-timestamp trial-start))))
+(defmethod initialize-instance :after ((instance subscription) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:billing-cycle-anchor
+           (setf (slot-value instance '%billing-cycle-anchor) (decode-timestamp value)))
+          (:cancel-at
+           (setf (slot-value instance '%cancel-at) (decode-timestamp value)))
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:current-period-end
+           (setf (slot-value instance '%current-period-end) (decode-timestamp value)))
+          (:current-period-start
+           (setf (slot-value instance '%current-period-start) (decode-timestamp value)))
+          (:discount
+           (unless (eql 'null value)
+             (setf (slot-value instance '%discount) (make-instance 'discount :data value))))
+          (:ended-at
+           (setf (slot-value instance '%ended-at) (decode-timestamp value)))
+          (:items
+           (when value
+             (setf (slot-value instance '%items) (decode-hash-table value))))
+          (:start-date
+           (setf (slot-value instance '%start-date) (decode-timestamp value)))
+          (:trial-end
+           (setf (slot-value instance '%trial-end) (decode-timestamp value)))
+          (:trial-start
+           (setf (slot-value instance '%trial-start) (decode-timestamp value))))))))
 
 (define-query create-subscription (:type subscription)
   (:post "subscriptions")
@@ -92,7 +98,7 @@
   invoice-now
   prorate)
 
-(define-query list-subscriptions (:type list)
+(define-query list-subscriptions (:type vector)
   (:get "subscriptions")
   collection-method
   created
@@ -101,6 +107,5 @@
   customer
   ending-before
   limit
-  plan
   starting-after
   status)

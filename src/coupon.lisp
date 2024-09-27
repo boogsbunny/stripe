@@ -14,13 +14,19 @@
   times-redeemed
   valid)
 
-(defmethod initialize-instance :after ((instance coupon) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created redeem-by &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created)
-     :redeem-by (decode-timestamp redeem-by))))
+(defmethod initialize-instance :after ((instance coupon) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created)
+                 (decode-timestamp value)))
+          (:redeem-by
+           (setf (slot-value instance '%redeem-by)
+                 (decode-timestamp value))))))))
 
 (define-query create-coupon (:type coupon)
   (:post "coupons")
@@ -44,7 +50,7 @@
 (define-query delete-coupon ()
   (:delete "coupons/~a" coupon))
 
-(define-query list-coupons (:type list)
+(define-query list-coupons (:type vector)
   (:get "coupons")
   created
   ending-before

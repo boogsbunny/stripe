@@ -1,13 +1,14 @@
 (in-package #:stripe)
 
 (defun decode-error (condition)
-  (let ((response (yason:parse (dex:response-body condition))))
-    (destructuring-bind (&key error &allow-other-keys) response
-      (destructuring-bind (&key code message &allow-other-keys) error
-        (values (or (when code
-                      (find-symbol (normalize-string code) :stripe))
-                    'stripe-error)
-                message)))))
+  (let* ((response (jzon:parse (dex:response-body condition)))
+         (error (gethash :error response))
+         (code (when error (gethash :code error)))
+         (message (when error (gethash :message error))))
+    (values (or (when code
+                  (find-symbol (normalize-string code) :stripe))
+                'stripe-error)
+            message)))
 
 (define-condition stripe-error (error)
   ((message :reader message
@@ -190,3 +191,11 @@
 (define-condition upstream-order-creation-failed (stripe-error) ())
 
 (define-condition url-invalid (stripe-error) ())
+
+(define-condition webhook-invalid-header (stripe-error) ())
+
+(define-condition webhook-no-valid-signature (stripe-error) ())
+
+(define-condition webhook-not-signed (stripe-error) ())
+
+(define-condition webhook-timestamp-too-old (stripe-error) ())

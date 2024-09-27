@@ -1,5 +1,7 @@
 (in-package #:stripe)
 
+;;;; NOTE: The Order API is DEPRECATED.
+
 (define-object order ()
   id
   amount
@@ -31,14 +33,17 @@
   delivery-estimate
   description)
 
-(defmethod initialize-instance :after ((instance order-shipping-methods)
-                                       &key data &allow-other-keys)
-  (destructuring-bind (&key delivery-estimate &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :delivery-estimate (make-instance 'order-deliver-estimate
-                                       :data delivery-estimate))))
+(defmethod initialize-instance :after ((instance order-shipping-methods) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:delivery-estimate
+           (unless (eql 'null value)
+             (setf (slot-value instance '%delivery-estimate)
+                   (make-instance 'order-delivery-estimate :data value)))))))))
 
 (define-object order-delivery-estimate ()
   date
@@ -54,25 +59,37 @@
   quantity
   (type :reader order-item-type))
 
-(defmethod initialize-instance :after ((instance order) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key created items returns shipping
-                         shipping-methods &allow-other-keys)
-      data
-    (reinitialize-instance
-     instance
-     :created (decode-timestamp created)
-     :items (mapcar
-             (lambda (x)
-               (make-instance 'order-item :data x))
-             items)
-     :returns (decode-list returns)
-     :shipping (make-instance 'order-shipping :data shipping)
-     :shipping-methods (mapcar
+(defmethod initialize-instance :after ((instance order) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:items
+           (setf (slot-value instance '%items)
+                 (when value
+                   (map 'list
                         (lambda (x)
-                          (make-instance 'order-shipping-methods
-                                         :data x))
-                        shipping-methods))))
+                          (make-instance 'order-item :data x))
+                        value))))
+          (:returns
+           (unless (eql 'null value)
+             (setf (slot-value instance '%returns)
+                   (decode-hash-table value))))
+          (:shipping
+           (unless (eql 'null value)
+             (setf (slot-value instance '%shipping)
+                   (make-instance 'order-shipping :data value))))
+          (:shipping-methods
+           (setf (slot-value instance '%shipping-methods)
+                 (when value
+                   (map 'list
+                        (lambda (x)
+                          (make-instance 'order-shipping-methods :data x))
+                        value)))))))))
 
 (define-query create-order (:type order)
   (:post "orders")
@@ -99,7 +116,7 @@
   source
   email)
 
-(define-query list-orders (:type list)
+(define-query list-orders (:type vector)
   (:get "orders")
   created
   customer

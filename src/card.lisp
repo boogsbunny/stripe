@@ -2,7 +2,13 @@
 
 (define-object card ()
   id
-  address
+  address-city
+  address-country
+  address-line1
+  address-line2
+  address-state
+  address-zip
+  address-zip-check
   available-payment-methods
   brand
   country
@@ -14,12 +20,6 @@
   last4
   name
   tokenization-method)
-
-(defmethod initialize-instance :after ((instance card) &key data
-                                       &allow-other-keys)
-  (reinitialize-instance
-   instance
-   :address (apply #'make-instance 'address data)))
 
 (define-query create-card (:type card)
   (:post "customers/~a/sources" customer)
@@ -43,5 +43,5 @@
 (define-query delete-card ()
   (:delete "customers/~a/sources/~a" customer card))
 
-(define-query list-cards (:type list)
+(define-query list-cards (:type vector)
   (:get "customers/~a/sources?object=card" customer))

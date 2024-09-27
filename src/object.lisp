@@ -32,12 +32,22 @@
 
 (defclass stripe-object () ())
 
-(defmethod initialize-instance :after ((instance stripe-object) &key data
-                                       &allow-other-keys)
+(defmethod initialize-instance :after ((instance stripe-object) &key data &allow-other-keys)
   (apply #'reinitialize-instance
          instance
          :allow-other-keys t
-         data))
+         (if (hash-table-p data)
+             (let ((plist (alex:hash-table-plist data)))
+               (loop for (key value) on plist by #'cddr
+                     if (eql value 'null)
+                       collect key and collect nil
+                     else
+                       collect key and collect value))
+             (loop for (key value) on data by #'cddr
+                   if (eql value 'null)
+                     collect key and collect nil
+                   else
+                     collect key and collect value))))
 
 (define-object address ()
   (line1 :extra-initargs (:address-line1))
@@ -52,12 +62,12 @@
   name
   phone)
 
-(defmethod initialize-instance :after ((instance shipping) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key address &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :address (make-instance 'address :data address))))
+(defmethod initialize-instance :after ((instance shipping) &key data &allow-other-keys)
+  (let ((address (gethash :address data)))
+    (when address
+      (reinitialize-instance
+       instance
+       :address (make-instance 'address :data address)))))
 
 (define-object billing-details (shipping)
   email)

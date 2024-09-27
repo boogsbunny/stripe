@@ -3,20 +3,21 @@
 (define-object subscription-item ()
   id
   created
-  plan
   quantity
   subscription)
 
-(defmethod initialize-instance :after ((instance subscription-item) &key data
-                                       &allow-other-keys)
-  (destructuring-bind (&key plan &allow-other-keys) data
-    (reinitialize-instance
-     instance
-     :plan (make-instance 'plan :data plan))))
+(defmethod initialize-instance :after ((instance subscription-item) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value))))))))
 
 (define-query create-subscription-item (:type subscription-item)
   (:post "subscription-items")
-  plan
   subscription
   prorate
   proration-date
@@ -27,7 +28,6 @@
 
 (define-query update-subscription-item (:type subscription-item)
   (:post "subscription-items/~a" subscription-item)
-  plan
   prorate
   proration-date
   quantity)
@@ -38,7 +38,7 @@
   prorate
   proration-date)
 
-(define-query list-subscription-items (:type list)
+(define-query list-subscription-items (:type vector)
   (:get "subscription-items")
   ending-before
   limit
