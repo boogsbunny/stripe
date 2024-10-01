@@ -4,6 +4,7 @@
   :documentation "Default tolerance for signatures in seconds.")
 
 (alex:define-constant +signing-version+ "v1"
+  :test #'equal
   :documentation "Current signature version.")
 
 (define-object webhook-event ()
