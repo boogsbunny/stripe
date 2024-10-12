@@ -14,7 +14,7 @@
   payment-method-types
   payment-status
   success-url
-  url)
+  (type :reader session-url))
 
 (define-query create-session (:type session)
   (:post "checkout/sessions")

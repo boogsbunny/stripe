@@ -275,6 +275,7 @@
    #:selected-shipping-method
    #:seller-message
    #:session
+   #:session-url
    #:shippable
    #:shipping
    #:shipping-methods
