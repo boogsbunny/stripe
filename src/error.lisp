@@ -104,16 +104,6 @@
 
 (define-condition not-allowed-on-standard-account (stripe-error) ())
 
-(define-condition order-creation-failed (stripe-error) ())
-
-(define-condition order-required-settings (stripe-error) ())
-
-(define-condition order-status-invalid (stripe-error) ())
-
-(define-condition order-upstream-timeout (stripe-error) ())
-
-(define-condition out-of-inventory (stripe-error) ())
-
 (define-condition parameter-invalid-empty (stripe-error) ())
 
 (define-condition parameter-invalid-integer (stripe-error) ())
@@ -169,8 +159,6 @@
 (define-condition setup-attempt-unexpected-state (stripe-error) ())
 
 (define-condition shipping-calculation-failed (stripe-error) ())
-
-(define-condition sku-inactive (stripe-error) ())
 
 (define-condition state-unsupported (stripe-error) ())
 

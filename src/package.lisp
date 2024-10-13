@@ -61,7 +61,6 @@
    #:order-required-settings
    #:order-status-invalid
    #:order-upstream-timeout
-   #:out-of-inventory
    #:parameter-invalid-empty
    #:parameter-invalid-integer
    #:parameter-invalid-string-blank
@@ -90,7 +89,6 @@
    #:setup-attempt-failed
    #:setup-attempt-unexpected-state
    #:shipping-calculation-failed
-   #:sku-inactive
    #:state-unsupported
    #:tax-id-invalid
    #:taxes-calculation-failed
@@ -119,7 +117,6 @@
    #:amount-off
    #:amount-refunded
    #:amount-remaining
-   #:amount-returned
    #:application
    #:arrival-date
    #:attempt-count
@@ -172,8 +169,6 @@
    #:default-payment-source
    #:default-source
    #:delinquent
-   #:delivery-estimate
-   #:delivery-estimate-type
    #:description
    #:destination
    #:discount
@@ -188,7 +183,6 @@
    #:ended-at
    #:ending-balance
    #:exchange-rate
-   #:external-coupon-code
    #:exp-month
    #:exp-year
    #:failure-balance-transaction
@@ -208,8 +202,6 @@
    #:id
    #:images
    #:interval
-   #:inventory
-   #:inventory-type
    #:invoice
    #:invoice-item
    #:invoice-number
@@ -351,7 +343,6 @@
    #:create-product
    #:create-refund
    #:create-session
-   #:create-sku
    #:create-subscription
    #:create-subscription-item
    #:delete-card
@@ -363,7 +354,6 @@
    #:delete-invoice-item
    #:delete-plan
    #:delete-product
-   #:delete-sku
    #:delete-subscription-discount
    #:delete-subscription-item
    #:finalize-invoice
@@ -383,7 +373,6 @@
    #:list-plans
    #:list-products
    #:list-refunds
-   #:list-skus
    #:list-subscriptions
    #:list-subscription-items
    #:mark-invoice-uncollectible
@@ -402,19 +391,15 @@
    #:retrieve-invoice
    #:retrieve-invoice-item
    #:retrieve-invoice-lines
-   #:retrieve-order
-   #:retrieve-order-return
    #:retrieve-payout
    #:retrieve-plan
    #:retrieve-product
    #:retrieve-refund
    #:retrieve-session
-   #:retrieve-sku
    #:retrieve-subscription
    #:retrieve-subscription-item
    #:retrieve-upcoming-invoice
    #:retrieve-upcoming-invoice-lines
-   #:return-order
    #:send-invoice
    #:update-card
    #:update-charge
@@ -427,7 +412,6 @@
    #:update-order
    #:update-plan
    #:update-product
-   #:update-sku
    #:update-subscription
    #:update-subscription-item
    #:void-credit-note
