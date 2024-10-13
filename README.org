@@ -1,0 +1,493 @@
+#+BEGIN_HTML
+<div align="center">
+  <h3>stripe</h3>
+  <p align="center">A client for the Stripe payment API written in Common Lisp.</p>
+</div>
+
+<details open>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#install">Install</a>
+          <ul>
+            <li><a href="#package-managers">Package Managers</a>
+              <ul>
+                <li><a href="#quicklisp">quicklisp</a></li>
+                <li><a href="#ocicl">ocicl</a></li>
+              </ul>
+            </li>
+            <li><a href="#from-source">From Source</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#coverage">Coverage</a></li>
+    <li><a href="#license">License</a></li>
+  </ol>
+</details>
+#+END_HTML
+
+** Getting Started
+*** Prerequisites
+To use this library, you'll need:
+
+- A Stripe account with API keys.
+  - You can sign up at [[https://dashboard.stripe.com/register][Stripe Signup]].
+  - Obtain your API keys from the [[https://dashboard.stripe.com/apikeys][Stripe Dashboard]].
+
+*** Install
+**** Package Managers
+***** [[https://www.quicklisp.org/beta/][quicklisp]]
+There's currently an [[https://github.com/quicklisp/quicklisp-projects/issues/2420][open PR]] to update the source location of the Stripe
+library, which includes updates like [[https://github.com/boogsbunny/stripe/commit/5936c43f44a197454095e1b83175dcdf3a303fd0][webhooks]].
+
+The current version in Quicklisp doesn't include these updates yet.
+
+#+begin_src lisp
+(ql:quickload :stripe)
+#+end_src
+
+***** [[https://github.com/ocicl/ocicl][ocicl]]
+
+#+begin_src bash
+ocicl install stripe
+#+end_src
+
+**** From Source
+
+#+begin_src bash
+git clone https://github.com/boogsbunny/stripe
+#+end_src
+
+** Usage
+Here's a minimal example of how to use the library to create a session and handle
+webhook events.
+
+These are the libraries we'll be using to get started:
+
+- [[https://github.com/cl-babel/babel][babel:]] This is a charset encoding/decoding library. It helps with converting
+  octets (byte vectors) to strings and vice versa. In this example, it's used to
+  decode JSON webhook payloads from Stripe.
+- [[https://github.com/Zulu-Inuoe/jzon][com.inuoe.jzon:]] This is a JSON reader/writer. It parses JSON data from
+  incoming webhook requests and serializes JSON when needed.
+- [[https://github.com/edicl/flexi-streams][flexi-streams]]: A flexible library that allows efficient reading from and
+  writing to streams, particularly useful for handling binary data. It's used
+  here for stream-related parsing of webhook payloads.
+- [[https://github.com/joaotavora/snooze][snooze]]: A URL routing library handling HTTP requests. It's used to define our
+  API routes, including handling webhooks.
+
+We’ll keep it simple for this use case. Imagine we have a landing page with a
+pricing section describing different tiers of a product with varying price
+points. The user can click on any of these sections to subscribe to that tier.
+
+First we'll first store the Stripe [[https://docs.stripe.com/keys][API key]] and [[https://docs.stripe.com/webhooks#verify-official-libraries][webhook signing secret]].
+
+#+begin_src lisp
+(setf stripe:*api-key* "your-secret-api-key")
+(setf stripe:*webhook-secret* "your-webhook-signing-secret")
+#+end_src
+
+Our frontend needs to include this script element:
+
+#+begin_src html
+<script src=https://js.stripe.com/v3/></script>
+#+end_src
+
+After they select a tier, we want to redirect them to the checkout
+page. Facilitating this process is called a [[https://docs.stripe.com/api/checkout/sessions][session]]. We need to add buttons for
+each subscription tier that hit our API endpoint to redirect them to our session
+URL.
+
+Here's the function that handles the redirection:
+
+#+begin_src lisp
+(defun redirect-to (url &optional (format-control "Redirected") format-args)
+  "Redirects the client to the specified URL with an optional message."
+  (setf (getf snooze::*clack-response-headers* :location) url)
+  (snooze:http-condition 302 (format nil "~?" format-control format-args)))
+#+end_src
+
+Now, we'll define the ~add-subscription~ function, which creates a checkout
+session with Stripe and redirects the user to the appropriate URL:
+
+#+begin_src lisp
+(defun add-subscription ()
+  "Redirects the user to the Stripe checkout session URL for the selected plan."
+  (redirect-to
+   (stripe:session-url
+    (stripe:create-session
+     :cancel-url "<your-cancel-url>"
+     :line-items '(("price" "<price-id>" "quantity" 1))
+     :mode "subscription"
+     :payment-method-types '("card")
+     :success-url "<your-success-url>"))))
+#+end_src
+
+Stripe provides webhook notifications to inform your application about events
+like payments or subscription status changes. We need to handle these events by
+processing the incoming JSON data.
+
+Let's start by defining a utility function ~parse-stream~ that reads the
+contents of a stream and returns it as a vector of unsigned bytes:
+
+#+begin_src lisp
+;;;; Original code provided by Eitaro Fukamachi.
+;;;; Copyright (c) 2014 Eitaro Fukamachi
+;;;; github.com/fukamachi/http-body
+(defun parse-stream (stream &optional content-length)
+  "Reads the contents of a stream and returns it as a vector of unsigned bytes.
+
+- `stream`: The input stream from which to read.
+- `content-length`: If provided, specifies the exact number of bytes to read."
+  (if (typep stream 'flexi-streams:vector-stream)
+      (coerce (flexi-streams::vector-stream-vector stream) '(simple-array (unsigned-byte 8) (*)))
+      (if content-length
+          (let ((buffer (make-array content-length :element-type '(unsigned-byte 8))))
+            (read-sequence buffer stream)
+            buffer)
+          (apply #'concatenate
+                 '(simple-array (unsigned-byte 8) (*))
+                 (loop with buffer = (make-array 1024 :element-type '(unsigned-byte 8))
+                       for read-bytes = (read-sequence buffer stream)
+                       collect (subseq buffer 0 read-bytes)
+                       while (= read-bytes 1024))))))
+#+end_src
+
+Next, we'll define a macro ~with-parsed-json~ to handle JSON parsing in our
+webhook handler:
+
+#+begin_src lisp
+(defmacro with-parsed-json (&body body)
+  "Parses the JSON body of an incoming HTTP request and binds it to a local
+variable `json`.
+
+Within BODY, the variable `json` will contain the parsed JSON object."
+  `(let* ((content-type (getf snooze:*clack-request-env* :content-type))
+          (content-length (getf snooze:*clack-request-env* :content-length))
+          (raw-body (getf snooze:*clack-request-env* :raw-body))
+          (json-stream (parse-stream raw-body content-length))
+          (raw-json (babel:octets-to-string json-stream
+                                            :encoding (detect-charset content-type :utf-8)))
+          (json (handler-case (com.inuoe.jzon:parse raw-json)
+                  (error (e)
+                    (format t "Malformed JSON (~a)~%!" e)
+                    (http-condition 400 "Malformed JSON!")))))
+     (declare (ignorable json))
+     ,@body))
+#+end_src
+
+Now, let's define the ~handle-webhook-event~ function, which validates and
+processes incoming webhook events from Stripe:
+
+#+begin_src lisp
+(defun handle-webhook-event ()
+  "Handles incoming webhook events from Stripe webhooks."
+  (with-parsed-json
+      (let* ((is-valid-webhook (stripe:validate-webhook-payload
+                                json-stream
+                                (gethash "stripe-signature" (getf snooze:*clack-request-env* :headers))
+                                stripe:*webhook-secret*))
+             (event (stripe:construct-webhook-event
+                     json-stream
+                     (gethash "stripe-signature" (getf snooze:*clack-request-env* :headers))
+                     stripe:*webhook-secret*
+                     :ignore-api-version-mismatch t)) ; WIP to get our library up to date
+             (event-type (gethash "type" json)))
+        (if is-valid-webhook
+            (progn
+              (format t "Valid webhook received.~%")
+              (cond ((string= "payment_intent.created" event-type)
+                     (format t "Payment intent created!~%")
+                     ;; TODO: Proceed with creating a user or processing the payment intent here
+                     )
+                    ((string= "customer.subscription.created" event-type)
+                     (format t "Subscription created!~%")
+                     ;; TODO: Handle subscription creation
+                     )
+                    ((string= "invoice.payment_succeeded" event-type)
+                     (format t "Payment succeeded for invoice!~%")
+                     ;; TODO: Handle the successful payment
+                     )
+                    ;; etc.
+                    (t
+                     (format t "Unhandled event type: ~a~%" event-type))))
+            (format t "Invalid webhook signature.~%")))))
+#+end_src
+
+Lastly, we define the route to handle webhook requests:
+
+#+begin_src lisp
+(snooze:defroute webhook (:post :application/json)
+  (handle-webhook-event))
+#+end_src
+
+** Coverage
+This is still a work in progress. Most of the endpoints for the [[#core-resources][Core Resources]]
+section are implemented, although some need to be updated for full parity with
+the Stripe API. Each endpoint will be marked off once it reaches parity,
+including details like all object attributes and complete endpoint coverage.
+
+#+BEGIN_HTML
+<details open>
+  <summary>Core Resources</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/balance">Balance</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/balance_transactions">Balance Transactions</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/charges">Charges</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customers">Customers</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_sessions">Customer Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/disputes">Disputes</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/events">Events</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/v2/events">Events v2</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/files">Files</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/file_links">File Links</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/mandates">Mandates</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payment_intents">Payment Intents</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/setup_intents">Setup Intents</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/setup_attempts">Setup Attempts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payouts">Payouts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/refunds">Refunds</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/confirmation_tokens">Confirmation Token</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tokens">Tokens</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Payment Methods</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payment_methods">Payment Methods</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payment_method_configurations">Payment Method Configurations</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payment_method_domains">Payment Method Domains</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_bank_accounts">Bank Accounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/cash_balance">Cash Balance</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/cash_balance_transactions">Cash Balance Transaction</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/cards">Cards</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/sources">Sources</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Products</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/products">Products</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/prices">Prices</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/coupons">Coupons</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/promotion_codes">Promotion Code</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/discounts">Discounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax_codes">Tax Code</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax_rates">Tax Rate</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/shipping_rates">Shipping Rates</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Checkout</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/checkout/sessions">Sessions</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Payment Links</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/payment-link">Payment Link</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Billing</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/credit_notes">Credit Note</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_balance_transactions">Customer Balance Transaction</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_portal/sessions">Customer Portal Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_portal/configurations">Customer Portal Configuration</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/invoices">Invoices</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/invoiceitems">Invoice Items</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/invoice-line-item">Invoice Line Item</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/invoice-rendering-template">Invoice Rendering Templates</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/billing/alert">Alerts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/billing/meter">Meters</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/billing/meter-event">Meter Events</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/v2/billing-meter">Meter Events v2</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/billing/meter-event-adjustment">Meter Event Adjustment</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/v2/billing-meter-adjustment">Meter Event Adjustment v2</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/v2/billing-meter-stream">Meter Event Stream v2</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/billing/meter-event-summary">Meter Event Summary</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/plans">Plans</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/quotes">Quote</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/subscriptions">Subscriptions</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/subscription_items">Subscription Items</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/subscription_schedules">Subscription Schedule</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax_ids">Tax IDs</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/test_clocks">Test Clocks</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/usage_records">Usage Records</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/usage-record-summary">Usage Record Summary</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Connect</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/accounts">Accounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/accounts/login_link">Login Links</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/account_links">Account Links</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/account_sessions">Account Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/application_fees">Application Fees</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/fee_refunds">Application Fee Refunds</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/capabilities">Capabilities</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/country_specs">Country Specs</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/external_accounts">External Bank Accounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/external_account_cards">External Account Cards</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/persons">Person</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/topups">Top-ups</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/transfers">Transfers</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/transfer_reversals">Transfer Reversals</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/secret_management">Secrets</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Fraud</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/radar/early_fraud_warnings">Early Fraud Warning</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/radar/reviews">Reviews</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/radar/value_lists">Value Lists</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/radar/value_list_items">Value List Items</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Issuing</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/authorizations">Authorizations</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/cardholders">Cardholders</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/cards">Cards</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/disputes">Disputes</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/funding_instructions">Funding Instructions</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/personalization_designs">Personalization Designs</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/physical_bundles">Physical Bundles</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/tokens">Tokens</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/issuing/transactions">Transactions</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Terminal</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/connection_tokens">Connection Token</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/locations">Location</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/readers">Reader</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/hardware_orders">Terminal Hardware Order</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/hardware_products">Terminal Hardware Product</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/hardware_skus">Terminal Hardware SKU</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/hardware_shipping_methods">Terminal Hardware Shipping Method</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/terminal/configuration">Configuration</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Treasury</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/financial_accounts">Financial Accounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/financial_account_features">Financial Account Features</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/transactions">Transactions</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/transaction_entries">Transaction Entries</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/outbound_transfers">Outbound Transfers</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/outbound_payments">Outbound Payments</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/inbound_transfers">Inbound Transfers</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/received_credits">Received Credits</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/received_debits">Received Debits</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/credit_reversals">Credit Reversals</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/treasury/debit_reversals">Debit Reversals</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Entitlements</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/entitlements/feature">Feature</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/product-feature">Product Feature</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/entitlements/active-entitlement">Active Entitlement</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Sigma</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/sigma/scheduled_queries">Scheduled Queries</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Reporting</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/reporting/report_run">Report Runs</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/reporting/report_type">Report Types</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Financial Connections</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/financial_connections/accounts">Accounts</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/financial_connections/ownership">Account Owner</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/financial_connections/sessions">Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/financial_connections/transactions">Transactions</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Tax</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax/calculations">Tax Calculations</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax/registrations">Tax Registrations</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax/transactions">Tax Transactions</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/tax/settings">Tax Settings</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Identity</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/identity/verification_sessions">Verification Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/identity/verification_reports">Verification Report</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Crypto</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/crypto/onramp_sessions">Crypto Onramp Session</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/crypto/onramp_quotes">Crypto Onramp Quotes</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Climate</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/climate/order">Climate Order</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/climate/product">Climate Product</a></li>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/climate/supplier">Climate Supplier</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Forwarding</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/forwarding/request">Forwarding Request</a></li>
+  </ul>
+</details>
+
+<details open>
+  <summary>Webhooks</summary>
+  <ul>
+    <li>&#x2610; <a href="https://docs.stripe.com/api/webhook_endpoints">Webhook Endpoints</a></li>
+  </ul>
+</details>
+#+END_HTML
+
+** License
+Distributed under the MIT License. See [[file:LICENSE][License]] for more information.
