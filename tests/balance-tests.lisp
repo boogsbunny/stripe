@@ -48,10 +48,10 @@
     (is (= 666670 (slot-value available-funds 'stripe::%amount)))
     (is (string= "usd" (slot-value available-funds 'stripe::%currency)))
     (is (= 666670 (slot-value available-funds 'stripe::%card)))
-    (is (= 0 (slot-value available-funds 'stripe::%bank-account)))
+    (is (null (slot-value available-funds 'stripe::%bank-account)))
     ;; pending funds
     (is (typep pending-funds 'stripe::balance-funds))
     (is (= 61414 (slot-value pending-funds 'stripe::%amount)))
     (is (string= "usd" (slot-value pending-funds 'stripe::%currency)))
     (is (= 61414 (slot-value pending-funds 'stripe::%card)))
-    (is (= 0 (slot-value pending-funds 'stripe::%bank-account)))))
+    (is (null (slot-value pending-funds 'stripe::%bank-account)))))
