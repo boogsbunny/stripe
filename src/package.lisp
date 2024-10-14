@@ -357,7 +357,7 @@
    #:delete-subscription-discount
    #:delete-subscription-item
    #:finalize-invoice
-   #:list-balance-history
+   #:list-balance-transactions
    #:list-cards
    #:list-charges
    #:list-coupons
@@ -379,7 +379,7 @@
    #:pay-invoice
    #:pay-order
    #:retrieve-balance
-   #:retrieve-balance-transactions
+   #:retrieve-balance-transaction
    #:retrieve-card
    #:retrieve-card-token
    #:retrieve-coupon
