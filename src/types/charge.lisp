@@ -118,7 +118,7 @@ triggering an automatic transfer. See the [Connect documentation]
    :documentation "True if the charge succeeded, or was successfully authorized
 for later capture.")
   (payment-intent
-   :type (or string payment-intent-list null) ; FIXME: expandable
+   :type (or string payment-intent-list null)
    :documentation "ID of the PaymentIntent associated with this charge, if one
 exists.")
   (payment-method
