@@ -18,9 +18,3 @@
            (setf (slot-value instance '%end) (decode-timestamp value)))
           (:start
            (setf (slot-value instance '%start) (decode-timestamp value))))))))
-
-(define-query delete-customer-discount ()
-  (:delete "customers/~a/discount" customer))
-
-(define-query delete-subscription-discount ()
-  (:delete "subscriptions/~a/discount" subscription))

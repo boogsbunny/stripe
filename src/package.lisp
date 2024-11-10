@@ -1,7 +1,5 @@
-(in-package #:cl-user)
-
 (defpackage #:stripe
-  (:use #:cl)
+  (:use :cl)
   (:local-nicknames
    (#:alex #:alexandria)
    (#:jzon #:com.inuoe.jzon)
@@ -319,10 +317,6 @@
    #:webhooks-delivered-at
    #:weight
    #:width)
-  (:export
-   #:construct-webhook-event
-   #:parse-signature-header
-   #:validate-webhook-payload)
   ;; requests
   (:export
    #:cancel-payout
@@ -415,4 +409,8 @@
    #:update-subscription
    #:update-subscription-item
    #:void-credit-note
-   #:void-invoice))
+   #:void-invoice)
+  (:export
+   #:construct-webhook-event
+   #:parse-signature-header
+   #:validate-webhook-payload))

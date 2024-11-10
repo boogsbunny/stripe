@@ -6,17 +6,21 @@
                   (lambda (x)
                     (let ((name (u:ensure-list x)))
                       (destructuring-bind (name
-                                           &key (reader name) (type t) extra-initargs)
+                                           &key (reader name) (type t)
+                                             (initform nil) extra-initargs (documentation ""))
                           name
                         `(,(u:symbolicate '#:% name)
                           :reader ,reader
                           :initarg ,(u:make-keyword name)
                           :type ,type
+                          ,@(when (and initform (not (eq initform nil)))
+                              `(:initform ,initform))
                           ,@(when extra-initargs
                               `(,@(mapcan
                                    (lambda (x)
                                      `(:initarg ,x))
-                                   extra-initargs)))))))
+                                   extra-initargs)))
+                          :documentation ,documentation))))
                   fields)))
       `(progn
          (defclass ,name
@@ -28,7 +32,8 @@
            (if (and (slot-exists-p ,name '%id)
                     (slot-boundp ,name '%id))
                (format ,stream "~a ~a" ',name (id ,name))
-               (format ,stream "~a" ',name)))))))
+               (format ,stream "~a" ',name)))
+         (define-type ,name)))))
 
 (defclass stripe-object () ())
 
@@ -50,17 +55,32 @@
                      collect key and collect value))))
 
 (define-object address ()
-  (line1 :extra-initargs (:address-line1))
-  (line2 :extra-initargs (:address-line2))
-  (city :extra-initargs (:address-city))
-  (state :extra-initargs (:address-state))
-  (postal-code :extra-initargs (:address-zip))
-  (country :extra-initargs (:address-country)))
+  (line1
+   :extra-initargs (:address-line1)
+   :type (or string null))
+  (line2
+   :extra-initargs (:address-line2)
+   :type (or string null))
+  (city
+   :extra-initargs (:address-city)
+   :type (or string null))
+  (state
+   :extra-initargs (:address-state)
+   :type (or string null))
+  (postal-code
+   :extra-initargs (:address-zip)
+   :type (or string null))
+  (country
+   :extra-initargs (:address-country)
+   :type (or string null)))
 
 (define-object shipping ()
-  address
-  name
-  phone)
+  (address
+   :type address-list)
+  (name
+   :type (or string null))
+  (phone
+   :type (or string null)))
 
 (defmethod initialize-instance :after ((instance shipping) &key data &allow-other-keys)
   (let ((address (gethash :address data)))
@@ -70,4 +90,5 @@
        :address (make-instance 'address :data address)))))
 
 (define-object billing-details (shipping)
-  email)
+  (email
+   :type (or string null)))

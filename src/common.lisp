@@ -1,11 +1,8 @@
 (in-package #:stripe)
 
 (defvar *base-url* "https://api.stripe.com/v1")
-
 (defvar *api-version* "2019-05-16")
-
 (defvar *api-key*)
-
 (defvar *webhook-secret* "https://docs.stripe.com/webhooks/signatures")
 
 (defun normalize-string (string)
@@ -56,7 +53,7 @@ If no matching class symbol is found, the item hash table is returned as is."
             (let* ((object-type (gethash :object item-hash))
                    (normalized-type (normalize-object-type object-type))
                    (type-symbol (and normalized-type
-                                     (find-symbol (stripe::normalize-string normalized-type)
+                                     (find-symbol (normalize-string normalized-type)
                                                   :stripe))))
               (if type-symbol
                   (make-instance type-symbol :data item-hash)

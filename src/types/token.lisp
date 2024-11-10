@@ -20,10 +20,3 @@
                    (make-instance 'card :data value))))
           (:created
            (setf (slot-value instance '%created) (decode-timestamp value))))))))
-
-(define-query create-card-token (:type card-token)
-  (:post "tokens")
-  card)
-
-(define-query retrieve-card-token (:type card-token)
-  (:get "tokens/~a" card-token))

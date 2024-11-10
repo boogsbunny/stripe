@@ -17,6 +17,20 @@
   sources
   subscriptions)
 
+(define-object deleted-customer ()
+  (id
+   :type string
+   :documentation "Unique identifier for the object.")
+  (object
+   :type string
+   :initform "customer"
+   :documentation "String representing the object's type. Objects of
+the same type share the same value.")
+  (deleted
+   :type boolean
+   :initform t
+   :documentation "Always true for a deleted object."))
+
 (defmethod initialize-instance :after ((instance customer) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)
     (loop
@@ -42,41 +56,3 @@
            (when value
              (setf (slot-value instance '%subscriptions)
                    (decode-hash-table value)))))))))
-
-(define-query create-customer (:type customer)
-  (:post "customers")
-  balance
-  description
-  name
-  email
-  phone
-  address
-  shipping
-  source)
-
-(define-query retrieve-customer (:type customer)
-  (:get "customers/~a" customer))
-
-(define-query update-customer (:type customer)
-  (:post "customers/~a" customer)
-  address
-  balance
-  coupon
-  default-source
-  description
-  email
-  name
-  phone
-  shipping
-  source)
-
-(define-query delete-customer ()
-  (:delete "customers/~a" customer))
-
-(define-query list-customers (:type vector)
-  (:get "customers")
-  created
-  email
-  ending-before
-  limit
-  starting-after)
