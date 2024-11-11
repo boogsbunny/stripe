@@ -71,6 +71,7 @@ fee."))
    :initform nil
    :documentation "Payout ID that created this application fee.")
   (type
+   :reader application-fee-type
    :type string
    :documentation "Type of object that created the application fee,
 either `charge` or `payout`."))

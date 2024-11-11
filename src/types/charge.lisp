@@ -841,6 +841,7 @@ payment processor."))
 
 (define-object charge-oxxo-details ()
   (number
+   :reader charge-oxxo-details-number
    :type (or string null)
    :documentation "OXXO reference number."))
 
@@ -1168,6 +1169,7 @@ can use this attribute to check whether two WeChat accounts are the same.")
    :type charge-zip-details-list)
   ;; This field accounts for which payment method detail object is relevant
   (type
+   :reader charge-payment-method-details-type
    :type string))
 
 ;; TODO: do we even need this?

@@ -86,5 +86,6 @@ object in a structured format.")
 within Stripe.")
   (tos-acceptance)
   (type
+   :reader account-type
    :documentation "The Stripe account type. Can be `standard`,
 `express`, `custom`, or `none`."))
