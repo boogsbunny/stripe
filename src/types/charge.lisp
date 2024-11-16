@@ -155,8 +155,9 @@ only partially refunded, this attribute will still be false.")
    :type (or list-refund-collection null)
    :documentation "A list of refunds that have been applied to the charge.")
   (review
-   :type (or string null)               ; TODO: expandable
-   :documentation "ID of the review associated with this charge if one exists.")
+   :type (or string review null)
+   :documentation "ID of the review associated with this charge if one
+exists.")
   (shipping
    :type t                              ; TODO:
    :documentation "Shipping information for the charge.")
