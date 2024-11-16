@@ -1,6 +1,57 @@
 (in-package #:stripe)
 
 (defmacro define-object (name super-classes &body fields)
+  "Defines a Stripe API object class and its corresponding paginated
+list container.
+
+For each object defined (e.g., CHARGE), this macro:
+1. Creates the main class inheriting from STRIPE-OBJECT
+2. Automatically creates a paginated list container class (e.g.,
+LIST-CHARGE)
+3. Defines type predicates and collection types for both classes
+
+The list container follows Stripe's ApiList<T> pattern, containing:
+- data: A vector of the defined objects.
+- has-more: Boolean indicating if more items exist beyond this list.
+- object: Always set to \"list\".
+- url: The URL where this list can be accessed.
+
+Syntax:
+  (define-object name super-classes &rest fields)
+
+Fields are defined with the following syntax:
+  (field-name &key reader type initform extra-initargs documentation)
+
+Example:
+  (define-object charge ()
+    (id
+     :type string
+     :documentation \"Unique identifier for the charge.\")
+    (amount
+     :type integer
+     :documentation \"Amount in cents.\"))
+
+This creates:
+- CHARGE class with specified fields.
+- LIST-CHARGE class for paginated lists.
+- Type predicates:
+  - CHARGE-P
+  - CHARGE-NULLABLE-P
+  - LIST-CHARGE-P
+  - LIST-CHARGE-NULLABLE-P
+- Collection types:
+  - CHARGE-COLLECTION
+  - CHARGE-NULLABLE-COLLECTION
+  - LIST-CHARGE-COLLECTION
+  - LIST-CHARGE-NULLABLE-COLLECTION
+
+The list container can be used in other objects:
+  (define-object customer ()
+    (charges
+     :type list-charge-collection
+     :documentation \"List of charges for this customer.\"))
+
+See: https://stripe.com/docs/api/pagination"
   (u:with-gensyms (stream)
     (let ((slots (mapcar
                   (lambda (x)
@@ -21,7 +72,29 @@
                                      `(:initarg ,x))
                                    extra-initargs)))
                           :documentation ,documentation))))
-                  fields)))
+                  fields))
+          (list-name (u:symbolicate 'list- name))
+          (list-slots `((,(u:symbolicate '#:% 'object)
+                         :reader object
+                         :initarg :object
+                         :type string
+                         :initform "list")
+                        (,(u:symbolicate '#:% 'data)
+                         :reader data
+                         :initarg :data
+                         :type (vector ',name)
+                         :documentation "The array of objects contained in the list.")
+                        (,(u:symbolicate '#:% 'has-more)
+                         :reader has-more
+                         :initarg :has-more
+                         :type boolean
+                         :documentation "Indicates whether there are more items beyond the ones in
+this list.")
+                        (,(u:symbolicate '#:% 'url)
+                         :reader url
+                         :initarg :url
+                         :type string
+                         :documentation "The URL where this list can be accessed."))))
       `(progn
          (defclass ,name
              ,@(if super-classes
@@ -33,7 +106,12 @@
                     (slot-boundp ,name '%id))
                (format ,stream "~a ~a" ',name (id ,name))
                (format ,stream "~a" ',name)))
-         (define-type ,name)))))
+         (define-type ,name)
+         (defclass ,list-name (stripe-object)
+           ,list-slots)
+         (u:define-printer (,list-name ,stream :type nil)
+           (format ,stream "~a" ',list-name))
+         (define-type ,list-name)))))
 
 (defclass stripe-object () ())
 
