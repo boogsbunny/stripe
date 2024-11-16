@@ -2,19 +2,19 @@
 
 (define-object balance ()
   (available
-   :type balance-funds-list
+   :type balance-funds-collection
    :documentation "")
   (pending
-   :type balance-funds-list
+   :type balance-funds-collection
    :documentation "")
   (object
    :type string
    :documentation "")
   (connect-reserved
-   :type balance-funds-list
+   :type balance-funds-collection
    :documentation "")
   (instant-available
-   :type instant-balance-funds-list
+   :type instant-balance-funds-collection
    :documentation "")
   (issuing
    :type (or balance-issuing null)
@@ -74,12 +74,12 @@
    :type (or integer null)
    :documentation "")
   (net-available
-   :type net-balance-funds-list
+   :type net-balance-funds-collection
    :documentation ""))
 
 (define-object balance-issuing ()
   (available
-   :type balance-funds-list
+   :type balance-funds-collection
    :documentation ""))
 
 (defmethod initialize-instance :after ((instance balance-funds) &key data &allow-other-keys)

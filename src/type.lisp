@@ -1,24 +1,30 @@
 (in-package #:stripe)
 
-(defmacro define-type (name &key (nullable nil) (doc ""))
-  "Define a type-checking function and a corresponding list-checking function
+(defmacro define-type (name)
+  "Define a type-checking function and a corresponding collection-checking function
 and type.
 
-NAME is the base name of the type.
-NULLABLE indicates whether the list may contain NIL values.
-DOC is a documentation string for the generated functions (optional)."
-  (let* ((name-string (string-upcase (symbol-name name)))
-         (type-name (intern (concatenate 'string name-string "-LIST")))
-         (type-predicate (intern (concatenate 'string name-string "-LIST-P")))
-         (type-specifier (intern (concatenate 'string name-string "-P")))
-         (null-check (if nullable
-                         `(or (null l) (and (listp l) (every #',type-specifier l)))
-                         `(and (listp l) (every #',type-specifier l)))))
+NAME is the base name of the type."
+  (let* ((type-p (u:symbolicate name '-p))
+         (collection (u:symbolicate name '-collection))
+         (collection-p (u:symbolicate name '-collection-p))
+         (nullable-p (u:symbolicate name '-nullable-p))
+         (nullable-collection (u:symbolicate name '-nullable-collection))
+         (nullable-collection-p (u:symbolicate name '-nullable-collection-p))
+         (collection-check `(and (listp l) (every #',type-p l)))
+         (nullable-check `(or (null l) (and (listp l) (every #',nullable-p l)))))
     `(progn
-       (defun ,type-specifier (x)
+       (defun ,type-p (x)
          (typep x ',name))
-       (defun ,type-predicate (l)
-         ,null-check)
-       (deftype ,type-name ()
-         ,doc
-         '(satisfies ,type-predicate)))))
+       (defun ,collection-p (l)
+         ,collection-check)
+       (deftype ,collection ()
+         ,(format nil "Collection of ~A." name)
+         '(satisfies ,collection-p))
+       (defun ,nullable-p (x)
+         (typep x ',name))
+       (defun ,nullable-collection-p (l)
+         ,nullable-check)
+       (deftype ,nullable-collection ()
+         ,(format nil "Nullable collection of ~A." name)
+         '(satisfies ,nullable-collection-p)))))

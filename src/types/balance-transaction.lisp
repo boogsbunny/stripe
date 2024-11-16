@@ -17,7 +17,7 @@
   (fee
    :type integer)
   (fee-details
-   :type fee-list)
+   :type fee-collection)
   (net
    :type integer)
   (reporting-category
