@@ -29,7 +29,7 @@ PaymentIntent.")
    :type integer
    :documentation "Amount that this PaymentIntent collects.")
   (application
-   :type (or string application-collection null)
+   :type (or string application null)
    :documentation "ID of the Connect application that created the
 PaymentIntent.")
   (application-fee-amount
@@ -87,7 +87,7 @@ seconds since the Unix epoch.")
 (https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must
 be a [supported currency](https://stripe.com/docs/currencies).")
   (customer
-   :type (or string customer-collection deleted-customer-collection null)
+   :type (or string customer deleted-customer null)
    :documentation "ID of the Customer this PaymentIntent belongs to,
 if one exists.
 
@@ -109,7 +109,7 @@ Customer instead.")
    :documentation "An arbitrary string attached to the object. Often
 useful for displaying to users.")
   (invoice
-   :type (or string invoice-collection null)
+   :type (or string invoice null)
    :documentation "ID of the invoice that created this PaymentIntent,
 if it exists.")
   (last-payment-error
@@ -117,7 +117,7 @@ if it exists.")
 PaymentIntent confirmation. It will be cleared if the PaymentIntent is
 later updated for any reason.")
   (latest-charge
-   :type (or string charge-collection null)
+   :type (or string charge null)
    :documentation "ID of the latest [Charge object]
 (https://stripe.com/docs/api/charges) created by this PaymentIntent.
 This property is `null` until PaymentIntent confirmation is attempted.")
@@ -137,7 +137,7 @@ information in metadata]
 you need to take in order for your customer to fulfill a payment using
 the provided source.")
   (on-behalf-of
-   :type (or string account-collection null)
+   :type (or string account null)
    :documentation "The account (if any) for which the funds of the
 PaymentIntent are intended. See the PaymentIntents [use case for
 connected accounts]

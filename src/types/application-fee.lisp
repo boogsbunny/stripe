@@ -10,7 +10,7 @@
    :documentation "String representing the object's type. Objects of
 the same type share the same value.")
   (account
-   :type (or string account-collection)
+   :type (or string account)
    :documentation "ID of the Stripe account this fee was taken from.")
   (amount
    :type integer
@@ -21,15 +21,15 @@ the same type share the same value.")
 be less than the amount attribute on the fee if a partial refund was
 issued).")
   (application
-   :type (or string application-collection)
+   :type (or string application)
    :documentation "ID of the Connect application that earned the fee.")
   (balance-transaction
-   :type (or string balance-transaction-collection null)
+   :type (or string balance-transaction null)
    :documentation "Balance transaction that describes the impact of
 this collected application fee on your account balance (not including
 refunds).")
   (charge
-   :type (or string charge-collection)
+   :type (or string charge)
    :documentation "ID of the charge that the application fee was taken from.")
   (created
    :type local-time:timestamp
@@ -41,7 +41,7 @@ seconds since the Unix epoch.")
 (https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must
 be a [supported currency](https://stripe.com/docs/currencies).")
   (fee-source
-   :type (or fee-source-collection null)
+   :type (or fee-source null)
    :documentation "Polymorphic source of the application fee. Includes
 the ID of the object the application fee was created from.")
   (livemode
@@ -49,7 +49,7 @@ the ID of the object the application fee was created from.")
    :documentation "Has the value `true` if the object exists in live
 mode or the value `false` if the object exists in test mode.")
   (originating-transaction
-   :type (or string charge-collection null)
+   :type (or string charge null)
    :documentation "ID of the corresponding charge on the platform
 account, if this fee was the result of a charge using the `destination`
 parameter.")

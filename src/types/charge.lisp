@@ -23,10 +23,10 @@ than the amount attribute on the charge if a partial capture was made).")
    :documentation "Amount in cents (or local equivalent) refunded (can be less
 than the amount attribute on the charge if a partial refund was issued).")
   (application
-   :type (or string application-collection null)
+   :type (or string application null)
    :documentation "ID of the Connect application that created the charge.")
   (application-fee
-   :type (or string application-fee-collection null)
+   :type (or string application-fee null)
    :documentation "The application fee (if any) for the charge. [See the Connect
 documentation](https://stripe.com/docs/connect/direct-charges#collect-fees)
 for details.")
@@ -36,11 +36,11 @@ for details.")
 charge. [See the Connect documentation]
 (https://stripe.com/docs/connect/direct-charges#collect-fees) for details.")
   (balance-transaction
-   :type (or string balance-transaction-collection null)
+   :type (or string balance-transaction null)
    :documentation "ID of the balance transaction that describes the impact of
 this charge on your account balance (not including refunds or disputes).")
   (billing-details
-   :type billing-details-collection
+   :type billing-details
    :documentation "Billing information associated with the payment method at the
 time of the transaction.")
   (calculated-statement-descriptor
@@ -63,7 +63,7 @@ since the Unix epoch.")
 (https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a
 [supported currency](https://stripe.com/docs/currencies).")
   (customer
-   :type (or string customer-collection deleted-customer-collection null)
+   :type (or string customer deleted-customer null)
    :documentation "ID of the customer this charge is for if one exists.")
   (description
    :type (or string null)
@@ -73,7 +73,7 @@ displaying to users.")
    :type boolean
    :documentation "Whether the charge has been disputed.")
   (failure-balance-transaction
-   :type (or string balance-transaction-collection null)
+   :type (or string balance-transaction null)
    :documentation "ID of the balance transaction that describes the reversal of
 the balance on your account due to payment failure.")
   (failure-code
@@ -86,10 +86,10 @@ codes).")
    :documentation "Message to user further explaining reason for charge failure
 if available.")
   (fraud-details
-   :type charge-fraud-details-collection
+   :type charge-fraud-details
    :documentation "Information on fraud assessments for the charge.")
   (invoice
-   :type (or string invoice-collection null)
+   :type (or string invoice null)
    :documentation "ID of the invoice this charge is for if one exists.")
   (livemode
    :type boolean
@@ -105,12 +105,12 @@ information about the object in a structured format.")
    :documentation "String representing the object's type. Objects of the same
 type share the same value.")
   (on-behalf-of
-   :type (or string account-collection null)
+   :type (or string account null)
    :documentation "The account (if any) the charge was made on behalf of without
 triggering an automatic transfer. See the [Connect documentation]
 (https://stripe.com/docs/connect/separate-charges-and-transfers) for details.")
   (outcome
-   :type charge-outcome-collection
+   :type charge-outcome
    :documentation "Details about whether the payment was accepted, and why. See
 [understanding declines](https://stripe.com/docs/declines) for details.")
   (paid
@@ -118,18 +118,18 @@ triggering an automatic transfer. See the [Connect documentation]
    :documentation "True if the charge succeeded, or was successfully authorized
 for later capture.")
   (payment-intent
-   :type (or string payment-intent-collection null)
+   :type (or string payment-intent null)
    :documentation "ID of the PaymentIntent associated with this charge, if one
 exists.")
   (payment-method
    :type (or string null)
    :documentation "ID of the payment method used in this charge.")
   (payment-method-details
-   :type charge-payment-method-details-collection
+   :type charge-payment-method-details
    :documentation "Details about the payment method at the time of the
 transaction.")
   (radar-options
-   :type charge-radar-options-nullable-collection
+   :type charge-radar-options-nullable
    :documentation "Options to configure Radar. See [Radar Session]
 (https://stripe.com/docs/radar/radar-session) for more information.")
   (receipt-email
@@ -1080,101 +1080,149 @@ can use this attribute to check whether two WeChat accounts are the same.")
 (define-object charge-payment-method-details ()
   ;; Define each potential payment method details object
   (ach-credit-transfer
-   :type charge-ach-credit-transfer-details-collection)
+   :type (or charge-ach-credit-transfer-details null)
+   :initform nil)
   (ach-debit
-   :type charge-ach-debit-details-collection)
+   :type (or charge-ach-debit-details null)
+   :initform nil)
   (acss-debit
-   :type charge-acss-debit-details-collection)
+   :type (or charge-acss-debit-details null)
+   :initform nil)
   (affirm
-   :type charge-affirm-details-collection)
+   :type (or charge-affirm-details null)
+   :initform nil)
   (afterpay-clearpay
-   :type charge-afterpay-clearpay-details-collection)
+   :type (or charge-afterpay-clearpay-details null)
+   :initform nil)
   (alipay
-   :type charge-alipay-details-collection)
+   :type (or charge-alipay-details null)
+   :initform nil)
   (amazon-pay
-   :type charge-amazon-pay-details-collection)
+   :type (or charge-amazon-pay-details null)
+   :initform nil)
   (au-becs-debit
-   :type charge-au-becs-debit-details-collection)
+   :type (or charge-au-becs-debit-details null)
+   :initform nil)
   (bacs-debit
-   :type charge-bacs-debit-details-collection)
+   :type (or charge-bacs-debit-details null)
+   :initform nil)
   (bancontact
-   :type charge-bancontact-details-collection)
+   :type (or charge-bancontact-details null)
+   :initform nil)
   (blik
-   :type charge-blik-details-collection)
+   :type (or charge-blik-details null)
+   :initform nil)
   (boleto
-   :type charge-boleto-details-collection)
+   :type (or charge-boleto-details null)
+   :initform nil)
   (card
-   :type charge-card-details-collection)
+   :type (or charge-card-details null)
+   :initform nil)
   (card-present
-   :type charge-card-present-details-collection)
+   :type (or charge-card-present-details null)
+   :initform nil)
   (cashapp
-   :type charge-cashapp-details-collection)
+   :type (or charge-cashapp-details null)
+   :initform nil)
   (customer-balance
-   :type charge-customer-balance-details-collection)
+   :type (or charge-customer-balance-details null)
+   :initform nil)
   (eps
-   :type charge-eps-details-collection)
+   :type (or charge-eps-details null)
+   :initform nil)
   (fpx
-   :type charge-fpx-details-collection)
+   :type (or charge-fpx-details null)
+   :initform nil)
   (giropay
-   :type charge-giropay-details-collection)
+   :type (or charge-giropay-details null)
+   :initform nil)
   (grabpay
-   :type charge-grabpay-details-collection)
+   :type (or charge-grabpay-details null)
+   :initform nil)
   (ideal
-   :type charge-ideal-details-collection)
+   :type (or charge-ideal-details null)
+   :initform nil)
   (interac-present
-   :type charge-interac-present-details-collection)
+   :type (or charge-interac-present-details null)
+   :initform nil)
   (kakao-pay
-   :type charge-kakao-pay-details-collection)
+   :type (or charge-kakao-pay-details null)
+   :initform nil)
   (klarna
-   :type charge-klarna-details-collection)
+   :type (or charge-klarna-details null)
+   :initform nil)
   (konbini
-   :type charge-konbini-details-collection)
+   :type (or charge-konbini-details null)
+   :initform nil)
   (kr-card
-   :type charge-kr-card-details-collection)
+   :type (or charge-kr-card-details null)
+   :initform nil)
   (link
-   :type charge-link-details-collection)
+   :type (or charge-link-details null)
+   :initform nil)
   (mobilepay
-   :type charge-mobilepay-details-collection)
+   :type (or charge-mobilepay-details null)
+   :initform nil)
   (multibanco
-   :type charge-multibanco-details-collection)
+   :type (or charge-multibanco-details null)
+   :initform nil)
   (naver-pay
-   :type charge-naver-pay-details-collection)
+   :type (or charge-naver-pay-details null)
+   :initform nil)
   (oxxo
-   :type charge-oxxo-details-collection)
+   :type (or charge-oxxo-details null)
+   :initform nil)
   (p24
-   :type charge-p24-details-collection)
+   :type (or charge-p24-details null)
+   :initform nil)
   (payco
-   :type charge-payco-details-collection)
+   :type (or charge-payco-details null)
+   :initform nil)
   (paynow
-   :type charge-paynow-details-collection)
+   :type (or charge-paynow-details null)
+   :initform nil)
   (paypal
-   :type charge-paypal-details-collection)
+   :type (or charge-paypal-details null)
+   :initform nil)
   (pix
-   :type charge-pix-details-collection)
+   :type (or charge-pix-details null)
+   :initform nil)
   (promptpay
-   :type charge-promptpay-details-collection)
+   :type (or charge-promptpay-details null)
+   :initform nil)
   (revolut-pay
-   :type charge-revolut-pay-details-collection)
+   :type (or charge-revolut-pay-details null)
+   :initform nil)
   (samsung-pay
-   :type charge-samsung-pay-details-collection)
+   :type (or charge-samsung-pay-details null)
+   :initform nil)
   (sepa-debit
-   :type charge-sepa-debit-details-collection)
+   :type (or charge-sepa-debit-details null)
+   :initform nil)
   (sofort
-   :type charge-sofort-details-collection)
+   :type (or charge-sofort-details null)
+   :initform nil)
   (stripe-account
-   :type charge-stripe-account-details-collection)
+   :type (or charge-stripe-account-details null)
+   :initform nil)
   (swish
-   :type charge-swish-details-collection)
+   :type (or charge-swish-details null)
+   :initform nil)
   (twint
-   :type charge-twint-details-collection)
+   :type (or charge-twint-details null)
+   :initform nil)
   (us-bank-account
-   :type charge-us-bank-account-details-collection)
+   :type (or charge-us-bank-account-details null)
+   :initform nil)
   (wechat
-   :type charge-wechat-details-collection)
+   :type (or charge-wechat-details null)
+   :initform nil)
   (wechat-pay
-   :type charge-wechat-pay-details-collection)
+   :type (or charge-wechat-pay-details null)
+   :initform nil)
   (zip
-   :type charge-zip-details-collection)
+   :type (or charge-zip-details null)
+   :initform nil)
   ;; This field accounts for which payment method detail object is relevant
   (type
    :reader charge-payment-method-details-type
