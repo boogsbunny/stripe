@@ -75,7 +75,7 @@
 (defsystem #:stripe/tests
   :description "A test suite for the Stripe payment API client."
   :license "MIT"
-  :homepage "https://github.com/atlas-engineer/stripe"
+  :homepage "https://github.com/boogsbunny/stripe"
   :encoding :utf-8
   :depends-on (#:fiveam
                #:stripe)
