@@ -42,6 +42,7 @@
      (:file "plan")
      (:file "product")
      (:file "refund")
+     (:file "review")
      (:file "session")
      (:file "subscription")
      (:file "subscription-item")
