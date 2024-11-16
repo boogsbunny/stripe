@@ -129,7 +129,7 @@ exists.")
    :documentation "Details about the payment method at the time of the
 transaction.")
   (radar-options
-   :type t                              ; TODO:
+   :type charge-radar-options-nullable-collection
    :documentation "Options to configure Radar. See [Radar Session]
 (https://stripe.com/docs/radar/radar-session) for more information.")
   (receipt-email
@@ -196,6 +196,14 @@ transfer to as part of a destination charge. [See the Connect documentation]
 See the [Connect documentation]
 (https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options)
 for details."))
+
+(define-object charge-radar-options ()
+  (session
+   :type (or string null)
+   :documentation "A [Radar Session]
+(https://stripe.com/docs/radar/radar-session) is a snapshot of the
+browser metadata and device details that help Radar make more accurate
+predictions on your payments."))
 
 (define-object charge-outcome ()
   (network-status
