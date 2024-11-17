@@ -154,7 +154,7 @@ this list.")
 
 (define-object shipping ()
   (address
-   :type address-list)
+   :type address)
   (name
    :type (or string null))
   (phone
