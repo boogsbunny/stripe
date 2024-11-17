@@ -1,6 +1,6 @@
 (in-package #:stripe)
 
-(defmacro define-object (name super-classes &body fields)
+(defmacro define-object (name super-classes &body args)
   "Defines a Stripe API object class and its corresponding paginated
 list container.
 
@@ -53,54 +53,58 @@ The list container can be used in other objects:
 
 See: https://stripe.com/docs/api/pagination"
   (u:with-gensyms (stream)
-    (let ((slots (mapcar
-                  (lambda (x)
-                    (let ((name (u:ensure-list x)))
-                      (destructuring-bind (name
-                                           &key (reader name) (type t)
-                                             (initform nil) extra-initargs (documentation ""))
-                          name
-                        `(,(u:symbolicate '#:% name)
-                          :reader ,reader
-                          :initarg ,(u:make-keyword name)
-                          :type ,type
-                          ,@(when (and initform (not (eq initform nil)))
-                              `(:initform ,initform))
-                          ,@(when extra-initargs
-                              `(,@(mapcan
-                                   (lambda (x)
-                                     `(:initarg ,x))
-                                   extra-initargs)))
-                          :documentation ,documentation))))
-                  fields))
-          (list-name (u:symbolicate 'list- name))
-          (list-slots `((,(u:symbolicate '#:% 'object)
-                         :reader object
-                         :initarg :object
-                         :type string
-                         :initform "list")
-                        (,(u:symbolicate '#:% 'data)
-                         :reader data
-                         :initarg :data
-                         :type (vector ',name)
-                         :documentation "The array of objects contained in the list.")
-                        (,(u:symbolicate '#:% 'has-more)
-                         :reader has-more
-                         :initarg :has-more
-                         :type boolean
-                         :documentation "Indicates whether there are more items beyond the ones in
+    (let* ((doc-string (when (stringp (first args)) (first args)))
+           (fields (if doc-string (rest args) args))
+           (slots (mapcar
+                   (lambda (x)
+                     (let ((name (u:ensure-list x)))
+                       (destructuring-bind (name
+                                            &key (reader name) (type t)
+                                              (initform nil) extra-initargs (documentation ""))
+                           name
+                         `(,(u:symbolicate '#:% name)
+                           :reader ,reader
+                           :initarg ,(u:make-keyword name)
+                           :type ,type
+                           ,@(when (and initform (not (eq initform nil)))
+                               `(:initform ,initform))
+                           ,@(when extra-initargs
+                               `(,@(mapcan
+                                    (lambda (x)
+                                      `(:initarg ,x))
+                                    extra-initargs)))
+                           :documentation ,documentation))))
+                   fields))
+           (list-name (u:symbolicate 'list- name))
+           (list-slots `((,(u:symbolicate '#:% 'object)
+                          :reader object
+                          :initarg :object
+                          :type string
+                          :initform "list")
+                         (,(u:symbolicate '#:% 'data)
+                          :reader data
+                          :initarg :data
+                          :type (vector ',name)
+                          :documentation "The array of objects contained in the list.")
+                         (,(u:symbolicate '#:% 'has-more)
+                          :reader has-more
+                          :initarg :has-more
+                          :type boolean
+                          :documentation "Indicates whether there are more items beyond the ones in
 this list.")
-                        (,(u:symbolicate '#:% 'url)
-                         :reader url
-                         :initarg :url
-                         :type string
-                         :documentation "The URL where this list can be accessed."))))
+                         (,(u:symbolicate '#:% 'url)
+                          :reader url
+                          :initarg :url
+                          :type string
+                          :documentation "The URL where this list can be accessed."))))
       `(progn
          (defclass ,name
              ,@(if super-classes
                    `(,super-classes)
                    `((stripe-object)))
-           ,slots)
+           ,slots
+           ,@(when doc-string
+               `((:documentation ,doc-string))))
          (u:define-printer (,name ,stream :type nil)
            (if (and (slot-exists-p ,name '%id)
                     (slot-boundp ,name '%id))
