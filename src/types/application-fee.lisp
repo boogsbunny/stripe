@@ -30,7 +30,8 @@ this collected application fee on your account balance (not including
 refunds).")
   (charge
    :type (or string charge)
-   :documentation "ID of the charge that the application fee was taken from.")
+   :documentation "ID of the charge that the application fee was taken
+from.")
   (created
    :type local-time:timestamp
    :documentation "Time at which the object was created. Measured in

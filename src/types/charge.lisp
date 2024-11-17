@@ -6,85 +6,94 @@
    :documentation "Unique identifier for the object.")
   (amount
    :type integer
-   :documentation "Amount intended to be collected by this payment. A positive
-integer representing how much to charge in the [smallest currency unit]
-(https://stripe.com/docs/currencies#zero-decimal) (e.g.,100 cents to charge
-$1.00 or 100 to charge ¥100, a zero-decimal currency). The minimum amount is
-$0.50 US or [equivalent in charge currency]
-(https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts). The
-amount value supports up to eight digits (e.g., a value of 99999999 for a USD
-charge of $999,999.99).")
+   :documentation "Amount intended to be collected by this payment. A
+positive integer representing how much to charge in the [smallest
+currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g.,
+100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal
+currency). The minimum amount is $0.50 US or [equivalent in charge
+currency]
+(https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+The amount value supports up to eight digits (e.g., a value of 99999999
+for a USD charge of $999,999.99).")
   (amount-captured
    :type integer
-   :documentation "Amount in cents (or local equivalent) captured (can be less
-than the amount attribute on the charge if a partial capture was made).")
+   :documentation "Amount in cents (or local equivalent) captured (can
+be less than the amount attribute on the charge if a partial capture
+was made).")
   (amount-refunded
    :type integer
-   :documentation "Amount in cents (or local equivalent) refunded (can be less
-than the amount attribute on the charge if a partial refund was issued).")
+   :documentation "Amount in cents (or local equivalent) refunded (can
+be less than the amount attribute on the charge if a partial refund was
+issued).")
   (application
    :type (or string application null)
-   :documentation "ID of the Connect application that created the charge.")
+   :documentation "ID of the Connect application that created the
+charge.")
   (application-fee
    :type (or string application-fee null)
-   :documentation "The application fee (if any) for the charge. [See the Connect
-documentation](https://stripe.com/docs/connect/direct-charges#collect-fees)
+   :documentation "The application fee (if any) for the charge. [See the
+Connect documentation]
+(https://stripe.com/docs/connect/direct-charges#collect-fees)
 for details.")
   (application-fee-amount
    :type (or integer null)
-   :documentation "The amount of the application fee (if any) requested for the
-charge. [See the Connect documentation]
-(https://stripe.com/docs/connect/direct-charges#collect-fees) for details.")
+   :documentation "The amount of the application fee (if any) requested
+for the charge. [See the Connect documentation]
+(https://stripe.com/docs/connect/direct-charges#collect-fees) for
+details.")
   (balance-transaction
    :type (or string balance-transaction null)
-   :documentation "ID of the balance transaction that describes the impact of
-this charge on your account balance (not including refunds or disputes).")
+   :documentation "ID of the balance transaction that describes the
+impact of this charge on your account balance (not including refunds
+or disputes).")
   (billing-details
    :type billing-details
-   :documentation "Billing information associated with the payment method at the
-time of the transaction.")
+   :documentation "Billing information associated with the payment
+method at the time of the transaction.")
   (calculated-statement-descriptor
    :type (or string null)
-   :documentation "The full statement descriptor that is passed to card networks,
-and that is displayed on your customers' credit card and bank statements. Allows
-you to see what the statement descriptor looks like after the static and dynamic
-portions are combined. This value only exists for card payments.")
+   :documentation "The full statement descriptor that is passed to card
+networks, and that is displayed on your customers' credit card and bank
+statements. Allows you to see what the statement descriptor looks like
+after the static and dynamic portions are combined. This value only
+exists for card payments.")
   (captured
    :type boolean
-   :documentation "If the charge was created without capturing, this Boolean
-represents whether it is still uncaptured or has since been captured.")
+   :documentation "If the charge was created without capturing, this
+Boolean represents whether it is still uncaptured or has since been
+captured.")
   (created
    :type local-time:timestamp
-   :documentation "Time at which the object was created. Measured in seconds
-since the Unix epoch.")
+   :documentation "Time at which the object was created. Measured in
+seconds since the Unix epoch.")
   (currency
    :type string
    :documentation "Three-letter [ISO currency code]
-(https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must be a
-[supported currency](https://stripe.com/docs/currencies).")
+(https://www.iso.org/iso-4217-currency-codes.html), in lowercase. Must
+be a [supported currency](https://stripe.com/docs/currencies).")
   (customer
    :type (or string customer deleted-customer null)
    :documentation "ID of the customer this charge is for if one exists.")
   (description
    :type (or string null)
-   :documentation "An arbitrary string attached to the object. Often useful for
-displaying to users.")
+   :documentation "An arbitrary string attached to the object. Often
+useful for displaying to users.")
   (disputed
    :type boolean
    :documentation "Whether the charge has been disputed.")
   (failure-balance-transaction
    :type (or string balance-transaction null)
-   :documentation "ID of the balance transaction that describes the reversal of
-the balance on your account due to payment failure.")
+   :documentation "ID of the balance transaction that describes the
+reversal of the balance on your account due to payment failure.")
   (failure-code
    :type (or string null)
-   :documentation "Error code explaining reason for charge failure if available
-(see [the errors section](https://stripe.com/docs/error-codes) for a list of
-codes).")
+   :documentation "Error code explaining reason for charge failure if
+available (see [the errors section]
+(https://stripe.com/docs/error-codes) for a list of codes).")
   (failure-message
    :type (or string null)
-   :documentation "Message to user further explaining reason for charge failure
-if available.")
+   :documentation "Message to user further explaining reason for charge
+failure if available.")
   (fraud-details
    :type charge-fraud-details
    :documentation "Information on fraud assessments for the charge.")
@@ -97,30 +106,33 @@ if available.")
 false if the object exists in test mode.")
   (metadata
    :type (alist string string)
-   :documentation "Set of [key-value pairs](https://stripe.com/docs/api/metadata)
-that you can attach to an object. This can be useful for storing additional
-information about the object in a structured format.")
+   :documentation "Set of
+[key-value pairs](https://stripe.com/docs/api/metadata)
+that you can attach to an object. This can be useful for storing
+additional information about the object in a structured format.")
   (object
    :type string
-   :documentation "String representing the object's type. Objects of the same
-type share the same value.")
+   :documentation "String representing the object's type. Objects of
+the same type share the same value.")
   (on-behalf-of
    :type (or string account null)
-   :documentation "The account (if any) the charge was made on behalf of without
-triggering an automatic transfer. See the [Connect documentation]
+   :documentation "The account (if any) the charge was made on behalf
+of without triggering an automatic transfer. See the [Connect
+documentation]
 (https://stripe.com/docs/connect/separate-charges-and-transfers) for details.")
   (outcome
    :type charge-outcome
-   :documentation "Details about whether the payment was accepted, and why. See
-[understanding declines](https://stripe.com/docs/declines) for details.")
+   :documentation "Details about whether the payment was accepted, and
+why. See [understanding declines](https://stripe.com/docs/declines) for
+details.")
   (paid
    :type boolean
-   :documentation "True if the charge succeeded, or was successfully authorized
-for later capture.")
+   :documentation "True if the charge succeeded, or was successfully
+authorized for later capture.")
   (payment-intent
    :type (or string payment-intent null)
-   :documentation "ID of the PaymentIntent associated with this charge, if one
-exists.")
+   :documentation "ID of the PaymentIntent associated with this charge,
+if one exists.")
   (payment-method
    :type (or string null)
    :documentation "ID of the payment method used in this charge.")
@@ -133,27 +145,28 @@ transaction.")
    :documentation "Options to configure Radar. See [Radar Session]
 (https://stripe.com/docs/radar/radar-session) for more information.")
   (receipt-email
-  :type (or string null)
-   :documentation "This is the email address that the receipt for this charge
-was sent to.")
+   :type (or string null)
+   :documentation "This is the email address that the receipt for this
+charge was sent to.")
   (receipt-number
    :type (or string null)
-   :documentation "This is the transaction number that appears on email receipts
-sent for this charge. This attribute will be `null` until a receipt has been
-sent.")
+   :documentation "This is the transaction number that appears on email
+receipts sent for this charge. This attribute will be `null` until a
+receipt has been sent.")
   (receipt-url
    :type (or string null)
-   :documentation "This is the URL to view the receipt for this charge. The
-receipt is kept up-to-date to the latest state of the charge, including any
-refunds. If the charge is for an Invoice, the receipt will be stylized as an
-Invoice receipt.")
+   :documentation "This is the URL to view the receipt for this charge.
+The receipt is kept up-to-date to the latest state of the charge,
+including any refunds. If the charge is for an Invoice, the receipt
+will be stylized as an Invoice receipt.")
   (refunded
    :type boolean
    :documentation "Whether the charge has been fully refunded. If the charge is
 only partially refunded, this attribute will still be false.")
   (refunds
    :type (or list-refund-collection null)
-   :documentation "A list of refunds that have been applied to the charge.")
+   :documentation "A list of refunds that have been applied to the
+charge.")
   (review
    :type (or string review null)
    :documentation "ID of the review associated with this charge if one
@@ -163,38 +176,42 @@ exists.")
    :documentation "Shipping information for the charge.")
   (source-transfer
    :type (or string null)               ; TODO: expandable
-   :documentation "The transfer ID which created this charge. Only present if
-the charge came from another Stripe account. [See the Connect documentation]
+   :documentation "The transfer ID which created this charge. Only
+present if the charge came from another Stripe account. [See the
+Connect documentation]
 (https://docs.stripe.com/connect/destination-charges) for details.")
   (statement-descriptor
    :type (or string null)
-   :documentation "For a non-card charge, text that appears on the customer's
-statement as the statement descriptor. This value overrides the account's default
-statement descriptor. For information about requirements, including the
-22-character limit, see [the Statement Descriptor docs]
+   :documentation "For a non-card charge, text that appears on the
+customer's statement as the statement descriptor. This value overrides
+the account's default statement descriptor. For information about
+requirements, including the 22-character limit, see [the Statement
+Descriptor docs]
 (https://docs.stripe.com/get-started/account/statement-descriptors).")
   (statement-descriptor-suffix
    :type (or string null)
-   :documentation "For a card charge, this value is ignored unless you don't
-specify a `statement_descriptor_suffix`, in which case this value is used as
-the suffix.")
+   :documentation "For a card charge, this value is ignored unless you
+don't specify a `statement_descriptor_suffix`, in which case this value
+is used as the suffix.")
   (status
    :type string
-   :documentation "The status of the payment is either `succeeded`, `pending`, or
-`failed`.")
+   :documentation "The status of the payment is either `succeeded`,
+`pending`, or `failed`.")
   (transfer
    :type (or string null)               ; TODO: expandable
-   :documentation "ID of the transfer to the `destination` account (only
-applicable if the charge was created using the `destination` parameter).")
+   :documentation "ID of the transfer to the `destination` account
+(only applicable if the charge was created using the `destination`
+parameter).")
   (transfer-data
    :type (or string null)
-   :documentation "An optional dictionary including the account to automatically
-transfer to as part of a destination charge. [See the Connect documentation]
+   :documentation "An optional dictionary including the account to
+automatically transfer to as part of a destination charge. [See the
+Connect documentation]
 (https://stripe.com/docs/connect/destination-charges) for details.")
   (transfer-group
    :type (or string null)
-   :documentation "A string that identifies this transaction as part of a group.
-See the [Connect documentation]
+   :documentation "A string that identifies this transaction as part
+of a group. See the [Connect documentation]
 (https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options)
 for details."))
 
@@ -236,31 +253,34 @@ predictions on your payments."))
    :documentation "Account number to transfer funds to.")
   (bank-name
    :type (or string null)
-   :documentation "Name of the bank associated with the routing number.")
+   :documentation "Name of the bank associated with the routing
+number.")
   (routing-number
    :type (or string null)
-   :documentation "Routing transit number for the bank account to transfer funds
-to.")
+   :documentation "Routing transit number for the bank account to
+transfer funds to.")
   (swift-code
    :type (or string null)
-   :documentation "SWIFT code of the bank associated with the routing number."))
+   :documentation "SWIFT code of the bank associated with the routing
+number."))
 
 (define-object charge-ach-debit-details ()
   (account-holder-type
   :type (or string null)
-  :documentation "Type of entity that holds the account. This can be either
-`individual` or `company`.")
+  :documentation "Type of entity that holds the account. This can be
+either `individual` or `company`.")
   (bank-name
   :type (or string null)
   :documentation "Name of the bank associated with the bank account.")
   (country
   :type (or string null)
-  :documentation "Two-letter ISO code representing the country the bank account
-is located in.")
+  :documentation "Two-letter ISO code representing the country the bank
+account is located in.")
   (fingerprint
   :type (or string null)
-  :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+  :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (last4
   :type (or string null)
   :documentation "Last four digits of the bank account number.")
@@ -274,8 +294,9 @@ this attribute to check whether two bank accounts are the same.")
   :documentation "Name of the bank associated with the bank account.")
   (fingerprint
   :type (or string null)
-  :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+  :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (institution-number
   :type (or string null)
   :documentation "Institution number of the bank account.")
@@ -292,29 +313,34 @@ this attribute to check whether two bank accounts are the same.")
 (define-object charge-affirm-details ()
   (transaction-id
   :type (or string null)
-  :documentation "The Affirm transaction ID associated with this payment."))
+  :documentation "The Affirm transaction ID associated with this
+payment."))
 
 (define-object charge-afterpay-clearpay-details ()
   (order-id
   :type (or string null)
-  :documentation "The Afterpay order ID associated with this payment intent.")
+  :documentation "The Afterpay order ID associated with this payment
+intent.")
   (reference
   :type (or string null)
-  :documentation "Order identifier shown to the merchant in Afterpay's online
-portal."))
+  :documentation "Order identifier shown to the merchant in Afterpay's
+online portal."))
 
 (define-object charge-alipay-details ()
   (buyer-id
   :type (or string null)
-  :documentation "Uniquely identifies this particular Alipay account. You can
-use this attribute to check whether two Alipay accounts are the same.")
+  :documentation "Uniquely identifies this particular Alipay account.
+You can use this attribute to check whether two Alipay accounts are
+the same.")
   (fingerprint
   :type (or string null)
-  :documentation "Uniquely identifies this particular Alipay account. You can
-use this attribute to check whether two Alipay accounts are the same.")
+  :documentation "Uniquely identifies this particular Alipay account.
+You can use this attribute to check whether two Alipay accounts are
+the same.")
   (transaction-id
   :type (or string null)
-  :documentation "Transaction ID of this particular Alipay transaction."))
+  :documentation "Transaction ID of this particular Alipay
+transaction."))
 
 ;; NOTE: The Stripe API doesn't mention what the attributes of this object are.
 (define-object charge-amazon-pay-details ())
@@ -325,8 +351,9 @@ use this attribute to check whether two Alipay accounts are the same.")
   :documentation "Bank-State-Branch number of the bank account.")
   (fingerprint
   :type (or string null)
-  :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+  :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (last4
   :type (or string null)
   :documentation "Last four digits of the bank account number.")
@@ -337,8 +364,9 @@ this attribute to check whether two bank accounts are the same.")
 (define-object charge-bacs-debit-details ()
   (fingerprint
   :type (or string null)
-  :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+  :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (last4
   :type (or string null)
   :documentation "Last four digits of the bank account number.")
@@ -358,42 +386,42 @@ this attribute to check whether two bank accounts are the same.")
    :documentation "Name of the bank associated with the bank account.")
   (bic
    :type (or string null)
-   :documentation "Bank Identifier Code of the bank associated with the bank
-account.")
+   :documentation "Bank Identifier Code of the bank associated with the
+bank account.")
   (generated-sepa-debit
    :type (or string null)                ; TODO: expandable
-   :documentation "The ID of the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The ID of the SEPA Direct Debit PaymentMethod which
+was generated by this Charge.")
   (generated-sepa-debit-mandate
    :type (or string null)                ; TODO: expandable
-   :documentation "The mandate for the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The mandate for the SEPA Direct Debit PaymentMethod
+which was generated by this Charge.")
   (iban-last4
    :type (or string null)
    :documentation "Last four characters of the IBAN.")
   (preferred-language
    :type (or string null)
-   :documentation "Preferred language of the Bancontact authorization page that
-the customer is redirected to.
+   :documentation "Preferred language of the Bancontact authorization
+page that the customer is redirected to.
 
 Can be one of `en`, `de`, `fr`, or `nl`.")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided by
-Bancontact directly (if supported) at the time of authorization or settlement.
-They cannot be set or mutated."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by Bancontact directly (if supported) at the time of
+authorization or settlement. They cannot be set or mutated."))
 
 (define-object charge-blik-details ()
   (buyer-id
   :type (or string null)
-  :documentation "A unique and immutable identifier assigned by BLIK to every
-buyer."))
+  :documentation "A unique and immutable identifier assigned by BLIK to
+every buyer."))
 
 (define-object charge-boleto-details ()
   (tax-id
   :type (or string null)
-  :documentation "The tax ID of the customer (CPF for individuals consumers or
-CNPJ for businesses consumers)."))
+  :documentation "The tax ID of the customer (CPF for individuals
+consumers or CNPJ for businesses consumers)."))
 
 (define-object charge-card-details ()
   (amount-authorized
@@ -404,82 +432,91 @@ CNPJ for businesses consumers)."))
   :documentation "Authorization code on the charge.")
   (brand
   :type (or string null)
-  :documentation "Card brand. Can be `amex`, `diners`, `discover`, `eftpos_au`,
-`jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.")
+  :documentation "Card brand. Can be `amex`, `diners`, `discover`,
+`eftpos_au`,`jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.")
   (capture-before
   :type (or local-time:timestamp null)
-  :documentation "When using manual capture, a future timestamp at which the
-charge will be automatically refunded if uncaptured.")
+  :documentation "When using manual capture, a future timestamp at
+which the charge will be automatically refunded if uncaptured.")
   (checks
    :type t                              ; TODO:
-   :documentation "Check results by Card networks on Card address and CVC at
-time of payment.")
+   :documentation "Check results by Card networks on Card address and
+CVC at time of payment.")
   (country
   :type (or string null)
-  :documentation "Two-letter ISO code representing the country of the card. You
-could use this attribute to get a sense of the international breakdown of cards
-you've collected.")
+  :documentation "Two-letter ISO code representing the country of the
+card. You could use this attribute to get a sense of the international
+breakdown of cards you've collected.")
   (exp-month
    :type integer
-   :documentation "Two-digit number representing the card's expiration month.")
+   :documentation "Two-digit number representing the card's expiration
+month.")
   (exp-year
    :type integer
-   :documentation "Four-digit number representing the card's expiration year.")
+   :documentation "Four-digit number representing the card's expiration
+year.")
   (extended-authorization
    :type t                              ; TODO:
-   :documentation "Whether the capture window of this charge is extended.")
+   :documentation "Whether the capture window of this charge is
+extended.")
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular card number. You can use
-this attribute to check whether two customers who've signed up with you are using
-the same card number, for example. For payment methods that tokenize card
-information (Apple Pay, Google Pay), the tokenized number might be provided
-instead of the underlying card number.
+   :documentation "Uniquely identifies this particular card number. You
+can use this attribute to check whether two customers who've signed up
+with you are using the same card number, for example. For payment
+methods that tokenize card information (Apple Pay, Google Pay), the
+tokenized number might be provided instead of the underlying card
+number.
 
-As of May 1, 2021, card fingerprint in India for Connect changed to allow two
-fingerprints for the same card---one for India and one for the rest of the
-world.")
+As of May 1, 2021, card fingerprint in India for Connect changed to
+allow two fingerprints for the same card---one for India and one for
+the rest of the world.")
   (funding
    :type (or string null)
-   :documentation "Card funding type. Can be `credit`, `debit`, `prepaid`, or
-`unknown`.")
+   :documentation "Card funding type. Can be `credit`, `debit`,
+`prepaid`, or `unknown`.")
   (incremental-authorization
    :type t                              ; TODO
-   :documentation "Whether the authorized amount can be incremented or not.")
+   :documentation "Whether the authorized amount can be incremented or
+not.")
   (installments
    :type t                              ; TODO:
-   :documentation "Installment details for this payment (Mexico only). For more
-information, see the [installments integration guide]
+   :documentation "Installment details for this payment (Mexico only).
+For more information, see the [installments integration guide]
 (https://stripe.com/docs/payments/installments).")
   (last4
    :type (or string null)
    :documentation "The last four digits of the card.")
   (mandate
    :type (or string null)
-   :documentation "ID of the mandate used to make this payment or created by it.")
+   :documentation "ID of the mandate used to make this payment or
+created by it.")
   (multicapture
    :type t                              ; TOOD:
-   :documentation "Information about the multicapture capability of the payment
-method.")
+   :documentation "Information about the multicapture capability of the
+payment method.")
   (network
    :type (or string null)
-   :documentation "Identifies which network this charge was processed on. Can be
-`amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`,
-`mastercard`, `unionpay`, `visa`, or `unknown`.")
+   :documentation "Identifies which network this charge was processed
+on. Can be `amex`, `cartes_bancaires`, `diners`, `discover`,
+`eftpos_au`, `interac`, `jcb`,`mastercard`, `unionpay`, `visa`, or
+`unknown`.")
   (network-token
    :type t                              ; TODO:
-   :documentation "If this card has network token credentials, this contains the
-details of the network token credentials.")
+   :documentation "If this card has network token credentials, this
+contains the details of the network token credentials.")
   (overcapture
    :type t                              ; TODO:
-   :documentation "Whether the authorized amount can be over-captured or not.")
+   :documentation "Whether the authorized amount can be over-captured
+or not.")
   (three-d-secure
    :type t                              ; TODO:
-   :documentation "Populated if this transaction used 3D Secure authentication.")
+   :documentation "Populated if this transaction used 3D Secure
+authentication.")
   (wallet
    :type t                              ; TODO:
-   :documentation "If this Card is part of a card wallet, this contains the
-details of the card wallet."))
+   :documentation "If this Card is part of a card wallet, this contains
+the details of the card wallet."))
 
 (define-object charge-card-present-details ()
   (amount-authorized
@@ -487,63 +524,69 @@ details of the card wallet."))
    :documentation "The authorized amount.")
   (brand
    :type (or string null)
-   :documentation "Card brand. Can be `amex`, `diners`, `discover`, `eftpos_au`,
-`jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.")
+   :documentation "Card brand. Can be `amex`, `diners`, `discover`,
+`eftpos_au`,`jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.")
   (brand-product
    :type (or string null)
-   :documentation "The [product code](https://stripe.com/docs/card-product-codes)
-that identifies the specific program or product associated with a card.")
+   :documentation "The [product code]
+(https://stripe.com/docs/card-product-codes) that identifies the
+specific program or product associated with a card.")
   (capture-before
    :type (or local-time:timestamp null)
-   :documentation "When using manual capture, a future timestamp after which the
-charge will be automatically refunded if uncaptured.")
+   :documentation "When using manual capture, a future timestamp after
+which the charge will be automatically refunded if uncaptured.")
   (cardholder-name
    :type (or string null)
-   :documentation "The cardholder name as read from the card, in [ISO 7813]
-(https://en.wikipedia.org/wiki/ISO/IEC_7813) format. May include alphanumeric
-characters, special characters and first/last name separator (`/`). In some
-cases, the cardholder name may not be available depending on how the issuer has
-configured the card. Cardholder name is typically not available on swipe or
-contactless payments, such as those made with Apple Pay and Google Pay.")
+   :documentation "The cardholder name as read from the card, in
+[ISO 7813] (https://en.wikipedia.org/wiki/ISO/IEC_7813) format. May
+include alphanumeric characters, special characters and first/last
+name separator (`/`). In some cases, the cardholder name may not be
+available depending on how the issuer has configured the card.
+Cardholder name is typically not available on swipe or contactless
+payments, such as those made with Apple Pay and Google Pay.")
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the country of the card. You
-could use this attribute to get a sense of the international breakdown of cards
-you've collected.")
+   :documentation "Two-letter ISO code representing the country of the
+card. You could use this attribute to get a sense of the international
+breakdown of cards you've collected.")
   (description
    :type (or string null)
-   :documentation "A high-level description of the type of cards issued in this
-range. (For internal use only and not typically available in standard API
-requests.)")
+   :documentation "A high-level description of the type of cards issued
+in this range. (For internal use only and not typically available in
+standard API requests.)")
   (emv-auth-data
    :type (or string null)
    :documentation "Authorization response cryptogram.")
   (exp-month
    :type integer
-   :documentation "Two-digit number representing the card's expiration month.")
+   :documentation "Two-digit number representing the card's expiration
+month.")
   (exp-year
    :type integer
-   :documentation "Four-digit number representing the card's expiration year.")
+   :documentation "Four-digit number representing the card's
+expiration year.")
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular card number. You can use
-this attribute to check whether two customers who've signed up with you are using
-the same card number, for example. For payment methods that tokenize card
-information (Apple Pay, Google Pay), the tokenized number might be provided
-instead of the underlying card number.
+   :documentation "Uniquely identifies this particular card number.
+You can use this attribute to check whether two customers who've
+signed up with you are using the same card number, for example. For
+payment methods that tokenize card information (Apple Pay,
+Google Pay), the tokenized number might be provided instead of the
+underlying card number.
 
-As of May 1, 2021, card fingerprint in India for Connect changed to allow two
-fingerprints for the same card---one for India and one for the rest of the
-world.")
+As of May 1, 2021, card fingerprint in India for Connect changed to
+allow two fingerprints for the same card---one for India and one for
+the rest of the world.")
   (funding
    :type (or string null)
-   :documentation "Card funding type. Can be `credit`, `debit`, `prepaid`, or
-`unknown`.")
+   :documentation "Card funding type. Can be `credit`, `debit`,
+`prepaid`, or `unknown`.")
   (generated-card
    :type (or string null)
-   :documentation "ID of a card PaymentMethod generated from the card_present
-PaymentMethod that may be attached to a Customer for future transactions. Only
-present if it was possible to generate a card PaymentMethod.")
+   :documentation "ID of a card PaymentMethod generated from the
+card_present PaymentMethod that may be attached to a Customer for
+future transactions. Only present if it was possible to generate a
+card PaymentMethod.")
   (incremental-authorization
    :type boolean
    :documentation "Whether this [PaymentIntent]
@@ -552,53 +595,55 @@ authorizations. Request support using [request_incremental_authorization_support
 (https://stripe.com/docs/api/payment_intents/create#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support).")
   (issuer
    :type (or string null)
-   :documentation "The name of the card's issuing bank. (For internal use only
-and not typically available in standard API requests.)")
+   :documentation "The name of the card's issuing bank. (For internal
+use only and not typically available in standard API requests.)")
   (last4
    :type (or string null)
    :documentation "The last four digits of the card.")
   (network
    :type (or string null)
-   :documentation "Identifies which network this charge was processed on. Can be
-`amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`,
-`mastercard`, `unionpay`, `visa`, or `unknown`.")
+   :documentation "Identifies which network this charge was processed
+on. Can be `amex`, `cartes_bancaires`, `diners`, `discover`,
+`eftpos_au`, `interac`, `jcb`,`mastercard`, `unionpay`, `visa`, or
+`unknown`.")
   (network-transaction-id
    :type (or string null)
    :documentation "This is used by the financial networks to identify a
-transaction. Visa calls this the Transaction ID, Mastercard calls this the Trace
-ID, and American Express calls this the Acquirer Reference Data. The first three
-digits of the Trace ID is the Financial Network Code, the next 6 digits is the
-Banknet Reference Number, and the last 4 digits represent the date (MM/DD). This
-field will be available for successful Visa, Mastercard, or American Express
-transactions and always null for other card brands.")
+transaction. Visa calls this the Transaction ID, Mastercard calls this
+the Trace ID, and American Express calls this the Acquirer Reference
+Data. The first three digits of the Trace ID is the Financial Network
+Code, the next 6 digits is the Banknet Reference Number, and the last
+4 digits represent the date (MM/DD). This field will be available for
+successful Visa, Mastercard, or American Express transactions and
+always null for other card brands.")
   (offline
    :type t                              ; TODO:
    :documentation "Details about payments collected offline.")
   (overcapture-supported
    :type boolean
-   :documentation "Defines whether the authorized amount can be over-captured or
-not.")
+   :documentation "Defines whether the authorized amount can be
+over-captured or not.")
   (preferred-locales
    :type t                              ; TODO:
-   :documentation "EMV tag 5F2D. Preferred languages specified by the integrated
-circuit chip.")
+   :documentation "EMV tag 5F2D. Preferred languages specified by the
+integrated circuit chip.")
   (read-method
    :type (or string null)
    :documentation "How card details were read in this transaction.")
   (receipt
    :type t                              ; TODO:
-   :documentation "A collection of fields required to be displayed on receipts.
-Only required for EMV transactions.")
+   :documentation "A collection of fields required to be displayed on
+receipts. Only required for EMV transactions.")
   (wallet
    :type t                              ; TODO:
-   :documentation "If a mobile wallet was presented in the transaction, this
-contains the details of the mobile wallet."))
+   :documentation "If a mobile wallet was presented in the transaction,
+this contains the details of the mobile wallet."))
 
 (define-object charge-cashapp-details ()
   (buyer-id
    :type (or string null)
-   :documentation "A unique and immutable identifier assigned by Cash App to
-every buyer.")
+   :documentation "A unique and immutable identifier assigned by Cash
+App to every buyer.")
   (cashtag
    :type (or string null)
    :documentation "A public identifier for buyers using Cash App."))
@@ -611,35 +656,38 @@ every buyer.")
    :documentation "The customer's bank. Should be one of
 `arzte_und_apotheker_bank`, `austrian_anadi_bank_ag`, `bank_austria`,
 `bankhaus_carl_spangler`, `bankhaus_schelhammer_und_schattera_ag`,
-`bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`, `btv_vier_lander_bank`,
-`capital_bank_grawe_gruppe_ag`, `deutsche_bank_ag`, `dolomitenbank`,
-`easybank_ag`, `erste_bank_und_sparkassen`,
-`hypo_alpeadriabank_international_ag`, `hypo_noe_lb_fur_niederosterreich_u_wien`,
+`bawag_psk_ag`, `bks_bank_ag`, `brull_kallmus_bank_ag`,
+`btv_vier_lander_bank`,`capital_bank_grawe_gruppe_ag`,
+`deutsche_bank_ag`, `dolomitenbank`,`easybank_ag`,
+`erste_bank_und_sparkassen`,`hypo_alpeadriabank_international_ag`,
+`hypo_noe_lb_fur_niederosterreich_u_wien`,
 `hypo_oberosterreich_salzburg_steiermark`, `hypo_tirol_bank_ag`,
 `hypo_vorarlberg_bank_ag`, `hypo_bank_burgenland_aktiengesellschaft`,
-`marchfelder_bank`, `oberbank_ag`, `raiffeisen_bankengruppe_osterreich`,
-`schoellerbank_ag`, `sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`,
-or `vr_bank_braunau`.")
+`marchfelder_bank`, `oberbank_ag`,
+`raiffeisen_bankengruppe_osterreich`,`schoellerbank_ag`,
+`sparda_bank_wien`, `volksbank_gruppe`, `volkskreditbank_ag`, or
+`vr_bank_braunau`.")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided by
-EPS directly (if supported) at the time of authorization or settlement. They
-cannot be set or mutated. EPS rarely provides this information so the attribute
-is usually empty."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by EPS directly (if supported) at the time of authorization
+or settlement. They cannot be set or mutated. EPS rarely provides this
+information so the attribute is usually empty."))
 
 (define-object charge-fpx-details ()
   (bank
    :type (or string null)
    :documentation "The customer's bank.
 
-Can be one of `affin_bank`, `agrobank`,`alliance_bank`, `ambank`, `bank_islam`,
-`bank_muamalat`, `bank_rakyat`, `bsn`,`cimb`, `hong_leong_bank`, `hsbc`, `kfh`,
-`maybank2u`, `ocbc`, `public_bank`,`rhb`, `standard_chartered`, `uob`,
-`deutsche_bank`, `maybank2e`,`pb_enterprise`, or `bank_of_china`.")
+Can be one of `affin_bank`, `agrobank`,`alliance_bank`, `ambank`,
+`bank_islam`,`bank_muamalat`, `bank_rakyat`, `bsn`,`cimb`,
+`hong_leong_bank`, `hsbc`, `kfh`,`maybank2u`, `ocbc`,
+`public_bank`,`rhb`, `standard_chartered`, `uob`,`deutsche_bank`,
+`maybank2e`,`pb_enterprise`, or `bank_of_china`.")
   (transaction-id
    :type (or string null)
-   :documentation "Unique transaction id generated by FPX for every request from
-the merchant."))
+   :documentation "Unique transaction id generated by FPX for every
+request from the merchant."))
 
 (define-object charge-giropay-details ()
   (bank-code
@@ -650,14 +698,14 @@ the merchant."))
    :documentation "Name of the bank associated with the bank account.")
   (bic
    :type (or string null)
-   :documentation "Bank Identifier Code of the bank associated with the bank
-account.")
+   :documentation "Bank Identifier Code of the bank associated with
+the bank account.")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided by
-Giropay directly (if supported) at the time of authorization or settlement. They
-cannot be set or mutated. Giropay rarely provides this information so the
-attribute is usually empty."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by Giropay directly (if supported) at the time of
+authorization or settlement. They cannot be set or mutated. Giropay
+rarely provides this information so the attribute is usually empty."))
 
 (define-object charge-grabpay-details ()
   (transaction-id
@@ -669,118 +717,126 @@ attribute is usually empty."))
    :type (or string null)
    :documentation "The customer's bank.
 
-Can be one of `abn_amro`, `asn_bank`,`bunq`, `handelsbanken`, `ing`, `knab`,
-`moneyou`, `n26`, `nn`, `rabobank`,`regiobank`, `revolut`, `sns_bank`,
-`triodos_bank`, `van_lanschot`, or `yoursafe`.")
+Can be one of `abn_amro`, `asn_bank`,`bunq`, `handelsbanken`, `ing`,
+`knab`,`moneyou`, `n26`, `nn`, `rabobank`,`regiobank`, `revolut`,
+`sns_bank`,`triodos_bank`, `van_lanschot`, or `yoursafe`.")
   (bic
    :type (or string null)
    :documentation "The Bank Identifier Code of the customer's bank.")
   (generated-sepa-debit
    :type (or string null)               ; TODO:
-   :documentation "The ID of the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The ID of the SEPA Direct Debit PaymentMethod which
+was generated by this Charge.")
   (generated-sepa-debit-mandate
    :type (or string null)               ; TODO:
-   :documentation "The mandate for the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The mandate for the SEPA Direct Debit PaymentMethod
+which was generated by this Charge.")
   (iban-last4
    :type (or string null)
    :documentation "Last four characters of the IBAN.")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided by
-IDEAL directly (if supported) at the time of authorization or settlement. They
-cannot be set or mutated."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by IDEAL directly (if supported) at the time of authorization
+or settlement. They cannot be set or mutated."))
 
 (define-object charge-interac-present-details ()
   (brand
    :type (or string null)
-   :documentation "Card brand. Can be `interac`, `mastercard` or `visa`.")
+   :documentation "Card brand. Can be `interac`, `mastercard` or
+`visa`.")
   (cardholder-name
    :type (or string null)
-   :documentation "The cardholder name as read from the card, in [ISO 7813]
-(https://en.wikipedia.org/wiki/ISO/IEC_7813) format. May include alphanumeric
-characters, special characters and first/last name separator (`/`). In some
-cases, the cardholder name may not be available depending on how the issuer has
-configured the card. Cardholder name is typically not available on swipe or
-contactless payments, such as those made with Apple Pay and Google Pay.")
+   :documentation "The cardholder name as read from the card, in
+[ISO 7813] (https://en.wikipedia.org/wiki/ISO/IEC_7813) format. May
+include alphanumeric characters, special characters and first/last
+name separator (`/`). In some cases, the cardholder name may not be
+available depending on how the issuer has configured the card.
+Cardholder name is typically not available on swipe or contactless
+payments, such as those made with Apple Pay and Google Pay.")
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the country of the card.
-You could use this attribute to get a sense of the international breakdown of
-cards you've collected.")
+   :documentation "Two-letter ISO code representing the country of the
+card. You could use this attribute to get a sense of the international
+breakdown of cards you've collected.")
   (description
    :type (or string null)
-   :documentation "A high-level description of the type of cards issued in this
-range. (For internal use only and not typically available in standard API
-requests.)")
+   :documentation "A high-level description of the type of cards
+issued in this range. (For internal use only and not typically
+available in standard API requests.)")
   (emv-auth-data
    :type (or string null)
    :documentation "Authorization response cryptogram.")
   (exp-month
    :type integer
-   :documentation "Two-digit number representing the card's expiration month.")
+   :documentation "Two-digit number representing the card's expiration
+month.")
   (exp-year
    :type integer
-   :documentation "Four-digit number representing the card's expiration year.")
+   :documentation "Four-digit number representing the card's
+expiration year.")
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular card number. You can use
-this attribute to check whether two customers who've signed up with you are using
-the same card number, for example. For payment methods that tokenize card
-information (Apple Pay, Google Pay), the tokenized number might be provided
-instead of the underlying card number.
+   :documentation "Uniquely identifies this particular card number.
+You can use this attribute to check whether two customers who've
+signed up with you are using the same card number, for example. For
+payment methods that tokenize card information (Apple Pay, Google
+Pay), the tokenized number might be provided instead of the
+underlying card number.
 
-As of May 1, 2021, card fingerprint in India for Connect changed to allow two
-fingerprints for the same card---one for India and one for the rest of the
-world.")
+As of May 1, 2021, card fingerprint in India for Connect changed to
+allow two fingerprints for the same card---one for India and one for
+the rest of the world.")
   (funding
    :type (or string null)
-   :documentation "Card funding type. Can be `credit`, `debit`, `prepaid`, or
-`unknown`.")
+   :documentation "Card funding type. Can be `credit`, `debit`,
+`prepaid`, or `unknown`.")
   (generated-card
    :type (or string null)
-   :documentation "ID of a card PaymentMethod generated from the card_present
-PaymentMethod that may be attached to a Customer for future transactions. Only
-present if it was possible to generate a card PaymentMethod.")
+   :documentation "ID of a card PaymentMethod generated from the
+card_present PaymentMethod that may be attached to a Customer for
+future transactions. Only present if it was possible to generate a
+card PaymentMethod.")
   (issuer
    :type (or string null)
-   :documentation "The name of the card's issuing bank. (For internal use only
-and not typically available in standard API requests.)")
+   :documentation "The name of the card's issuing bank. (For internal
+use only and not typically available in standard API requests.)")
   (last4
    :type (or string null)
    :documentation "The last four digits of the card.")
   (network
    :type (or string null)
-   :documentation "Identifies which network this charge was processed on. Can be
-`amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`,
-`mastercard`, `unionpay`, `visa`, or `unknown`.")
+   :documentation "Identifies which network this charge was processed
+on. Can be `amex`, `cartes_bancaires`, `diners`, `discover`,
+`eftpos_au`, `interac`, `jcb`,`mastercard`, `unionpay`, `visa`, or
+`unknown`.")
   (network-transaction-id
    :type (or string null)
    :documentation "This is used by the financial networks to identify a
-transaction. Visa calls this the Transaction ID, Mastercard calls this the Trace
-ID, and American Express calls this the Acquirer Reference Data. The first three
-digits of the Trace ID is the Financial Network Code, the next 6 digits is the
-Banknet Reference Number, and the last 4 digits represent the date (MM/DD). This
-field will be available for successful Visa, Mastercard, or American Express
-transactions and always null for other card brands.")
+transaction. Visa calls this the Transaction ID, Mastercard calls this
+the Trace ID, and American Express calls this the Acquirer Reference
+Data. The first three digits of the Trace ID is the Financial Network
+Code, the next 6 digits is the Banknet Reference Number, and the last
+4 digits represent the date (MM/DD). This field will be available for
+successful Visa, Mastercard, or American Express transactions and
+always null for other card brands.")
   (preferred-locales
    :type t                              ; TODO:
-   :documentation "EMV tag 5F2D. Preferred languages specified by the integrated
-circuit chip.")
+   :documentation "EMV tag 5F2D. Preferred languages specified by the
+integrated circuit chip.")
   (read-method
    :type (or string null)
    :documentation "How card details were read in this transaction.")
   (receipt
    :type t                              ; TODO:
-   :documentation "A collection of fields required to be displayed on receipts.
-Only required for EMV transactions."))
+   :documentation "A collection of fields required to be displayed on
+receipts. Only required for EMV transactions."))
 
 (define-object charge-kakao-pay-details ()
   (buyer-id
    :type (or string null)
-   :documentation "A unique identifier for the buyer as determined by the local
-payment processor."))
+   :documentation "A unique identifier for the buyer as determined by
+the local payment processor."))
 
 (define-object charge-klarna-details ()
   (payer-details
@@ -788,19 +844,21 @@ payment processor."))
    :documentation "The payer details for this transaction.")
   (payment-method-category
    :type (or string null)
-   :documentation "The Klarna payment method used for this transaction. Can be
-one of `pay_later`, `pay_now`, `pay_with_financing`, or `pay_in_installments`")
+   :documentation "The Klarna payment method used for this transaction.
+Can be one of `pay_later`, `pay_now`, `pay_with_financing`, or
+`pay_in_installments`")
   (preferred-locale
    :type (or string null)
-   :documentation "Preferred language of the Klarna authorization page that the
-customer is redirected to.
+   :documentation "Preferred language of the Klarna authorization page
+that the customer is redirected to.
 
-Can be one of `de-AT`, `en-AT`, `nl-BE`, `fr-BE`, `en-BE`, `de-DE`, `en-DE`,
-`da-DK`, `en-DK`, `es-ES`, `en-ES`, `fi-FI`, `sv-FI`, `en-FI`, `en-GB`, `en-IE`,
-`it-IT`, `en-IT`, `nl-NL`, `en-NL`, `nb-NO`, `en-NO`, `sv-SE`, `en-SE`, `en-US`,
-`es-US`, `fr-FR`, `en-FR`, `cs-CZ`, `en-CZ`, `ro-RO`, `en-RO`, `el-GR`, `en-GR`,
-`en-AU`, `en-NZ`, `en-CA`, `fr-CA`, `pl-PL`, `en-PL`, `pt-PT`, `en-PT`, `de-CH`,
-`fr-CH`, `it-CH`, or `en-CH`"))
+Can be one of `de-AT`, `en-AT`, `nl-BE`, `fr-BE`, `en-BE`, `de-DE`,
+`en-DE`,`da-DK`, `en-DK`, `es-ES`, `en-ES`, `fi-FI`, `sv-FI`, `en-FI`,
+`en-GB`, `en-IE`,`it-IT`, `en-IT`, `nl-NL`, `en-NL`, `nb-NO`, `en-NO`,
+`sv-SE`, `en-SE`, `en-US`,`es-US`, `fr-FR`, `en-FR`, `cs-CZ`, `en-CZ`,
+`ro-RO`, `en-RO`, `el-GR`, `en-GR`,`en-AU`, `en-NZ`, `en-CA`, `fr-CA`,
+`pl-PL`, `en-PL`, `pt-PT`, `en-PT`, `de-CH`,`fr-CH`, `it-CH`, or
+`en-CH`"))
 
 (define-object charge-konbini-details ()
   (store
@@ -814,18 +872,18 @@ convenience store where the payment was completed."))
    :documentation "The local credit or debit card brand.")
   (buyer-id
    :type (or string null)
-   :documentation "A unique identifier for the buyer as determined by the local
-payment processor.")
+   :documentation "A unique identifier for the buyer as determined by
+the local payment processor.")
   (last4
    :type (or string null)
-   :documentation "The last four digits of the card. This may not be present for
-American Express cards."))
+   :documentation "The last four digits of the card. This may not be
+present for American Express cards."))
 
 (define-object charge-link-details ()
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the funding source country
-beneath the Link payment.
+   :documentation "Two-letter ISO code representing the funding source
+country beneath the Link payment.
 
 You could use this attribute to get a sense of international fees."))
 
@@ -837,16 +895,18 @@ You could use this attribute to get a sense of international fees."))
 (define-object charge-multibanco-details ()
   (entity
    :type (or string null)
-   :documentation "Entity number associated with this Multibanco payment.")
+   :documentation "Entity number associated with this Multibanco
+payment.")
   (reference
    :type (or string null)
-   :documentation "Reference number associated with this Multibanco payment."))
+   :documentation "Reference number associated with this Multibanco
+payment."))
 
 (define-object charge-naver-pay-details ()
   (buyer-id
    :type (or string null)
-   :documentation "A unique identifier for the buyer as determined by the local
-payment processor."))
+   :documentation "A unique identifier for the buyer as determined by
+the local payment processor."))
 
 (define-object charge-oxxo-details ()
   (number
@@ -859,10 +919,11 @@ payment processor."))
    :type (or string null)
    :documentation "The customer's bank.
 
-Can be one of `ing`, `citi_handlowy`,`tmobile_usbugi_bankowe`, `plus_bank`,
-`etransfer_pocztowy24`,`banki_spbdzielcze`, `bank_nowy_bfg_sa`, `getin_bank`,
-`velobank`, `blik`,`noble_pay`, `ideabank`, `envelobank`, `santander_przelew24`,
-`nest_przelew`,`mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`,
+Can be one of `ing`, `citi_handlowy`,`tmobile_usbugi_bankowe`,
+`plus_bank`,`etransfer_pocztowy24`,`banki_spbdzielcze`,
+`bank_nowy_bfg_sa`, `getin_bank`,`velobank`, `blik`,`noble_pay`,
+`ideabank`, `envelobank`, `santander_przelew24`,`nest_przelew`,
+`mbank_mtransfer`, `inteligo`, `pbac_z_ipko`, `bnp_paribas`,
 `credit_agricole`,`toyota_bank`, `bank_pekao_sa`, `volkswagen_bank`,
 `bank_millennium`,`alior_bank`, or `boz`.")
   (reference
@@ -870,46 +931,47 @@ Can be one of `ing`, `citi_handlowy`,`tmobile_usbugi_bankowe`, `plus_bank`,
    :documentation "Unique reference for this Przelewy24 payment.")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided
-by Przelewy24 directly (if supported) at the time of authorization or settlement.
-They cannot be set or mutated. Przelewy24 rarely provides this information so the
-attribute is usually empty."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by Przelewy24 directly (if supported) at the time of
+authorization or settlement. They cannot be set or mutated. Przelewy24
+rarely provides this information so the attribute is usually empty."))
 
 (define-object charge-payco-details ()
   (buyer-id
    :type (or string null)
-   :documentation "A unique identifier for the buyer as determined by the local
-payment processor."))
+   :documentation "A unique identifier for the buyer as determined by
+the local payment processor."))
 
 (define-object charge-paynow-details ()
   (reference
    :type (or string null)
-   :documentation "Reference number associated with this PayNow payment."))
+   :documentation "Reference number associated with this PayNow
+payment."))
 
 (define-object charge-paypal-details ()
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the buyer’s country. Values
-are provided by PayPal directly (if supported) at the time of authorization or
-settlement. They cannot be set or mutated.")
+   :documentation "Two-letter ISO code representing the buyer’s
+country. Values are provided by PayPal directly (if supported) at the
+time of authorization or settlement. They cannot be set or mutated.")
   (payer-email
    :type (or string null)
-   :documentation "Owner's email. Values are provided by PayPal directly
-(if supported) at the time of authorization or settlement. They cannot be set or
-mutated.")
+   :documentation "Owner's email. Values are provided by PayPal
+directly (if supported) at the time of authorization or settlement.
+They cannot be set or mutated.")
   (payer-id
    :type (or string null)
-   :documentation "PayPal account PayerID. This identifier uniquely identifies
-the PayPal customer.")
+   :documentation "PayPal account PayerID. This identifier uniquely
+identifies the PayPal customer.")
   (payer-name
    :type (or string null)
    :documentation "Owner's full name. Values provided by PayPal directly
-(if supported) at the time of authorization or settlement. They cannot be set or
-mutated.")
+(if supported) at the time of authorization or settlement. They cannot
+be set or mutated.")
   (seller-protection
    :type t                              ; TODO:
-   :documentation "The level of protection offered as defined by PayPal Seller
-Protection for Merchants, for this transaction.")
+   :documentation "The level of protection offered as defined by PayPal
+Seller Protection for Merchants, for this transaction.")
   (transaction-id
    :type (or string null)
    :documentation "A unique ID generated by PayPal for this transaction."))
@@ -929,24 +991,27 @@ Protection for Merchants, for this transaction.")
 (define-object charge-samsung-pay-details ()
   (buyer-id
    :type (or string null)
-   :documentation "A unique identifier for the buyer as determined by the local
-payment processor."))
+   :documentation "A unique identifier for the buyer as determined by
+the local payment processor."))
 
 (define-object charge-sepa-debit-details ()
   (bank-code
    :type (or string null)
-   :documentation "Bank code of bank associated with the bank account.")
+   :documentation "Bank code of bank associated with the bank
+account.")
   (branch-code
    :type (or string null)
-   :documentation "Branch code of bank associated with the bank account.")
+   :documentation "Branch code of bank associated with the bank
+account.")
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the country the bank account
-is located in.")
+   :documentation "Two-letter ISO code representing the country the
+bank account is located in.")
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+   :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (last4
    :type (or string null)
    :documentation "Last four characters of the IBAN.")
@@ -967,49 +1032,50 @@ property on the Charge. Use this mandate ID to [retrieve the Mandate]
    :documentation "Name of the bank associated with the bank account.")
   (bic
    :type (or string null)
-   :documentation "Bank Identifier Code of the bank associated with the bank
-account.")
+   :documentation "Bank Identifier Code of the bank associated with the
+bank account.")
   (country
    :type (or string null)
-   :documentation "Two-letter ISO code representing the country the bank account
-is located in.")
+   :documentation "Two-letter ISO code representing the country the
+bank account is located in.")
   (generated-sepa-debit
    :type (or string null)               ; TODO:
-   :documentation "The ID of the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The ID of the SEPA Direct Debit PaymentMethod which
+was generated by this Charge.")
   (generated-sepa-debit-mandate
    :type (or string null)               ; TODO:
-   :documentation "The mandate for the SEPA Direct Debit PaymentMethod which was
-generated by this Charge.")
+   :documentation "The mandate for the SEPA Direct Debit PaymentMethod
+which was generated by this Charge.")
   (iban-last4
    :type (or string null)
    :documentation "Last four characters of the IBAN.")
   (preferred-language
    :type (or string null)
-   :documentation "Preferred language of the SOFORT authorization page that the
-customer is redirected to.
+   :documentation "Preferred language of the SOFORT authorization page
+that the customer is redirected to.
 
 Can be one of `de`, `en`, `es`, `fr`, `it`, `nl`, or `pl`")
   (verified-name
    :type (or string null)
-   :documentation "Owner's verified full name. Values are verified or provided by
-SOFORT directly (if supported) at the time of authorization or settlement. They
-cannot be set or mutated."))
+   :documentation "Owner's verified full name. Values are verified or
+provided by SOFORT directly (if supported) at the time of authorization
+or settlement. They cannot be set or mutated."))
 
 (define-object charge-stripe-account-details ())
 
 (define-object charge-swish-details ()
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies the payer's Swish account. You can use
-this attribute to check whether two Swish transactions were paid for by the same
-payer.")
+   :documentation "Uniquely identifies the payer's Swish account. You
+can use this attribute to check whether two Swish transactions were
+paid for by the same payer.")
   (payment-reference
    :type (or string null)
    :documentation "Payer bank reference number for the payment.")
   (verified-phone-last4
    :type (or string null)
-   :documentation "The last four digits of the Swish account phone number."))
+   :documentation "The last four digits of the Swish account phone
+number."))
 
 (define-object charge-twint-details ())
 
@@ -1019,15 +1085,16 @@ payer.")
    :documentation "Account holder type: individual or company.")
   (account-type
    :type (or string null)
-   :documentation "Account type: checkings or savings. Defaults to checking if
-omitted.")
+   :documentation "Account type: checkings or savings. Defaults to
+checking if omitted.")
   (bank-name
    :type (or string null)
    :documentation "Name of the bank associated with the bank account.")
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular bank account. You can use
-this attribute to check whether two bank accounts are the same.")
+   :documentation "Uniquely identifies this particular bank account.
+You can use this attribute to check whether two bank accounts are the
+same.")
   (last4
    :type (or string null)
    :documentation "Last four digits of the bank account number.")
@@ -1036,7 +1103,8 @@ this attribute to check whether two bank accounts are the same.")
    :documentation "ID of the mandate used to make this payment.")
   (payment-reference
    :type (or string null)
-   :documentation "Reference number to locate ACH payments with customer's bank.")
+   :documentation "Reference number to locate ACH payments with
+customer's bank.")
   (routing-number
    :type (or string null)
    :documentation "Routing number of the bank account."))
@@ -1046,11 +1114,13 @@ this attribute to check whether two bank accounts are the same.")
 (define-object charge-wechat-pay-details ()
   (fingerprint
    :type (or string null)
-   :documentation "Uniquely identifies this particular WeChat Pay account. You
-can use this attribute to check whether two WeChat accounts are the same.")
+   :documentation "Uniquely identifies this particular WeChat Pay
+account. You can use this attribute to check whether two WeChat
+accounts are the same.")
   (transaction-id
    :type (or string null)
-   :documentation "Transaction ID of this particular WeChat Pay transaction."))
+   :documentation "Transaction ID of this particular WeChat Pay
+transaction."))
 
 (define-object charge-zip-details ())
 
