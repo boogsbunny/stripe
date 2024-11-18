@@ -1,6 +1,23 @@
 (in-package #:stripe)
 
 (define-object account ()
+  "This is an object representing a Stripe account. You can retrieve it
+to see properties on the account like its current requirements or if
+the account is enabled to make live charges or receive payouts.
+
+For accounts where [controller.requirement_collection]
+(https://stripe.com/api/accounts/object#account_object-controller-requirement_collection)
+is `application`, which includes Custom accounts, the properties
+below are always returned.
+
+For accounts where [controller.requirement_collection]
+(https://stripe.com/api/accounts/object#account_object-controller-requirement_collection)
+is `stripe`, which includes Standard and Express accounts, some
+properties are only returned until you create an [Account Link]
+(https://stripe.com/api/account_links) or
+[Account Session](https://stripe.com/api/account_sessions) to start
+Connect Onboarding. Learn about the
+[differences between accounts](https://stripe.com/connect/accounts)."
   (id
    :type string
    :documentation "Unique identifier for the object.")

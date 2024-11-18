@@ -1,6 +1,11 @@
 (in-package #:stripe)
 
 (define-object customer ()
+  "This object represents a customer of your business. Use it to
+[create recurring charges](https://stripe.com/docs/invoicing/customer),
+[save payment](https://stripe.com/docs/payments/save-during-payment)
+and contact information, and track payments that belong to the same
+customer."
   id
   address
   balance

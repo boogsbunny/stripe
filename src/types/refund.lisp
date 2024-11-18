@@ -1,6 +1,11 @@
 (in-package #:stripe)
 
 (define-object refund ()
+  "Refund objects allow you to refund a previously created charge that
+isn't refunded yet. Funds are refunded to the credit or debit card
+that's initially charged.
+
+Related guide: [Refunds](https://stripe.com/docs/refunds)"
   id
   amount
   balance-transaction

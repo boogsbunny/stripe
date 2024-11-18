@@ -1,6 +1,10 @@
 (in-package #:stripe)
 
 (define-object subscription ()
+  "Subscriptions allow you to charge a customer on a recurring basis.
+
+Related guide: [Creating subscriptions]
+(https://stripe.com/docs/billing/subscriptions/creating)"
   billing-cycle-anchor
   cancel-at
   cancel-at-period-end

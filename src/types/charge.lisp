@@ -1,6 +1,15 @@
 (in-package #:stripe)
 
 (define-object charge ()
+  "The Charge object represents a single attempt to move money into
+your Stripe account.
+
+PaymentIntent confirmation is the most common way to create Charges,
+but transferring money to a different Stripe account through Connect
+also creates Charges.
+
+Some legacy payment flows create Charges directly, which is not
+recommended for new integrations."
   (id
    :type string
    :documentation "Unique identifier for the object.")

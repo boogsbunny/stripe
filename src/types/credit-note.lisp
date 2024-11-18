@@ -1,6 +1,11 @@
 (in-package #:stripe)
 
 (define-object credit-note ()
+  "Issue a credit note to adjust an invoice's amount after the invoice
+is finalized.
+
+Related guide: [Credit notes]
+(https://stripe.com/docs/billing/invoices/credit-notes)"
   id
   amount
   created

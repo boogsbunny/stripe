@@ -1,6 +1,11 @@
 (in-package #:stripe)
 
 (define-object review ()
+  "Reviews can be used to supplement automated fraud detection with
+human expertise.
+
+Learn more about [Radar](https://stripe.com/radar) and reviewing
+payments [here](https://stripe.com/docs/radar/reviews)."
   (id
    :type string
    :documentation "Unique identifier for the object.")
