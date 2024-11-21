@@ -158,11 +158,17 @@ this list.")
 
 (define-object shipping ()
   (address
-   :type address)
+   :type (or address null))
+  (carrier
+   :type (or string null)
+   :documentation "The delivery service that shipped a physical product, such as
+Fedex, UPS, USPS, etc.")
   (name
-   :type (or string null))
+   :type (or string null)
+   :documentation "Recipient name.")
   (phone
-   :type (or string null)))
+   :type (or string null)
+   :documentation "Recipient phone (including extension)."))
 
 (defmethod initialize-instance :after ((instance shipping) &key data &allow-other-keys)
   (let ((address (gethash :address data)))
