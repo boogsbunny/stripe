@@ -37,7 +37,9 @@
      (:file "discount")
      (:file "invoice")
      (:file "invoice-item")
+     (:file "mandate")
      (:file "payment-intent")
+     (:file "payment-method")
      (:file "payout")
      (:file "plan")
      (:file "product")
@@ -47,6 +49,8 @@
      (:file "subscription")
      (:file "subscription-item")
      (:file "token")
+     (:file "transfer")
+     (:file "transfer-reversal")
      (:file "webhook")))
    (:module "api"
     :components
