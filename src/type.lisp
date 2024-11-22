@@ -5,12 +5,12 @@
 and type.
 
 NAME is the base name of the type."
-  (let* ((type-p (u:symbolicate name '-p))
-         (collection (u:symbolicate name '-collection))
-         (collection-p (u:symbolicate name '-collection-p))
-         (nullable-p (u:symbolicate name '-nullable-p))
-         (nullable-collection (u:symbolicate name '-nullable-collection))
-         (nullable-collection-p (u:symbolicate name '-nullable-collection-p))
+  (let* ((type-p (alex:symbolicate name '-p))
+         (collection (alex:symbolicate name '-collection))
+         (collection-p (alex:symbolicate name '-collection-p))
+         (nullable-p (alex:symbolicate name '-nullable-p))
+         (nullable-collection (alex:symbolicate name '-nullable-collection))
+         (nullable-collection-p (alex:symbolicate name '-nullable-collection-p))
          (collection-check `(and (listp l) (every #',type-p l)))
          (nullable-check `(or (null l) (and (listp l) (every #',nullable-p l)))))
     `(progn

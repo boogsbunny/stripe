@@ -8,7 +8,6 @@
   :depends-on (#:alexandria
                #:com.inuoe.jzon
                #:dexador
-               #:golden-utils
                #:ironclad
                #:local-time)
   :pathname "src"

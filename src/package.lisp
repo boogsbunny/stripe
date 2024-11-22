@@ -2,8 +2,7 @@
   (:use :cl)
   (:local-nicknames
    (#:alex #:alexandria)
-   (#:jzon #:com.inuoe.jzon)
-   (#:u #:golden-utils))
+   (#:jzon #:com.inuoe.jzon))
   ;; common
   (:export
    #:*api-version*

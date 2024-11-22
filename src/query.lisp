@@ -50,7 +50,7 @@
 (defmethod encode-parameter ((type (eql :dictionary)) key value)
   (loop :for (k v) :on value :by #'cddr
         :for parameter = (string-downcase (format nil "~a[~a]" key k))
-        :if (typep v 'u:plist)
+        :if (typep v 'plist)
           :append (encode-parameter :dictionary parameter v)
         :else
           :collect (encode-parameter nil parameter v)))
@@ -72,8 +72,8 @@
     (json-boolean (list (encode-parameter :boolean key value)))
     (number (list (encode-parameter :number key value)))
     (string (list (encode-parameter :string key value)))
-    ((cons u:plist (or null cons)) (encode-parameter :array key value))
-    (u:plist (encode-parameter :dictionary key value))
+    ((cons plist (or null cons)) (encode-parameter :array key value))
+    (plist (encode-parameter :dictionary key value))
     (list (encode-parameter :list key value))
     (local-time:timestamp (list (encode-parameter :timestamp key value)))
     (stripe-object (list (encode-parameter :object key value)))))
@@ -92,12 +92,12 @@
                       :headers `(("Stripe-Version" . ,*api-version*))
                       :content content)
        (dex:http-request-failed (condition)
-         (u:mvlet ((stripe-condition message (decode-error condition)))
+         (mvlet ((stripe-condition message (decode-error condition)))
            (error stripe-condition :message message))))
      :key-fn #'normalize-json-key)))
 
 (defun generate-url (template url-args query-args)
-  (let* ((query (u:alist->plist (apply #'post-parameters query-args)))
+  (let* ((query (alist->plist (apply #'post-parameters query-args)))
          (query-char (and query (if (find #\? template :test #'char=)
                                     #\&
                                     #\?))))
@@ -108,15 +108,15 @@
             query)))
 
 (defmacro define-query (name (&key type) &body (endpoint . fields))
-  (u:with-gensyms (query-args content response)
+  (alex:with-gensyms (query-args content response)
     (destructuring-bind (method url-template . url-args) endpoint
       (let ((get-p (eq method :get))
             (post-p (eq method :post))
-            (url-keys (mapcar #'u:make-keyword url-args)))
+            (url-keys (mapcar #'make-keyword url-args)))
         `(defun ,name (&rest args &key ,@url-args ,@fields)
            (declare (ignorable args ,@fields))
            (let* (,@(when (or get-p post-p)
-                      `((,query-args (u:plist-remove args ,@url-keys))))
+                      `((,query-args (plist-remove args ,@url-keys))))
                   ,@(when post-p
                       `((,content (apply #'post-parameters ,query-args))))
                   (,response (query (generate-url ,url-template

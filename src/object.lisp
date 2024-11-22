@@ -52,19 +52,19 @@ The list container can be used in other objects:
      :documentation \"List of charges for this customer.\"))
 
 See: https://stripe.com/docs/api/pagination"
-  (u:with-gensyms (stream)
+  (alex:with-gensyms (stream)
     (let* ((doc-string (when (stringp (first args)) (first args)))
            (fields (if doc-string (rest args) args))
            (slots (mapcar
                    (lambda (x)
-                     (let ((name (u:ensure-list x)))
+                     (let ((name (alex:ensure-list x)))
                        (destructuring-bind (name
                                             &key (reader name) (type t)
                                               (initform nil) extra-initargs (documentation ""))
                            name
-                         `(,(u:symbolicate '#:% name)
+                         `(,(alex:symbolicate '#:% name)
                            :reader ,reader
-                           :initarg ,(u:make-keyword name)
+                           :initarg ,(make-keyword name)
                            :type ,type
                            ,@(when (and initform (not (eq initform nil)))
                                `(:initform ,initform))
@@ -75,24 +75,24 @@ See: https://stripe.com/docs/api/pagination"
                                     extra-initargs)))
                            :documentation ,documentation))))
                    fields))
-           (list-name (u:symbolicate 'list- name))
-           (list-slots `((,(u:symbolicate '#:% 'object)
+           (list-name (alex:symbolicate 'list- name))
+           (list-slots `((,(alex:symbolicate '#:% 'object)
                           :reader object
                           :initarg :object
                           :type string
                           :initform "list")
-                         (,(u:symbolicate '#:% 'data)
+                         (,(alex:symbolicate '#:% 'data)
                           :reader data
                           :initarg :data
                           :type (vector ',name)
                           :documentation "The array of objects contained in the list.")
-                         (,(u:symbolicate '#:% 'has-more)
+                         (,(alex:symbolicate '#:% 'has-more)
                           :reader has-more
                           :initarg :has-more
                           :type boolean
                           :documentation "Indicates whether there are more items beyond the ones in
 this list.")
-                         (,(u:symbolicate '#:% 'url)
+                         (,(alex:symbolicate '#:% 'url)
                           :reader url
                           :initarg :url
                           :type string
@@ -105,7 +105,7 @@ this list.")
            ,slots
            ,@(when doc-string
                `((:documentation ,doc-string))))
-         (u:define-printer (,name ,stream :type nil)
+         (define-printer (,name ,stream :type nil)
            (if (and (slot-exists-p ,name '%id)
                     (slot-boundp ,name '%id))
                (format ,stream "~a ~a" ',name (id ,name))
@@ -113,7 +113,7 @@ this list.")
          (define-type ,name)
          (defclass ,list-name (stripe-object)
            ,list-slots)
-         (u:define-printer (,list-name ,stream :type nil)
+         (define-printer (,list-name ,stream :type nil)
            (format ,stream "~a" ',list-name))
          (define-type ,list-name)))))
 
