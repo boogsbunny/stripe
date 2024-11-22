@@ -65,6 +65,7 @@
      (:file "discount")
      (:file "invoice")
      (:file "invoice-item")
+     (:file "mandate")
      (:file "payout")
      (:file "plan")
      (:file "product")

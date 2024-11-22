@@ -251,7 +251,7 @@ including details like all object attributes and complete endpoint coverage.
     <li>&#x2610; <a href="https://docs.stripe.com/api/v2/events">Events v2</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/files">Files</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/file_links">File Links</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/mandates">Mandates</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/mandates">Mandates</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/payment_intents">Payment Intents</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/setup_intents">Setup Intents</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/setup_attempts">Setup Attempts</a></li>

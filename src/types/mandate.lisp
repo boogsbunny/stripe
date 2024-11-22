@@ -195,3 +195,124 @@ exclusively."))
   (currency
    :type string
    :documentation "The currency of the payment on a single use mandate."))
+
+(defmethod initialize-instance :after ((instance mandate) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:customer-acceptance
+           (unless (eql 'null value)
+             (setf (slot-value instance '%customer-acceptance)
+                   (make-instance 'mandate-customer-acceptance :data value))))
+          (:payment-method
+           (unless (eql 'null value)
+             (setf (slot-value instance '%payment-method)
+                   (make-instance 'payment-method :data value))))
+          (:payment-method-details
+           (unless (eql 'null value)
+             (setf (slot-value instance '%payment-method-details)
+                   (make-instance 'mandate-payment-method-details :data value))))
+          (:multi-use
+           (unless (eql 'null value)
+             (setf (slot-value instance '%multi-use)
+                   (make-instance 'mandate-multi-use :data value))))
+          (:single-use
+           (unless (eql 'null value)
+             (setf (slot-value instance '%single-use)
+                   (make-instance 'mandate-single-use :data value)))))))))
+
+(defmethod initialize-instance :after ((instance mandate-customer-acceptance) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:accepted-at
+           (setf (slot-value instance '%accepted-at)
+                 (decode-timestamp value)))
+          (:offline
+           (unless (eql 'null value)
+             (setf (slot-value instance '%offline)
+                   (make-instance 'mandate-customer-acceptance-offline :data value))))
+          (:online
+           (unless (eql 'null value)
+             (setf (slot-value instance '%online)
+                   (make-instance 'mandate-customer-acceptance-online :data value)))))))))
+
+(defmethod initialize-instance :after ((instance mandate-payment-method-details)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:acss-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%acss-debit)
+                   (make-instance 'mandate-payment-method-details-acss-debit
+                                  :data value))))
+          (:amazon-pay
+           (unless (eql 'null value)
+             (setf (slot-value instance '%amazon-pay)
+                   (make-instance 'mandate-payment-method-details-amazon-pay
+                                  :data value))))
+          (:au-becs-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%au-becs-debit)
+                   (make-instance 'mandate-payment-method-details-au-becs-debit
+                                  :data value))))
+          (:bacs-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%bacs-debit)
+                   (make-instance 'mandate-payment-method-details-bacs-debit
+                                  :data value))))
+          (:card
+           (unless (eql 'null value)
+             (setf (slot-value instance '%card)
+                   (make-instance 'mandate-payment-method-details-card
+                                  :data value))))
+          (:cashapp
+           (unless (eql 'null value)
+             (setf (slot-value instance '%cashapp)
+                   (make-instance 'mandate-payment-method-details-cashapp
+                                  :data value))))
+          (:kakao-pay
+           (unless (eql 'null value)
+             (setf (slot-value instance '%kakao-pay)
+                   (make-instance 'mandate-payment-method-details-kakao-pay
+                                  :data value))))
+          (:kr-card
+           (unless (eql 'null value)
+             (setf (slot-value instance '%kr-card)
+                   (make-instance 'mandate-payment-method-details-kr-card
+                                  :data value))))
+          (:link
+           (unless (eql 'null value)
+             (setf (slot-value instance '%link)
+                   (make-instance 'mandate-payment-method-details-link
+                                  :data value))))
+          (:paypal
+           (unless (eql 'null value)
+             (setf (slot-value instance '%paypal)
+                   (make-instance 'mandate-payment-method-details-paypal
+                                  :data value))))
+          (:revolut-pay
+           (unless (eql 'null value)
+             (setf (slot-value instance '%revolut-pay)
+                   (make-instance 'mandate-payment-method-details-revolut-pay
+                                  :data value))))
+          (:sepa-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%sepa-debit)
+                   (make-instance 'mandate-payment-method-details-sepa-debit
+                                  :data value))))
+          (:us-bank-account
+           (unless (eql 'null value)
+             (setf (slot-value instance '%us-bank-account)
+                   (make-instance 'mandate-payment-method-details-us-bank-account
+                                  :data value)))))))))

@@ -103,6 +103,7 @@
   ;; accessors
   (:export
    #:active
+   #:accepted-at
    #:account-country
    #:account-name
    #:address
@@ -126,6 +127,7 @@
    #:balance
    #:balance-transaction
    #:bank-account
+   #:billing-agreement-id
    #:billing-cycle-anchor
    #:billing-details
    #:billing-reason
@@ -153,6 +155,8 @@
    #:current-period-end
    #:current-period-start
    #:customer
+   #:customer-acceptance
+   #:customer-acceptance-type
    #:customer-address
    #:customer-balance-transactions
    #:customer-email
@@ -162,6 +166,7 @@
    #:cvc-check
    #:date
    #:days-until-due
+   #:default-for
    #:default-payment-method
    #:default-payment-source
    #:default-source
@@ -199,6 +204,7 @@
    #:id
    #:images
    #:interval
+   #:interval-description
    #:invoice
    #:invoice-item
    #:invoice-number
@@ -210,14 +216,17 @@
    #:line1
    #:line2
    #:lines
+   #:mandate-type
    #:marked-uncollectible-at
    #:max-redemptions
    #:memo
+   #:multi-use
    #:name
    #:net
    #:network-status
    #:next-payment-attempt
    #:nickname
+   #:on-behalf-of
    #:order
    #:order-item-type
    #:outcome
@@ -227,9 +236,12 @@
    #:paid
    #:paid-at
    #:parent
+   #:payer-id
    #:payment-intent
    #:payment-method
    #:payment-method-details
+   #:payment-method-details-type
+   #:payment-schedule
    #:payment-status
    #:payout-method
    #:payout-type
@@ -253,11 +265,13 @@
    #:receipt-number
    #:receipt-url
    #:redeem-by
+   #:reference
    #:refund
    #:refunded
    #:refunds
    #:returns
    #:review
+   #:revocation-reason
    #:risk-level
    #:risk-score
    #:schedule
@@ -268,6 +282,7 @@
    #:shippable
    #:shipping
    #:shipping-methods
+   #:single-use
    #:source
    #:source-type
    #:sources
@@ -384,6 +399,7 @@
    #:retrieve-invoice
    #:retrieve-invoice-item
    #:retrieve-invoice-lines
+   #:retrieve-mandate
    #:retrieve-payout
    #:retrieve-plan
    #:retrieve-product
