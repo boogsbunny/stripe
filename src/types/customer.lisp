@@ -61,3 +61,18 @@ the same type share the same value.")
            (when value
              (setf (slot-value instance '%subscriptions)
                    (decode-hash-table value)))))))))
+
+(define-object customer-date-filter ()
+  "Date range filter using Unix timestamps."
+  (gt
+   :type (or local-time:timestamp null)
+   :documentation "Minimum value to filter by (exclusive).")
+  (gte
+   :type (or local-time:timestamp null)
+   :documentation "Minimum value to filter by (inclusive).")
+  (lt
+   :type (or local-time:timestamp null)
+   :documentation "Maximum value to filter by (exclusive).")
+  (lte
+   :type (or local-time:timestamp null)
+   :documentation "Maximum value to filter by (inclusive)."))
