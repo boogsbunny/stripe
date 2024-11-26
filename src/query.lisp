@@ -107,27 +107,88 @@
             query-char
             query)))
 
-(defmacro define-query (name (&key type) &body (endpoint . fields))
+(defmacro define-query (name (&key type) &body body)
+  "Define a Stripe API query function.
+
+This macro generates functions for making HTTP requests to the Stripe
+API. It handles URL generation, parameter encoding, and response
+processing.
+
+NAME is a symbol naming the function to be defined.
+
+TYPE is an optional response type which can be:
+  :VECTOR - Response is decoded as a vector of stripe objects of the
+            specified class.
+  <class> - Response is instantiated as a single stripe object of the
+            specified class.
+  NIL     - Raw response is returned.
+
+BODY contains the endpoint definition and parameter specifications:
+
+The endpoint definition takes the form:
+  (:GET|:POST url-template &rest url-params)
+where URL-TEMPLATE is a format control string and URL-PARAMS are
+substituted into the template. For GET requests, remaining parameters
+become query parameters. For POST requests, remaining parameters become
+the request body.
+
+Parameters can be specified as either:
+  symbol
+  (name &key type documentation)
+
+Example:
+  (define-query retrieve-customer (:type customer)
+    \"Retrieve a customer.\"
+    (:get \"customers/~a\"
+     (id
+      :type string
+      :documentation \"The ID of the customer to retrieve.\")))"
   (alex:with-gensyms (query-args content response)
-    (destructuring-bind (method url-template . url-args) endpoint
-      (let ((get-p (eq method :get))
-            (post-p (eq method :post))
-            (url-keys (mapcar #'make-keyword url-args)))
-        `(defun ,name (&rest args &key ,@url-args ,@fields)
-           (declare (ignorable args ,@fields))
-           (let* (,@(when (or get-p post-p)
-                      `((,query-args (plist-remove args ,@url-keys))))
-                  ,@(when post-p
-                      `((,content (apply #'post-parameters ,query-args))))
-                  (,response (query (generate-url ,url-template
-                                                  ,(when url-args
-                                                     `(list ,@url-args))
-                                                  ,(when get-p
-                                                     query-args))
-                                    ,method
-                                    ,@(when post-p
-                                        `(,content)))))
-             ,@(case type
-                 (vector `((decode-hash-table ,response)))
-                 ((nil) `(,response))
-                 (t `((make-instance ',type :data ,response))))))))))
+    (let* ((doc-string (when (stringp (first body)) (first body)))
+           (rest-body (if doc-string (rest body) body))
+           (endpoint (first rest-body))
+           (fields (rest rest-body)))
+      (destructuring-bind (method url-template . url-params) endpoint
+        (let* ((get-p (eq method :get))
+               (post-p (eq method :post))
+               (url-param-names (mapcar (lambda (param)
+                                          (if (listp param) (first param) param))
+                                        url-params))
+               (url-keys (mapcar #'make-keyword url-param-names))
+               (all-fields (append url-params fields))
+               (field-specs (mapcar (lambda (field)
+                                      (if (listp field)
+                                          (list (first field)
+                                                (getf (cdr field) :type)
+                                                (getf (cdr field) :documentation))
+                                          (list field nil nil)))
+                                    all-fields))
+               (field-names (mapcar #'first field-specs))
+               (typed-fields (remove nil
+                                     (mapcar (lambda (spec)
+                                               (when (second spec)
+                                                 `(type ,(second spec) ,(first spec))))
+                                             field-specs))))
+          `(defun ,name (&rest args &key ,@field-names)
+             ,@(when doc-string
+                 `(,doc-string))
+             (declare (ignorable args ,@field-names))
+             ,@(when typed-fields
+                 `((declare (optimize (safety 3)))
+                   (declare ,@typed-fields)))
+             (let* (,@(when (or get-p post-p)
+                        `((,query-args (plist-remove args ,@url-keys))))
+                    ,@(when post-p
+                        `((,content (apply #'post-parameters ,query-args))))
+                    (,response (query (generate-url ,url-template
+                                                    ,(when url-param-names
+                                                       `(remove nil (list ,@url-param-names)))
+                                                    ,(when get-p
+                                                       query-args))
+                                      ,method
+                                      ,@(when post-p
+                                          `(,content)))))
+               ,@(case type
+                   (vector `((decode-hash-table ,response)))
+                   ((nil) `(,response))
+                   (t `((make-instance ',type :data ,response)))))))))))
