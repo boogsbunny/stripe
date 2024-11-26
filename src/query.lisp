@@ -134,7 +134,7 @@ the request body.
 
 Parameters can be specified as either:
   symbol
-  (name &key type documentation)
+  (name &key type documentation required)
 
 Example:
   (define-query retrieve-customer (:type customer)
@@ -142,6 +142,7 @@ Example:
     (:get \"customers/~a\"
      (id
       :type string
+      :required t
       :documentation \"The ID of the customer to retrieve.\")))"
   (alex:with-gensyms (query-args content response)
     (let* ((doc-string (when (stringp (first body)) (first body)))
@@ -160,22 +161,41 @@ Example:
                                       (if (listp field)
                                           (list (first field)
                                                 (getf (cdr field) :type)
+                                                (getf (cdr field) :required)
                                                 (getf (cdr field) :documentation))
-                                          (list field nil nil)))
+                                          (list field nil nil nil)))
                                     all-fields))
                (field-names (mapcar #'first field-specs))
-               (typed-fields (remove nil
-                                     (mapcar (lambda (spec)
-                                               (when (second spec)
-                                                 `(type ,(second spec) ,(first spec))))
-                                             field-specs))))
+               ;; Separate required and optional fields
+               (required-fields (remove-if-not #'third field-specs))
+               (optional-fields (remove-if #'third field-specs))
+               ;; Generate compile-time type declarations for required fields
+               (required-type-decls
+                 (mapcar (lambda (spec)
+                           (destructuring-bind (name type _ __) spec
+                             (declare (ignore _ __))
+                             (when type
+                               `(type ,type ,name))))
+                         required-fields))
+               ;; Generate runtime type checks only for optional fields
+               (optional-type-checks
+                 (remove nil
+                         (mapcar (lambda (spec)
+                                   (destructuring-bind (name type _ __) spec
+                                     (declare (ignore _ __))
+                                     (when type
+                                       `(when (member ,(make-keyword name) args)
+                                          (check-type ,name ,type)))))
+                                 optional-fields))))
           `(defun ,name (&rest args &key ,@field-names)
              ,@(when doc-string
                  `(,doc-string))
-             (declare (ignorable args ,@field-names))
-             ,@(when typed-fields
-                 `((declare (optimize (safety 3)))
-                   (declare ,@typed-fields)))
+             (declare (ignorable args ,@field-names)
+                      (optimize (safety 3))
+                      ;; Add compile-time type declarations
+                      ,@required-type-decls)
+             ;; Runtime checks only for optional fields
+             ,@optional-type-checks
              (let* (,@(when (or get-p post-p)
                         `((,query-args (plist-remove args ,@url-keys))))
                     ,@(when post-p
