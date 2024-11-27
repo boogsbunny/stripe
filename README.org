@@ -244,7 +244,7 @@ including details like all object attributes and complete endpoint coverage.
     <li>&#x2611; <a href="https://docs.stripe.com/api/balance">Balance</a></li>
     <li>&#x2611; <a href="https://docs.stripe.com/api/balance_transactions">Balance Transactions</a></li>
     <li>&#x2611; <a href="https://docs.stripe.com/api/charges">Charges</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/customers">Customers</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/customers">Customers</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/customer_sessions">Customer Session</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/disputes">Disputes</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/events">Events</a></li>

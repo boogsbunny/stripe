@@ -26,7 +26,9 @@
      (:file "application-fee")
      (:file "balance")
      (:file "balance-transaction")
+     (:file "bank-account")
      (:file "card")
+     (:file "cash-balance")
      (:file "charge")
      (:file "coupon")
      (:file "credit-note")
@@ -50,7 +52,10 @@
      (:file "token")
      (:file "transfer")
      (:file "transfer-reversal")
-     (:file "webhook")))
+     (:file "webhook")
+     (:module "test-helpers"
+      :components
+      ((:file "test-clock")))))
    (:module "api"
     :components
     ((:file "balance")
