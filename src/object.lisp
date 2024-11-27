@@ -168,7 +168,12 @@ Fedex, UPS, USPS, etc.")
    :documentation "Recipient name.")
   (phone
    :type (or string null)
-   :documentation "Recipient phone (including extension)."))
+   :documentation "Recipient phone (including extension).")
+  (tracking-number
+   :type (or string null)
+   :documentation "The tracking number for a physical product, obtained
+from the delivery service. If multiple tracking numbers were generated
+for this purchase, please separate them with commas."))
 
 (defmethod initialize-instance :after ((instance shipping) &key data &allow-other-keys)
   (let ((address (gethash :address data)))
