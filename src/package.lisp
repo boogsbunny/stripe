@@ -159,6 +159,7 @@
    #:customer-acceptance-type
    #:customer-address
    #:customer-balance-transactions
+   #:customer-date-filter
    #:customer-email
    #:customer-name
    #:customer-phone
