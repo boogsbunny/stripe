@@ -269,7 +269,7 @@ including details like all object attributes and complete endpoint coverage.
     <li>&#x2610; <a href="https://docs.stripe.com/api/payment_method_configurations">Payment Method Configurations</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/payment_method_domains">Payment Method Domains</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/customer_bank_accounts">Bank Accounts</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/cash_balance">Cash Balance</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/cash_balance">Cash Balance</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/cash_balance_transactions">Cash Balance Transaction</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/cards">Cards</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/sources">Sources</a></li>

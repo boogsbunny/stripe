@@ -47,3 +47,12 @@ is the user's default or is specific to this customer cash balance."))
           (:settings
            (setf (slot-value instance '%settings)
                  (make-instance 'cash-balance-settings :data value))))))))
+
+(define-object cash-balance-settings-request ()
+  (reconciliation-mode
+   :type string
+   :documentation "Controls how funds transferred by the customer are
+applied to payment intents and invoices. Valid options are `automatic`,
+`manual`, or `merchant_default`. For more information about these
+reconciliation modes, see [Reconciliation]
+(https://docs.stripe.com/payments/customer-balance/reconciliation)."))

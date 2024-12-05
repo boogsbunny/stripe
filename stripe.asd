@@ -61,6 +61,7 @@
     ((:file "balance")
      (:file "balance-transaction")
      (:file "card")
+     (:file "cash-balance")
      (:file "charge")
      (:file "coupon")
      (:file "credit-note")
