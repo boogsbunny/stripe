@@ -80,6 +80,41 @@ about these types. One of `adjusted_for_overdraft`,
    :documentation "If this is a `type=unapplied_from_payment`
 transaction, contains information about how funds were unapplied."))
 
+(defmethod initialize-instance :after ((instance cash-balance-transaction)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:adjusted-for-overdraft
+           (when value
+             (setf (slot-value instance '%adjusted-for-overdraft)
+                   (make-instance 'adjusted-for-overdraft :data value))))
+          (:applied-to-payment
+           (when value
+             (setf (slot-value instance '%applied-to-payment)
+                   (make-instance 'applied-to-payment :data value))))
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:funded
+           (when value
+             (setf (slot-value instance '%funded)
+                   (make-instance 'funded :data value))))
+          (:refunded-from-payment
+           (when value
+             (setf (slot-value instance '%refunded-from-payment)
+                   (make-instance 'refunded-from-payment :data value))))
+          (:transferred-to-balance
+           (when value
+             (setf (slot-value instance '%transferred-to-balance)
+                   (make-instance 'transferred-to-balance :data value))))
+          (:unapplied-from-payment
+           (when value
+             (setf (slot-value instance '%unapplied-from-payment)
+                   (make-instance 'unapplied-from-payment :data value)))))))))
+
 (define-object adjusted-for-overdraft ()
   (balance-transaction
    :type (or string balance-transaction)
@@ -105,6 +140,18 @@ applied to."))
    :type bank-transfer
    :documentation "Information about the bank transfer that funded the
 customer's cash balance."))
+
+(defmethod initialize-instance :after ((instance funded) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:bank-transfer
+           (when value
+             (setf (slot-value instance '%bank-transfer)
+                   (make-instance 'bank-transfer :data value)))))))))
 
 (define-object refunded-from-payment ()
   (refund
@@ -147,6 +194,30 @@ balance. Permitted values include: `eu_bank_transfer`,
   (us-bank-transfer
    :type (or us-bank-transfer null)
    :documentation "US-specific details of the bank transfer."))
+
+(defmethod initialize-instance :after ((instance bank-transfer) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:eu-bank-transfer
+           (when value
+             (setf (slot-value instance '%eu-bank-transfer)
+                   (make-instance 'eu-bank-transfer :data value))))
+          (:gb-bank-transfer
+           (when value
+             (setf (slot-value instance '%gb-bank-transfer)
+                   (make-instance 'gb-bank-transfer :data value))))
+          (:jp-bank-transfer
+           (when value
+             (setf (slot-value instance '%jp-bank-transfer)
+                   (make-instance 'jp-bank-transfer :data value))))
+          (:us-bank-transfer
+           (when value
+             (setf (slot-value instance '%us-bank-transfer)
+                   (make-instance 'us-bank-transfer :data value)))))))))
 
 (define-object eu-bank-transfer ()
   (bic
