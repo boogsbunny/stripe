@@ -55,6 +55,14 @@ See: https://stripe.com/docs/api/pagination"
   (alex:with-gensyms (stream)
     (let* ((doc-string (when (stringp (first args)) (first args)))
            (fields (if doc-string (rest args) args))
+           (slot-readers
+             (remove nil
+                     (mapcar (lambda (x)
+                               (let* ((name (alex:ensure-list x))
+                                      (slot-name (first name))
+                                      (explicit-reader (getf (rest name) :reader)))
+                                 (or explicit-reader slot-name)))
+                             fields)))
            (slots (mapcar
                    (lambda (x)
                      (let ((name (alex:ensure-list x)))
@@ -115,7 +123,19 @@ this list.")
            ,list-slots)
          (define-printer (,list-name ,stream :type nil)
            (format ,stream "~a" ',list-name))
-         (define-type ,list-name)))))
+         (define-type ,list-name)
+         (export '(,name
+                   ,list-name
+                   ,@slot-readers
+                   object data has-more url
+                   ,(alex:symbolicate name '-p)
+                   ,(alex:symbolicate name '-nullable-p)
+                   ,(alex:symbolicate list-name '-p)
+                   ,(alex:symbolicate list-name '-nullable-p)
+                   ,(alex:symbolicate name '-collection)
+                   ,(alex:symbolicate name '-nullable-collection)
+                   ,(alex:symbolicate list-name '-collection)
+                   ,(alex:symbolicate list-name '-nullable-collection)))))))
 
 (defclass stripe-object () ())
 

@@ -187,28 +187,30 @@ Example:
                                        `(when (member ,(make-keyword name) args)
                                           (check-type ,name ,type)))))
                                  optional-fields))))
-          `(defun ,name (&rest args &key ,@field-names)
-             ,@(when doc-string
-                 `(,doc-string))
-             (declare (ignorable args ,@field-names)
-                      (optimize (safety 3))
-                      ;; Add compile-time type declarations
-                      ,@required-type-decls)
-             ;; Runtime checks only for optional fields
-             ,@optional-type-checks
-             (let* (,@(when (or get-p post-p)
-                        `((,query-args (plist-remove args ,@url-keys))))
-                    ,@(when post-p
-                        `((,content (apply #'post-parameters ,query-args))))
-                    (,response (query (generate-url ,url-template
-                                                    ,(when url-param-names
-                                                       `(remove nil (list ,@url-param-names)))
-                                                    ,(when get-p
-                                                       query-args))
-                                      ,method
-                                      ,@(when post-p
-                                          `(,content)))))
-               ,@(case type
-                   (vector `((decode-hash-table ,response)))
-                   ((nil) `(,response))
-                   (t `((make-instance ',type :data ,response)))))))))))
+          `(progn
+             (defun ,name (&rest args &key ,@field-names)
+               ,@(when doc-string
+                   `(,doc-string))
+               (declare (ignorable args ,@field-names)
+                        (optimize (safety 3))
+                        ;; Add compile-time type declarations
+                        ,@required-type-decls)
+               ;; Runtime checks only for optional fields
+               ,@optional-type-checks
+               (let* (,@(when (or get-p post-p)
+                          `((,query-args (plist-remove args ,@url-keys))))
+                      ,@(when post-p
+                          `((,content (apply #'post-parameters ,query-args))))
+                      (,response (query (generate-url ,url-template
+                                                      ,(when url-param-names
+                                                         `(remove nil (list ,@url-param-names)))
+                                                      ,(when get-p
+                                                         query-args))
+                                        ,method
+                                        ,@(when post-p
+                                            `(,content)))))
+                 ,@(case type
+                     (vector `((decode-hash-table ,response)))
+                     ((nil) `(,response))
+                     (t `((make-instance ',type :data ,response))))))
+             (export ',name)))))))
