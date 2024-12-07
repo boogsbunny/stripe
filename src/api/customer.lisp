@@ -158,7 +158,7 @@ Example:
 Returns a paginated list of customer objects."
   (:get "customers")
   (created
-   :type customer-date-filter
+   :type api-date-filter
    :documentation "Only return customers that were created during the
 given date interval.")
   (email

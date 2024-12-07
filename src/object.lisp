@@ -205,3 +205,18 @@ for this purchase, please separate them with commas."))
 (define-object billing-details (shipping)
   (email
    :type (or string null)))
+
+(define-object api-date-filter ()
+  "Date range filter using Unix timestamps."
+  (gt
+   :type (or local-time:timestamp null)
+   :documentation "Minimum value to filter by (exclusive).")
+  (gte
+   :type (or local-time:timestamp null)
+   :documentation "Minimum value to filter by (inclusive).")
+  (lt
+   :type (or local-time:timestamp null)
+   :documentation "Maximum value to filter by (exclusive).")
+  (lte
+   :type (or local-time:timestamp null)
+   :documentation "Maximum value to filter by (inclusive)."))
