@@ -139,12 +139,11 @@ This property is `null` until PaymentIntent confirmation is attempted.")
    :documentation "Has the value `true` if the object exists in live
 mode or the value `false` if the object exists in test mode.")
   (metadata
+   :type (hash-table :key-type string :value-type string)
    :documentation "Set of [key-value pairs]
 (https://stripe.com/docs/api/metadata) that you can attach to an
-object. This can be useful for storing additional information about
-the object in a structured format. Learn more about [storing
-information in metadata]
-(https://stripe.com/docs/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).")
+object. This can be useful for storing additional information about the
+object in a structured format.")
   (next-action
    :documentation "If present, this property tells you what actions
 you need to take in order for your customer to fulfill a payment using

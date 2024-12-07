@@ -90,6 +90,7 @@ information about prefilling information and account onboarding steps.
 Learn more about [handling identity verification with the API]
 (https://stripe.com/connect/handling-api-verification#person-information).")
   (metadata
+   :type (hash-table :key-type string :value-type string)
    :documentation "Set of [key-value pairs]
 (https://stripe.com/docs/api/metadata) that you can attach to an
 object. This can be useful for storing additional information about the
