@@ -9,7 +9,8 @@
                #:com.inuoe.jzon
                #:dexador
                #:ironclad
-               #:local-time)
+               #:local-time
+               #:serapeum)
   :pathname "src"
   :serial t
   :components

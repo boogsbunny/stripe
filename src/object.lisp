@@ -104,7 +104,18 @@ this list.")
                           :reader url
                           :initarg :url
                           :type string
-                          :documentation "The URL where this list can be accessed."))))
+                          :documentation "The URL where this list can be accessed.")))
+           (export-symbols (append (list name list-name)
+                                   slot-readers
+                                   (list 'object 'data 'has-more 'url)
+                                   (list (alex:symbolicate name '-p)
+                                         (alex:symbolicate name '-nullable-p)
+                                         (alex:symbolicate list-name '-p)
+                                         (alex:symbolicate list-name '-nullable-p)
+                                         (alex:symbolicate name '-collection)
+                                         (alex:symbolicate name '-nullable-collection)
+                                         (alex:symbolicate list-name '-collection)
+                                         (alex:symbolicate list-name '-nullable-collection)))))
       `(progn
          (defclass ,name
              ,@(if super-classes
@@ -124,18 +135,9 @@ this list.")
          (define-printer (,list-name ,stream :type nil)
            (format ,stream "~a" ',list-name))
          (define-type ,list-name)
-         (export '(,name
-                   ,list-name
-                   ,@slot-readers
-                   object data has-more url
-                   ,(alex:symbolicate name '-p)
-                   ,(alex:symbolicate name '-nullable-p)
-                   ,(alex:symbolicate list-name '-p)
-                   ,(alex:symbolicate list-name '-nullable-p)
-                   ,(alex:symbolicate name '-collection)
-                   ,(alex:symbolicate name '-nullable-collection)
-                   ,(alex:symbolicate list-name '-collection)
-                   ,(alex:symbolicate list-name '-nullable-collection)))))))
+         ,@(mapcar (lambda (symbol)
+                     `(sera:export-always ',symbol :stripe))
+                   export-symbols)))))
 
 (defclass stripe-object () ())
 

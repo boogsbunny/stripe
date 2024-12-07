@@ -11,6 +11,7 @@
                                        payload))
     (ironclad:hmac-digest hmac)))
 
+(sera:export-always 'construct-webhook-event :stripe)
 (defun construct-webhook-event (payload header secret
                                 &key (tolerance +default-tolerance+ tolerance-provided-p)
                                   ignore-api-version-mismatch)
@@ -34,6 +35,7 @@ Stripe-Signature header using the specified signing secret and options."
              *api-version*))
     event))
 
+(sera:export-always 'validate-webhook-payload :stripe)
 (defun validate-webhook-payload (payload header secret
                                  &key (tolerance +default-tolerance+)
                                    (enforce-tolerance t))
@@ -49,6 +51,7 @@ signing secret and options."
           (some (lambda (sig) (equalp expected-signature sig)) signatures)))
     (webhook-no-valid-signature () nil)))
 
+(sera:export-always 'parse-signature-header :stripe)
 (defun parse-signature-header (header)
   "Parse the Stripe-Signature header into a timestamp and list of signatures."
   (if (string= header "")

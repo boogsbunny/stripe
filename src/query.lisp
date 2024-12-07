@@ -213,4 +213,4 @@ Example:
                      (vector `((decode-hash-table ,response)))
                      ((nil) `(,response))
                      (t `((make-instance ',type :data ,response))))))
-             (export ',name)))))))
+             (sera:export-always ',name :stripe)))))))

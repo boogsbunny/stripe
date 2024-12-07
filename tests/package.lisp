@@ -1,4 +1,4 @@
-(defpackage #:stripe/tests
+(uiop:define-package #:stripe/tests
   (:use #:cl)
   (:local-nicknames
    (#:jzon #:com.inuoe.jzon))

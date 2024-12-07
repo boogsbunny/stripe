@@ -1,8 +1,14 @@
 (in-package #:stripe)
 
 (defvar *base-url* "https://api.stripe.com/v1")
+
+(sera:export-always '*api-version* :stripe)
 (defvar *api-version* "2019-05-16")
+
+(sera:export-always '*api-key* :stripe)
 (defvar *api-key*)
+
+(sera:export-always '*webhook-secret* :stripe)
 (defvar *webhook-secret* "https://docs.stripe.com/webhooks/signatures")
 
 (defun make-keyword (object)
