@@ -77,6 +77,7 @@
      (:file "customer-tax-id")
      (:file "discount")
      (:file "dispute")
+     (:file "file")
      (:file "invoice")
      (:file "invoice-item")
      (:file "mandate")

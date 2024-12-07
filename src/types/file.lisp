@@ -84,3 +84,23 @@ from this URL."))
                                                link-data)
                                     :has-more (gethash :has_more value)
                                     :url (gethash :url value)))))))))))
+
+(define-object file-create-file-link-data ()
+  (create
+   :type boolean
+   :documentation "Set this to `true` to create a file link for the
+newly created file. Creating a link is only possible when the file’s
+`purpose` is one of the following: `business_icon`, `business_logo`,
+`customer_signature`, `dispute_evidence`,
+`issuing_regulatory_reporting`, `pci_document`,
+`tax_document_user_upload`, or `terminal_reader_splashscreen`.")
+  (expires-at
+   :type local-time:timestamp
+   :documentation "The link isn’t available after this future
+timestamp.")
+  (metadata
+   :type (hash-table :key-type string :value-type string)
+   :documentation "Set of [key-value pairs]
+(https://stripe.com/docs/api/metadata) that you can attach to an
+object. This can be useful for storing additional information about the
+object in a structured format."))
