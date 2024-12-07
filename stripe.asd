@@ -78,6 +78,7 @@
      (:file "discount")
      (:file "dispute")
      (:file "file")
+     (:file "file-link")
      (:file "invoice")
      (:file "invoice-item")
      (:file "mandate")
