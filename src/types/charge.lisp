@@ -173,7 +173,7 @@ will be stylized as an Invoice receipt.")
    :documentation "Whether the charge has been fully refunded. If the charge is
 only partially refunded, this attribute will still be false.")
   (refunds
-   :type (or list-refund-collection null)
+   :type (or list-refund null)
    :documentation "A list of refunds that have been applied to the
 charge.")
   (review

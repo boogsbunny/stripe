@@ -30,7 +30,7 @@ epoch seconds.")
    :documentation "The suitable name for saving the file to a
 filesystem.")
   (links
-   :type (or list-file-link-collection null)
+   :type (or list-file-link null)
    :documentation "A list of [file links]
 (https://stripe.com/docs/api#file_links) that point at this file.")
   (purpose
@@ -74,16 +74,8 @@ from this URL."))
              (setf (slot-value instance '%expires-at) (decode-timestamp value))))
           (:links
            (unless (eql 'null value)
-             (let ((link-data (gethash :data value)))
-               (setf (slot-value instance '%links)
-                     (make-instance 'list-file-link-collection
-                                    :object "list"
-                                    :data (map 'vector
-                                               (lambda (item)
-                                                 (make-instance 'file-link :data item))
-                                               link-data)
-                                    :has-more (gethash :has_more value)
-                                    :url (gethash :url value)))))))))))
+             (setf (slot-value instance '%links)
+                   (make-instance 'list-file-link :data value)))))))))
 
 (define-object file-create-file-link-data ()
   (create

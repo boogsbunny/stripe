@@ -66,7 +66,7 @@ mode or the value `false` if the object exists in test mode.")
 object. This can be useful for storing additional information about the
 object in a structured format.")
   (reversals
-   :type list-transfer-reversal-collection
+   :type list-transfer-reversal
    :documentation "A list of reversals that have been applied to the
 transfer.")
   (reversed

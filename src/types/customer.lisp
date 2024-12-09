@@ -128,10 +128,10 @@ ordered by preference.")
    :documentation "Mailing and shipping address for the customer.
 Appears on invoices emailed to this customer.")
   (sources
-   :type (or list-customer-collection null)
+   :type (or list-customer null)
    :documentation "The customer's payment sources, if any.")
   (subscriptions
-   :type (or list-subscription-collection null)
+   :type (or list-subscription null)
    :documentation "The customer's current subscriptions, if any.")
   (tax
    :type (or customer-tax null))
@@ -141,7 +141,7 @@ Appears on invoices emailed to this customer.")
 is `none`, `exempt`, or `reverse`. When set to `reverse`, invoice and
 receipt PDFs include the following text: **\"Reverse charge\"**.")
   (tax-ids
-   :type (or list-customer-tax-id-collection null)
+   :type (or list-customer-tax-id null)
    :documentation "The customer's tax IDs.")
   (test-clock
    :type (or string test-clock null)
@@ -189,7 +189,7 @@ invoice."))
 (deftype customer-source ()
   '(or account bank-account card source))
 
-(defclass list-customer-source-collection (stripe-object)
+(defclass list-customer-source (stripe-object)
   ((%object
     :reader object
     :initarg :object
@@ -303,7 +303,7 @@ the same type share the same value.")
            (when value
              (let ((source-data (gethash :data value)))
                (setf (slot-value instance '%sources)
-                     (make-instance 'list-customer-source-collection
+                     (make-instance 'list-customer-source
                                     :object "list"
                                     :data (map 'vector
                                                (lambda (item)

@@ -5,21 +5,21 @@
 list container.
 
 For each object defined (e.g., CHARGE), this macro:
-1. Creates the main class inheriting from STRIPE-OBJECT
-2. Automatically creates a paginated list container class (e.g.,
-LIST-CHARGE)
-3. Defines type predicates and collection types for both classes
+1. Creates the main class inheriting from STRIPE-OBJECT.
+2. Creates a paginated list container class (e.g., LIST-CHARGE)
+following Stripe's list API format.
+3. Defines type predicates and collection types for both classes.
 
-The list container follows Stripe's ApiList<T> pattern, containing:
-- data: A vector of the defined objects.
-- has-more: Boolean indicating if more items exist beyond this list.
-- object: Always set to \"list\".
-- url: The URL where this list can be accessed.
+List Container Format (as per https://stripe.com/docs/api/pagination):
+- object: String, always set to \"list\"
+- data: Vector of objects, paginated by any request parameters
+- has-more: Boolean indicating if more elements exist beyond this set
+- url: The URL for accessing this list
 
 Syntax:
   (define-object name super-classes &rest fields)
 
-Fields are defined with the following syntax:
+Fields are defined with:
   (field-name &key reader type initform extra-initargs documentation)
 
 Example:
@@ -32,26 +32,24 @@ Example:
      :documentation \"Amount in cents.\"))
 
 This creates:
-- CHARGE class with specified fields.
-- LIST-CHARGE class for paginated lists.
+- CHARGE class with specified fields
+- LIST-CHARGE class for paginated lists
 - Type predicates:
-  - CHARGE-P
-  - CHARGE-NULLABLE-P
-  - LIST-CHARGE-P
-  - LIST-CHARGE-NULLABLE-P
+  - CHARGE-P, CHARGE-NULLABLE-P
+  - LIST-CHARGE-P, LIST-CHARGE-NULLABLE-P
 - Collection types:
-  - CHARGE-COLLECTION
-  - CHARGE-NULLABLE-COLLECTION
-  - LIST-CHARGE-COLLECTION
-  - LIST-CHARGE-NULLABLE-COLLECTION
+  - CHARGE-COLLECTION, CHARGE-NULLABLE-COLLECTION
 
 The list container can be used in other objects:
   (define-object customer ()
     (charges
-     :type list-charge-collection
-     :documentation \"List of charges for this customer.\"))
+     :type list-charge
+     :documentation \"Paginated list of charges for this customer.\"))
 
-See: https://stripe.com/docs/api/pagination"
+List containers support Stripe's cursor-based pagination using:
+- limit: Number of objects to return (1-100, default 10)
+- starting_after: Object ID for fetching next page
+- ending_before: Object ID for fetching previous page"
   (alex:with-gensyms (stream)
     (let* ((doc-string (when (stringp (first args)) (first args)))
            (fields (if doc-string (rest args) args))
@@ -114,8 +112,8 @@ this list.")
                                          (alex:symbolicate list-name '-nullable-p)
                                          (alex:symbolicate name '-collection)
                                          (alex:symbolicate name '-nullable-collection)
-                                         (alex:symbolicate list-name '-collection)
-                                         (alex:symbolicate list-name '-nullable-collection)))))
+                                         (alex:symbolicate name '-collection-p)
+                                         (alex:symbolicate name '-nullable-collection-p)))))
       `(progn
          (defclass ,name
              ,@(if super-classes
@@ -134,7 +132,7 @@ this list.")
            ,list-slots)
          (define-printer (,list-name ,stream :type nil)
            (format ,stream "~a" ',list-name))
-         (define-type ,list-name)
+         (define-type ,list-name :list-type t)
          ,@(mapcar (lambda (symbol)
                      `(sera:export-always ',symbol :stripe))
                    export-symbols)))))
