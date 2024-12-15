@@ -91,7 +91,7 @@ learn about how `client_secret` should be handled.")
 automatically, or if it requires customer action to confirm the
 payment.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency

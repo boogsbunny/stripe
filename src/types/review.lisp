@@ -27,7 +27,7 @@ applicable.")
 not yet been closed. One of `approved`, `refunded`,
 `refunded_as_fraud`, `disputed`, or `redacted`.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (ip-address

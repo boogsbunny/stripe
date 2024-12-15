@@ -25,7 +25,7 @@ which triggered this transaction.")
    :documentation "If this is a `type=applied_to_payment` transaction,
 contains information about how funds were applied.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency

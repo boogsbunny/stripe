@@ -41,7 +41,7 @@ mandate.")
 
 (define-object mandate-customer-acceptance ()
   (accepted-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "The time that the customer accepts the mandate.")
   (offline
    :type (or mandate-customer-acceptance-offline null))

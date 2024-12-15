@@ -44,7 +44,7 @@ is `application`, which includes Custom accounts.")
   (country
    :documentation "The account's country.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the account was connected. Measured
 in seconds since the Unix epoch.")
   (default-currency

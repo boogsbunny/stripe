@@ -34,7 +34,7 @@ the source is \"cash_balance\". The `settings[reconciliation_mode]` field
 describes if these funds apply to these payment intents manually or
 automatically.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency

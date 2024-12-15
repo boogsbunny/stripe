@@ -6,7 +6,7 @@
     (ironclad:update-hmac hmac
                           (concatenate '(vector (unsigned-byte 8))
                                        (ironclad:ascii-string-to-byte-array
-                                        (format nil "~D" (local-time:timestamp-to-unix timestamp)))
+                                        (format nil "~D" (time:timestamp-to-unix timestamp)))
                                        #(46) ; ASCII code for '.'
                                        payload))
     (ironclad:hmac-digest hmac)))
@@ -45,7 +45,7 @@ signing secret and options."
       (destructuring-bind (timestamp signatures) (parse-signature-header header)
         (let ((expected-signature (compute-signature timestamp payload secret)))
           (when (and enforce-tolerance
-                     (> (local-time:timestamp-difference (local-time:now) timestamp)
+                     (> (time:timestamp-difference (time:now) timestamp)
                         tolerance))
             (error 'webhook-timestamp-too-old))
           (some (lambda (sig) (equalp expected-signature sig)) signatures)))

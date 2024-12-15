@@ -18,11 +18,11 @@ Related guide: [File upload guide](https://stripe.com/docs/file-upload)"
    :documentation "String representing the object's type. Objects of
 the same type share the same value.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (expires-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "The file expires and isn't available at this time in
 epoch seconds.")
   (filename
@@ -87,7 +87,7 @@ newly created file. Creating a link is only possible when the file’s
 `issuing_regulatory_reporting`, `pci_document`,
 `tax_document_user_upload`, or `terminal_reader_splashscreen`.")
   (expires-at
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The link isn’t available after this future
 timestamp.")
   (metadata

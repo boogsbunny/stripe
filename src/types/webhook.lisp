@@ -15,7 +15,7 @@
   (api-version
    :type string)
   (created
-   :type local-time:timestamp)
+   :type time:timestamp)
   (type
    :reader webhook-event-type
    :type string)

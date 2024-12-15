@@ -33,7 +33,7 @@ refunds).")
    :documentation "ID of the charge that the application fee was taken
 from.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency

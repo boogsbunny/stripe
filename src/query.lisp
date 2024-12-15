@@ -21,7 +21,7 @@
   (encode-key value))
 
 (defmethod encode-type ((type (eql :timestamp)) value)
-  (local-time:timestamp-to-unix value))
+  (time:timestamp-to-unix value))
 
 (defmethod encode-type ((type (eql :object)) value)
   (id value))
@@ -38,7 +38,7 @@
     (json-boolean (encode-type :boolean value))
     (number (encode-type :number value))
     (string value)
-    (local-time:timestamp (encode-type :timestamp value))
+    (time:timestamp (encode-type :timestamp value))
     (stripe-object (encode-type :object value))))
 
 (defgeneric encode-parameter (type key value))
@@ -75,7 +75,7 @@
     ((cons plist (or null cons)) (encode-parameter :array key value))
     (plist (encode-parameter :dictionary key value))
     (list (encode-parameter :list key value))
-    (local-time:timestamp (list (encode-parameter :timestamp key value)))
+    (time:timestamp (list (encode-parameter :timestamp key value)))
     (stripe-object (list (encode-parameter :object key value)))))
 
 (defun post-parameters (&rest parameters)

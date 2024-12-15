@@ -13,14 +13,14 @@ retrieve the contents of the file without authentication."
    :documentation "String representing the object's type. Objects of
 the same type share the same value.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (expired
    :type boolean
    :documentation "Returns if the link is already expired.")
   (expires-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "Time that the link expires.")
   (file
    :type (or string file)

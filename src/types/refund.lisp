@@ -25,7 +25,7 @@ your account balance.")
    :type (or string charge null)
    :documentation "ID of the charge that's refunded.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency
@@ -503,7 +503,7 @@ can be `pending`, `available` or `unavailable`.")
   (email-sent
    :type refund-next-action-display-details-email-sent)
   (expires-at
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The expiry timestamp."))
 
 (defmethod initialize-instance :after ((instance refund-next-action-display-details)
@@ -523,7 +523,7 @@ can be `pending`, `available` or `unavailable`.")
 
 (define-object refund-next-action-display-details-email-sent ()
   (email-sent-at
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The timestamp when the email was sent.")
   (email-sent-to
    :type string

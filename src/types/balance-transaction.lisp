@@ -14,9 +14,9 @@ Related guide: [Balance transaction types]
   (amount
    :type integer)
   (available-on
-   :type local-time:timestamp)
+   :type time:timestamp)
   (created
-   :type local-time:timestamp)
+   :type time:timestamp)
   (currency
    :type string)
   (description

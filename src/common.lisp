@@ -212,6 +212,6 @@ using the local-time:unix-to-timestamp function.
 If unix-time is any other value, then the function returns nil."
   (cond
     ((eq unix-time 'null) nil)
-    ((integerp unix-time) (local-time:unix-to-timestamp unix-time))
-    ((stringp unix-time) (local-time:unix-to-timestamp (parse-integer unix-time)))
+    ((integerp unix-time) (time:unix-to-timestamp unix-time))
+    ((stringp unix-time) (time:unix-to-timestamp (parse-integer unix-time)))
     (t nil)))

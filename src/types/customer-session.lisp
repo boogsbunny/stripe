@@ -26,14 +26,14 @@ page that includes the client secret.")
    :documentation "Configuration for the components supported by this
 Customer Session.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (customer
    :type (or string customer)
    :documentation "The Customer the Customer Session was created for.")
   (expires-at
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The timestamp at which this Customer Session will
 expire.")
   (livemode

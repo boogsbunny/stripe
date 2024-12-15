@@ -11,7 +11,7 @@ of the following: `business_icon`, `business_logo`,
 `customer_signature`, `dispute_evidence`, `pci_document`, or
 `tax_document_user_upload`.")
   (expires-at
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The timestamp at which the link expires.")
   (metadata
    :documentation "Set of [key-value pairs]
@@ -30,7 +30,7 @@ updated."
     :type string
     :documentation "The ID of the file link to update."))
   (expires-at
-   :type (or string local-time:timestamp)
+   :type (or string time:timestamp)
    :documentation "A future timestamp after which the link will no
 longer be usable, or `now` to expire the link immediately.")
   (metadata

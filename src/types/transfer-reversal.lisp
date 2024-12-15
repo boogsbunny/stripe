@@ -32,7 +32,7 @@ the same type share the same value.")
    :documentation "Balance transaction that describes the impact on
 your account balance.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency

@@ -57,7 +57,7 @@ field defaults to “unspecified”. One of `always`, `limited`, or
   (cashapp
    :type (or payment-method-cashapp null))
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (customer
@@ -462,7 +462,7 @@ receipts. Only required for EMV transactions.")
 
 (define-object generated-from-payment-method-details-card-present-offline ()
   (stored-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "Time at which the payment was collected while
 offline.")
   (type
@@ -716,7 +716,7 @@ the details of the card wallet."))
 
 (define-object payment-method-card-present-offline ()
   (stored-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "Time at which the payment was collected while
 offline.")
   (type

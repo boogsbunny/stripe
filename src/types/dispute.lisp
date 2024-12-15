@@ -28,7 +28,7 @@ of this dispute.")
    :type (or string charge)
    :documentation "ID of the charge that's disputed.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency
@@ -454,7 +454,7 @@ submission."))
 
 (define-object dispute-evidence-details ()
   (due-by
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "Date by which evidence must be submitted in order to
 successfully challenge dispute. Will be 0 if the customer's bank or
 credit card company doesn't allow a response for this particular

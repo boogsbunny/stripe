@@ -72,7 +72,7 @@ exists for card payments.")
 Boolean represents whether it is still uncaptured or has since been
 captured.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (currency
@@ -421,7 +421,7 @@ Transaction ID (dsTransId) for this payment.")
 
 (define-object charge-card-present-offline ()
   (stored-at
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "Time at which the payment was collected while
 offline.")
   (type
@@ -727,7 +727,7 @@ consumers or CNPJ for businesses consumers)."))
    :documentation "Card brand. Can be `amex`, `diners`, `discover`,
 `eftpos_au`,`jcb`, `mastercard`, `unionpay`, `visa`, or `unknown`.")
   (capture-before
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "When using manual capture, a future timestamp at
 which the charge will be automatically refunded if uncaptured.")
   (checks
@@ -824,7 +824,7 @@ the details of the card wallet."))
 (https://stripe.com/docs/card-product-codes) that identifies the
 specific program or product associated with a card.")
   (capture-before
-   :type (or local-time:timestamp null)
+   :type (or time:timestamp null)
    :documentation "When using manual capture, a future timestamp after
 which the charge will be automatically refunded if uncaptured.")
   (cardholder-name

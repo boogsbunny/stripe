@@ -3,5 +3,6 @@
   (:local-nicknames
    (#:alex #:alexandria)
    (#:jzon #:com.inuoe.jzon)
-   (#:sera #:serapeum))
+   (#:sera #:serapeum)
+   (#:time #:local-time))
   (:documentation "The core package for Stripe API interaction."))

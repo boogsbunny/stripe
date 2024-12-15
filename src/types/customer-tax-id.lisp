@@ -23,7 +23,7 @@ the same type share the same value.")
    :documentation "Two-letter ISO code representing the country of the
 tax ID.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (customer

@@ -10,18 +10,18 @@
    :documentation "String representing the object's type. Objects of
 the same type share the same value.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which the object was created. Measured in
 seconds since the Unix epoch.")
   (deleted
    :documentation "Indicates whether the object is deleted. Presence
 indicates deletion.")
   (deletes-after
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which this clock is scheduled to auto
 delete.")
   (frozen-time
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time at which all objects belonging to this clock
 are frozen.")
   (livemode
@@ -44,7 +44,7 @@ mode or the value `false` if the object exists in test mode.")
 
 (define-object test-clock-status-details-advancing ()
   (target-frozen-time
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "The `frozen_time` that the Test Clock is advancing
 towards."))
 

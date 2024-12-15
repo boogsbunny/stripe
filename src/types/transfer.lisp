@@ -35,7 +35,7 @@ reversal was issued).")
    :documentation "Balance transaction that describes the impact of
 this transfer on your account balance.")
   (created
-   :type local-time:timestamp
+   :type time:timestamp
    :documentation "Time that this record of the transfer was first
 created.")
   (currency
