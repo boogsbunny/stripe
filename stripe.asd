@@ -28,6 +28,15 @@
      (:file "balance")
      (:file "balance-transaction")
      (:file "bank-account")
+     (:module "billing"
+      :components
+      ((:file "alert")
+       (:file "alert-triggered")
+       (:file "meter")))
+     (:module "billing-portal"
+      :components
+      ((:file "configuration")
+       (:file "session")))
      (:file "card")
      (:file "cash-balance")
      (:file "cash-balance-transaction")
