@@ -208,6 +208,36 @@ package, including readers, type predicates, and collection types."
                    else
                      collect key and collect value))))
 
+(defmacro define-event (name (&key type) &body args)
+  "Define a Stripe event class extending the base EVENT class.
+
+NAME: Symbol, the event class name to define
+TYPE: String, the specific event type (e.g., \"invoice.created\")
+ARGS: Event field definitions
+
+Example:
+  (define-event invoice-created-event (:type \"invoice.created\")
+    \"Occurs whenever a new invoice is created.\"
+    (data
+     :type invoice
+     :documentation \"The created invoice object.\"))"
+  `(define-object ,name (event)
+     ,@(if (stringp (car args))
+           (cons (car args)
+                 (cons `(type
+                         :reader event-type
+                         :type string
+                         :initform ,type
+                         :documentation "The specific event type.")
+                       (cdr args)))
+           (cons `(type
+                   :reader event-type
+                   :type string
+                   :initform ,type
+                   :documentation "The specific event type.")
+                 args))
+     (:list-type nil)))
+
 (define-object address ()
   (line1
    :extra-initargs (:address-line1)
