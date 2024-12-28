@@ -1,14 +1,24 @@
 (in-package #:stripe)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defstruct (object-spec (:predicate object-spec-p))
+    (list-type-disabled-p nil :type boolean)
+    (slots nil :type list)
+    (slot-readers nil :type list)))
+
 (defmacro define-object (name super-classes &body args)
-  "Defines a Stripe API object class and its corresponding paginated
-list container.
+  "Defines a Stripe API object class and its paginated list container.
+
+All top-level API resources support bulk fetches through \"list\" API
+methods, so by default this macro creates both the main class and its
+list container. The list container can be disabled with
+(:list-type nil) for non-top-level objects.
 
 For each object defined (e.g., CHARGE), this macro:
 1. Creates the main class inheriting from STRIPE-OBJECT.
-2. Creates a paginated list container class (e.g., LIST-CHARGE)
-following Stripe's list API format.
-3. Defines type predicates and collection types for both classes.
+2. Creates a paginated list container class (e.g., LIST-CHARGE) format
+by default.
+3. Defines type predicates for both classes.
 
 List Container Format (as per https://stripe.com/docs/api/pagination):
 - object: String, always set to \"list\"
@@ -16,11 +26,13 @@ List Container Format (as per https://stripe.com/docs/api/pagination):
 - has-more: Boolean indicating if more elements exist beyond this set
 - url: The URL for accessing this list
 
-Syntax:
-  (define-object name super-classes &rest fields)
-
-Fields are defined with:
-  (field-name &key reader type initform extra-initargs documentation)
+Arguments:
+  NAME          Symbol, the base name of the type to define
+  SUPER-CLASSES List of parent classes (defaults to STRIPE-OBJECT)
+  ARGS         Can include (:list-type nil) to disable list container,
+               and field definitions:
+                 (field-name &key reader type initform
+                  extra-initargs documentation)
 
 Example:
   (define-object charge ()
@@ -30,6 +42,13 @@ Example:
     (amount
      :type integer
      :documentation \"Amount in cents.\"))
+
+  ;; For non-top-level objects, disable list container:
+  (define-object event-data-object ()
+    (:list-type nil) ; Can appear anywhere in body
+    (object
+     :type event-data-object
+     :documentation \"The event data object.\"))
 
 This creates:
 - CHARGE class with specified fields
@@ -49,93 +68,126 @@ The list container can be used in other objects:
 List containers support Stripe's cursor-based pagination using:
 - limit: Number of objects to return (1-100, default 10)
 - starting_after: Object ID for fetching next page
-- ending_before: Object ID for fetching previous page"
+- ending_before: Object ID for fetching previous page
+
+All generated symbols are automatically exported from the :stripe
+package, including readers, type predicates, and collection types."
   (alex:with-gensyms (stream)
-    (let* ((doc-string (when (stringp (first args)) (first args)))
-           (fields (if doc-string (rest args) args))
-           (slot-readers
-             (remove nil
-                     (mapcar (lambda (x)
-                               (let* ((name (alex:ensure-list x))
-                                      (slot-name (first name))
-                                      (explicit-reader (getf (rest name) :reader)))
-                                 (or explicit-reader slot-name)))
-                             fields)))
-           (slots (mapcar
-                   (lambda (x)
-                     (let ((name (alex:ensure-list x)))
-                       (destructuring-bind (name
-                                            &key (reader name) (type t)
-                                              (initform nil) extra-initargs (documentation ""))
-                           name
-                         `(,(alex:symbolicate '#:% name)
-                           :reader ,reader
-                           :initarg ,(make-keyword name)
-                           :type ,type
-                           ,@(when (and initform (not (eq initform nil)))
-                               `(:initform ,initform))
-                           ,@(when extra-initargs
-                               `(,@(mapcan
-                                    (lambda (x)
-                                      `(:initarg ,x))
-                                    extra-initargs)))
-                           :documentation ,documentation))))
-                   fields))
-           (list-name (alex:symbolicate 'list- name))
-           (list-slots `((,(alex:symbolicate '#:% 'object)
-                          :reader object
-                          :initarg :object
-                          :type string
-                          :initform "list")
-                         (,(alex:symbolicate '#:% 'data)
-                          :reader data
-                          :initarg :data
-                          :type (vector ',name)
-                          :documentation "The array of objects contained in the list.")
-                         (,(alex:symbolicate '#:% 'has-more)
-                          :reader has-more
-                          :initarg :has-more
-                          :type boolean
-                          :documentation "Indicates whether there are more items beyond the ones in
-this list.")
-                         (,(alex:symbolicate '#:% 'url)
-                          :reader url
-                          :initarg :url
-                          :type string
-                          :documentation "The URL where this list can be accessed.")))
-           (export-symbols (append (list name list-name)
-                                   slot-readers
-                                   (list 'object 'data 'has-more 'url)
-                                   (list (alex:symbolicate name '-p)
-                                         (alex:symbolicate name '-nullable-p)
-                                         (alex:symbolicate list-name '-p)
-                                         (alex:symbolicate list-name '-nullable-p)
-                                         (alex:symbolicate name '-collection)
-                                         (alex:symbolicate name '-nullable-collection)
-                                         (alex:symbolicate name '-collection-p)
-                                         (alex:symbolicate name '-nullable-collection-p)))))
-      `(progn
-         (defclass ,name
-             ,@(if super-classes
-                   `(,super-classes)
-                   `((stripe-object)))
-           ,slots
-           ,@(when doc-string
-               `((:documentation ,doc-string))))
-         (define-printer (,name ,stream :type nil)
-           (if (and (slot-exists-p ,name '%id)
-                    (slot-boundp ,name '%id))
-               (format ,stream "~a ~a" ',name (id ,name))
-               (format ,stream "~a" ',name)))
-         (define-type ,name)
-         (defclass ,list-name (stripe-object)
-           ,list-slots)
-         (define-printer (,list-name ,stream :type nil)
-           (format ,stream "~a" ',list-name))
-         (define-type ,list-name :list-type t)
-         ,@(mapcar (lambda (symbol)
-                     `(sera:export-always ',symbol :stripe))
-                   export-symbols)))))
+    (labels ((compute-slot-readers (slots)
+               "Extract reader names from slot specifications."
+               (remove nil
+                       (mapcar (lambda (slot)
+                                 (let* ((spec (alex:ensure-list slot))
+                                        (name (first spec))
+                                        (explicit-reader (getf (rest spec) :reader)))
+                                   (or explicit-reader name)))
+                               slots)))
+
+             (parse-object-specification (args)
+               "Parse object specifications, extracting list-type directive and slots."
+               (let* ((list-type-spec (find :list-type args :key #'alex:ensure-car))
+                      (list-disabled-p (when list-type-spec
+                                         (not (second list-type-spec))))
+                      (slots (remove :list-type args :key #'alex:ensure-car))
+                      (slot-readers (compute-slot-readers slots)))
+                 (make-object-spec
+                  :list-type-disabled-p list-disabled-p
+                  :slots slots
+                  :slot-readers slot-readers)))
+
+             (compute-export-symbols (name list-name spec)
+               "Compute symbols to export based on object specification."
+               (append (list name)
+                       (unless (object-spec-list-type-disabled-p spec)
+                         (list list-name
+                               'object 'data 'has-more 'url
+                               (alex:symbolicate list-name '-p)
+                               (alex:symbolicate list-name '-nullable-p)))
+                       (object-spec-slot-readers spec)
+                       (list (alex:symbolicate name '-p)
+                             (alex:symbolicate name '-nullable-p)
+                             (alex:symbolicate name '-collection)
+                             (alex:symbolicate name '-nullable-collection)
+                             (alex:symbolicate name '-collection-p)
+                             (alex:symbolicate name '-nullable-collection-p))))
+
+             (make-slot-definition (spec)
+               "Generate a single slot definition with proper options."
+               (destructuring-bind (name &key (reader name) (type t)
+                                           initform extra-initargs (documentation ""))
+                   (alex:ensure-list spec)
+                 `(,(alex:symbolicate '#:% name)
+                   :reader ,reader
+                   :initarg ,(make-keyword name)
+                   :type ,type
+                   ,@(when initform
+                       `(:initform ,initform))
+                   ,@(when extra-initargs
+                       (mapcan (lambda (x) `(:initarg ,x)) extra-initargs))
+                   :documentation ,documentation)))
+
+             (generate-slot-definitions (slots)
+               "Generate slot definitions from specifications."
+               (mapcar #'make-slot-definition slots))
+
+             (generate-list-slots (element-type)
+               "Generate standard list container slots for pagination."
+               `((,(alex:symbolicate '#:% 'object)
+                  :reader object
+                  :initarg :object
+                  :type string
+                  :initform "list")
+                 (,(alex:symbolicate '#:% 'data)
+                  :reader data
+                  :initarg :data
+                  :type (vector ,element-type))
+                 (,(alex:symbolicate '#:% 'has-more)
+                  :reader has-more
+                  :initarg :has-more
+                  :type boolean)
+                 (,(alex:symbolicate '#:% 'url)
+                  :reader url
+                  :initarg :url
+                  :type string)))
+
+             (generate-printer-methods (name list-name object-spec stream)
+               "Generate printer methods using define-printer."
+               `((define-printer (,name ,stream :type nil)
+                   (if (and (slot-exists-p ,name '%id)
+                            (slot-boundp ,name '%id))
+                       (format ,stream "~A ~A" ',name (id ,name))
+                       (format ,stream "~A" ',name)))
+                 ,@(unless (object-spec-list-type-disabled-p object-spec)
+                     `((define-printer (,list-name ,stream :type nil)
+                         (format ,stream "~A" ',list-name))))))
+
+             (generate-type-definitions (name list-name spec)
+               `((define-type ,name)
+                 ,@(unless (object-spec-list-type-disabled-p spec)
+                     `((define-type ,list-name :list-type t))))))
+      (let* ((documentation (when (stringp (first args)) (pop args)))
+             (list-name (alex:symbolicate 'list- name))
+             (object-spec (parse-object-specification args))
+             (slots (generate-slot-definitions (object-spec-slots object-spec)))
+             (list-slots (generate-list-slots name))
+             (export-symbols (compute-export-symbols name list-name object-spec)))
+        `(progn
+           ;; define the main class
+           (defclass ,name ,(or super-classes '(stripe-object))
+             ,slots
+             ,@(when documentation `((:documentation ,documentation))))
+           ;; define the list container class if enabled
+           ,@(unless (object-spec-list-type-disabled-p object-spec)
+               `((defclass ,list-name (stripe-object)
+                   ,list-slots)))
+           ;; generate printer methods
+           ,@(generate-printer-methods name list-name object-spec stream)
+           ;; generate type definitions
+           ,@(generate-type-definitions name list-name object-spec)
+           ;; export all generated symbols
+           ,@(mapcar (lambda (symbol)
+                       `(sera:export-always ',symbol :stripe))
+                     export-symbols))))))
 
 (defclass stripe-object () ())
 
