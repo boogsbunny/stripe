@@ -43,21 +43,21 @@ Arguments:
                    ,(format nil "Predicate for sequences of ~A objects.~%~
                               Returns T if L is a sequence where every element ~
                               is ~A ~A object."
-                           name (if vowel-start-p "an" "a") name)
+                            name (if vowel-start-p "an" "a") name)
                    (and (typep l 'sequence) (every #',type-p l)))
                  (deftype ,collection ()
                    ,(format nil "Type for sequences of ~A objects.~%~
                               Satisfies ~(~A-collection-p~)."
-                           name name)
+                            name name)
                    '(satisfies ,collection-p))
                  (defun ,nullable-collection-p (l)
                    ,(format nil "Predicate for nullable sequences of ~A objects.~%~
                               Returns T if L is null or a sequence where every ~
                               element is ~A ~A object."
-                           name (if vowel-start-p "an" "a") name)
+                            name (if vowel-start-p "an" "a") name)
                    (or (null l) (and (listp l) (every #',nullable-p l))))
                  (deftype ,nullable-collection ()
                    ,(format nil "Type for nullable sequences of ~A objects.~%~
                               Satisfies ~(~A-nullable-collection-p~)."
-                           name name)
+                            name name)
                    '(satisfies ,nullable-collection-p)))))))))
