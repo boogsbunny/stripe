@@ -55,13 +55,13 @@
      (:file "session")
      (:file "subscription")
      (:file "subscription-item")
+     (:module "test-helpers"
+      :components
+      ((:file "test-clock")))
      (:file "token")
      (:file "transfer")
      (:file "transfer-reversal")
-     (:file "webhook")
-     (:module "test-helpers"
-      :components
-      ((:file "test-clock")))))
+     (:file "webhook")))
    (:module "api"
     :components
     ((:file "balance")
