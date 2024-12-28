@@ -40,6 +40,7 @@
      (:file "customer-tax-id")
      (:file "discount")
      (:file "dispute")
+     (:file "external-account")
      (:file "file")
      (:file "file-link")
      (:file "invoice")
