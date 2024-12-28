@@ -305,3 +305,15 @@ Your customers will be able to log in with their
 [email](https://stripe.com/docs/api/customers/object#customer_object-email)
 and receive a link to their customer portal.")
   (:list-type nil))
+
+(define-object api-login-page ()
+  "The hosted login page for this configuration. Learn more about the
+portal login page in our
+[integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share)."
+  (enabled
+   :type boolean
+   :documentation "Set to `true` to generate a shareable URL
+`login_page.url` that will take your customers to a hosted login page
+for the customer portal. Set to `false` to deactivate the
+`login_page.url`.")
+  (:list-type nil))

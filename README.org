@@ -309,8 +309,8 @@ including details like all object attributes and complete endpoint coverage.
   <ul>
     <li>&#x2610; <a href="https://docs.stripe.com/api/credit_notes">Credit Note</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/customer_balance_transactions">Customer Balance Transaction</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_portal/sessions">Customer Portal Session</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/customer_portal/configurations">Customer Portal Configuration</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/customer_portal/sessions">Customer Portal Session</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/customer_portal/configurations">Customer Portal Configuration</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/invoices">Invoices</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/invoiceitems">Invoice Items</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/invoice-line-item">Invoice Line Item</a></li>
