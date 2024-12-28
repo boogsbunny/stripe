@@ -40,6 +40,8 @@
      (:file "customer-tax-id")
      (:file "discount")
      (:file "dispute")
+     (:file "event")
+     (:file "event-type")
      (:file "external-account")
      (:file "file")
      (:file "file-link")
