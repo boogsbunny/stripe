@@ -102,11 +102,10 @@ information with deleted property set to true.
 Example:
 
   (retrieve-customer :customer \"cus_123\")"
-  (:get
-   "customers/~a"
-   (id
-    :type string
-    :documentation "The ID of the customer to retrieve.")))
+  (:get "customers/~a"
+        (id
+         :type string
+         :documentation "The ID of the customer to retrieve.")))
 
 (define-query update-customer (:type customer)
   "Updates the specified customer by setting the values of the
@@ -146,11 +145,10 @@ Returns an object with deleted set to true on success.
 
 Example:
   (delete-customer :customer \"cus_123\")"
-  (:delete
-   "customers/~a"
-   (id
-    :type string
-    :documentation "The ID of the customer to delete.")))
+  (:delete "customers/~a"
+           (id
+            :type string
+            :documentation "The ID of the customer to delete.")))
 
 (define-query list-customers (:type vector)
   "List all customers, sorted by creation date (most recent first).

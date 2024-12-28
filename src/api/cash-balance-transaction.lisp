@@ -5,25 +5,23 @@
 
 Retrieves a specific cash balance transaction, which updated the
 customer's cash balance."
-  (:get
-   "customers/~a/cash_balance_transactions/~a"
-   (customer-id
-    :type string
-    :documentation "The ID of the customer who owns the cash balance
+  (:get "customers/~a/cash_balance_transactions/~a"
+        (customer-id
+         :type string
+         :documentation "The ID of the customer who owns the cash balance
 transaction.")
-   (transaction-id
-    :type string
-    :documentation "The ID of the cash balance transaction to retrieve.")))
+        (transaction-id
+         :type string
+         :documentation "The ID of the cash balance transaction to retrieve.")))
 
 (define-query list-cash-balance-transactions (:type vector)
   "List a customer's cash balance transactions.
 
 Returns a list of transactions that modified the customer's cash balance."
-  (:get
-   "customers/~a/cash_balance_transactions"
-   (id
-    :type string
-    :documentation "The ID of the customer whose transactions to
+  (:get "customers/~a/cash_balance_transactions"
+        (id
+         :type string
+         :documentation "The ID of the customer whose transactions to
 retrieve."))
   (ending-before
    :type string
@@ -49,11 +47,10 @@ the next page of the list."))
 
 Creates an incoming testmode bank transfer for the customer's cash
 balance."
-  (:post
-   "test_helpers/customers/~a/fund_cash_balance"
-   (id
-    :type string
-    :documentation "The ID of the customer whose cash balance to fund."))
+  (:post "test_helpers/customers/~a/fund_cash_balance"
+         (id
+          :type string
+          :documentation "The ID of the customer whose cash balance to fund."))
   (amount
    :type integer
    :required t

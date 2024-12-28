@@ -11,11 +11,10 @@ Depending on your dispute type, different evidence fields will give you
 a better chance of winning your dispute. To figure out which evidence
 fields to provide, see our
 [guide to dispute types](https://docs.stripe.com/disputes/categories)."
-  (:post
-   "disputes/~a"
-   (id
-    :type string
-    :documentation "The ID of the dispute to update."))
+  (:post "disputes/~a"
+         (id
+          :type string
+          :documentation "The ID of the dispute to update."))
   (evidence
    :type dispute-update-evidence
    :documentation "Evidence to upload, to respond to a dispute.
@@ -38,11 +37,10 @@ making another request with this attribute set to `true` (the default)."))
 
 (define-query retrieve-dispute (:type dispute)
   "Retrieves the dispute with the given ID."
-  (:get
-   "disputes/~a"
-   (id
-    :type string
-    :documentation "The ID of the dispute to retrieve.")))
+  (:get "disputes/~a"
+        (id
+         :type string
+         :documentation "The ID of the dispute to retrieve.")))
 
 (define-query list-disputes (:type vector)
   "Returns a list of your disputes."
@@ -85,8 +83,7 @@ acknowledging it as lost.
 
 The status of the dispute will change from needs_response to lost.
 Closing a dispute is irreversible."
-  (:post
-   "disputes/~a/close"
-   (id
-    :type string
-    :documentation "The ID of the dispute to close.")))
+  (:post "disputes/~a/close"
+         (id
+          :type string
+          :documentation "The ID of the dispute to close.")))

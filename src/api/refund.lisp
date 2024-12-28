@@ -76,11 +76,10 @@ passed parameters. Any parameters that you don’t provide remain
 unchanged.
 
 This request only accepts metadata as an argument."
-  (:post
-   "refunds/~a"
-   (id
-    :type string
-    :documentation "The ID of the refund to update."))
+  (:post "refunds/~a"
+         (id
+          :type string
+          :documentation "The ID of the refund to update."))
   (metadata
    :documentation "Set of [key-value pairs]
 (https://stripe.com/docs/api/metadata) that you can attach to an
@@ -91,11 +90,10 @@ o `metadata`."))
 
 (define-query retrieve-refund (:type refund)
   "Retrieves the details of an existing refund."
-  (:get
-   "refunds/~a"
-   (id
-    :type string
-    :documentation "The ID of the refund to retrieve.")))
+  (:get "refunds/~a"
+        (id
+         :type string
+         :documentation "The ID of the refund to retrieve.")))
 
 (define-query list-refunds (:type vector)
   "Returns a list of all refunds you created. We return the refunds in
@@ -137,8 +135,7 @@ fetch the next page of the list."))
 You can’t cancel refunds in other states. Only refunds for payment
 methods that require customer action can enter the `requires_action`
 state."
-  (:get
-   "refunds/~a/cancel"
-   (id
-    :type string
-    :documentation "The ID of the refund to cancel.")))
+  (:get "refunds/~a/cancel"
+        (id
+         :type string
+         :documentation "The ID of the refund to cancel.")))

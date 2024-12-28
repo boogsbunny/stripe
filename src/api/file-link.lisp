@@ -24,11 +24,10 @@ o `metadata`."))
 (define-query update-file-link (:type file-link)
   "Updates an existing file link object. Expired links can no longer be
 updated."
-  (:post
-   "file_links/~a"
-   (id
-    :type string
-    :documentation "The ID of the file link to update."))
+  (:post "file_links/~a"
+         (id
+          :type string
+          :documentation "The ID of the file link to update."))
   (expires-at
    :type (or string time:timestamp)
    :documentation "A future timestamp after which the link will no
@@ -44,9 +43,9 @@ o `metadata`."))
 (define-query retrieve-file-link (:type file-link)
   "Retrieves the file link with the given ID."
   (:get "file_links/~a"
-   (id
-    :type string
-    :documentation "The ID of the file link to retrieve.")))
+        (id
+         :type string
+         :documentation "The ID of the file link to retrieve.")))
 
 (define-query list-file-links (:type vector)
   "Returns a list of file links."
