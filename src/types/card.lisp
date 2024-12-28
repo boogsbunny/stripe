@@ -20,3 +20,9 @@
   last4
   name
   tokenization-method)
+
+(define-object deleted-card ()
+  id
+  object
+  currency
+  deleted)
