@@ -210,3 +210,266 @@ configuration, if any.")
    :type billing-portal-configuration-updated-event-data
    :documentation "The event data containing the billing portal
 configuration."))
+
+(define-object billing-portal-session-created-event-data (event-data)
+  (object
+   :type billing-portal-session
+   :documentation "The billing portal session.")
+  (previous-attributes
+   :type (or billing-portal-session null)
+   :documentation "Previous attributes of the billing portal session,
+if any.")
+  (:list-type nil))
+
+(define-event billing-portal-session-created-event (:type "billing_portal.session.created")
+  "Occurs whenever a portal session is created."
+  (data
+   :type billing-portal-session-created-event-data
+   :documentation "The event data containing the billing portal
+session."))
+
+(define-object capability-updated-event-data (event-data)
+  (object
+   :type capability
+   :documentation "The account capability.")
+  (previous-attributes
+   :type (or capability null)
+   :documentation "Previous attributes of the account capability,
+if any.")
+  (:list-type nil))
+
+(define-event capability-updated-event (:type "capability.updated")
+  "Occurs whenever a capability has new requirements or a new status."
+  (data
+   :type capability-updated-event-data
+   :documentation "The event data containing the account capability."))
+
+(define-object cash-balance-funds-available-event-data (event-data)
+  (object
+   :type cash-balance
+   :documentation "The cash balance.")
+  (previous-attributes
+   :type (or cash-balance null)
+   :documentation "Previous attributes of the cash balance,
+if any.")
+  (:list-type nil))
+
+(define-event cash-balance-funds-available-event (:type "cash_balance.funds_available")
+  "Occurs whenever there is a positive remaining cash balance after
+Stripe automatically reconciles new funds into the cash balance. If you
+enabled manual reconciliation, this webhook will fire whenever there
+are new funds into the cash balance."
+  (data
+   :type cash-balance-funds-available-event-data
+   :documentation "The event data containing the cash balance."))
+
+(define-object charge-captured-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or charge null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-captured-event (:type "charge.captured")
+  "Occurs whenever a previously uncaptured charge is captured."
+  (data
+   :type charge-captured-event-data
+   :documentation "The event data containing the charge."))
+
+(define-object charge-dispute-closed-event-data (event-data)
+  (object
+   :type dispute
+   :documentation "The dispute.")
+  (previous-attributes
+   :type (or dispute null)
+   :documentation "Previous attributes of the dispute,
+if any.")
+  (:list-type nil))
+
+(define-event charge-dispute-closed-event (:type "charge.dispute.closed")
+  "Occurs when a dispute is closed and the dispute status changes to
+`lost`, `warning_closed`, or `won`."
+  (data
+   :type charge-dispute-closed-event-data
+   :documentation "The event data containing the dispute."))
+
+(define-object charge-dispute-created-event-data (event-data)
+  (object
+   :type dispute
+   :documentation "The dispute.")
+  (previous-attributes
+   :type (or dispute null)
+   :documentation "Previous attributes of the dispute,
+if any.")
+  (:list-type nil))
+
+(define-event charge-dispute-closed-event (:type "charge.dispute.created")
+  "Occurs whenever a customer disputes a charge with their bank."
+  (data
+   :type charge-dispute-created-event-data
+   :documentation "The event data containing the dispute."))
+
+(define-object charge-dispute-funds-reinstated-event-data (event-data)
+  (object
+   :type dispute
+   :documentation "The dispute.")
+  (previous-attributes
+   :type (or dispute null)
+   :documentation "Previous attributes of the dispute,
+if any.")
+  (:list-type nil))
+
+(define-event charge-dispute-funds-reinstated-event (:type "charge.dispute.funds_reinstated")
+  "Occurs when funds are reinstated to your account after a dispute is
+closed. This includes [partially refunded payments](https://docs.stripe.com/disputes#disputes-on-partially-refunded-payments)."
+  (data
+   :type charge-dispute-funds-reinstated-event-data
+   :documentation "The event data containing the dispute."))
+
+(define-object charge-dispute-funds-withdrawn-event-data (event-data)
+  (object
+   :type dispute
+   :documentation "The dispute.")
+  (previous-attributes
+   :type (or dispute null)
+   :documentation "Previous attributes of the dispute,
+if any.")
+  (:list-type nil))
+
+(define-event charge-dispute-funds-withdrawn-event (:type "charge.dispute.funds_withdrawn")
+  "Occurs when funds are removed from your account due to a dispute."
+  (data
+   :type charge-dispute-funds-withdrawn-event-data
+   :documentation "The event data containing the dispute."))
+
+(define-object charge-dispute-updated-event-data (event-data)
+  (object
+   :type dispute
+   :documentation "The dispute.")
+  (previous-attributes
+   :type (or dispute null)
+   :documentation "Previous attributes of the dispute,
+if any.")
+  (:list-type nil))
+
+(define-event charge-dispute-updated-event (:type "charge.dispute.updated")
+  "Occurs when the dispute is updated (usually with evidence)."
+  (data
+   :type charge-dispute-updated-event-data
+   :documentation "The event data containing the dispute."))
+
+(define-object charge-expired-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or charge null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-expired-event (:type "charge.expired")
+  "Occurs whenever an uncaptured charge expires."
+  (data
+   :type charge-expired-event-data
+   :documentation "The event data containing the charge."))
+
+(define-object charge-failed-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or charge null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-failed-event (:type "charge.failed")
+  "Occurs whenever a failed charge attempt occurs."
+  (data
+   :type charge-failed-event-data
+   :documentation "The event data containing the charge."))
+
+(define-object charge-pending-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or charge null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-pending-event (:type "charge.pending")
+  "Occurs whenever a pending charge is created."
+  (data
+   :type charge-pending-event-data
+   :documentation "The event data containing the charge."))
+
+(define-object charge-refund-updated-event-data (event-data)
+  (object
+   :type refund
+   :documentation "The refund.")
+  (previous-attributes
+   :type (or refund null)
+   :documentation "Previous attributes of the refund,
+if any.")
+  (:list-type nil))
+
+(define-event charge-refund-updated-event (:type "charge.refund.updated")
+  "Occurs whenever a refund is updated, on selected payment methods."
+  (data
+   :type charge-refund-updated-event-data
+   :documentation "The event data containing the refund."))
+
+(define-object charge-refunded-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or refund null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-refunded-event (:type "charge.refunded")
+  "Occurs whenever a charge is refunded, including partial refunds."
+  (data
+   :type charge-refunded-event-data
+   :documentation "The event data containing the charge refunded."))
+
+(define-object charge-succeeded-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or refund null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-succeeded-event (:type "charge.suceeded")
+  "Occurs whenever a charge is successful."
+  (data
+   :type charge-succeeded-event-data
+   :documentation "The event data containing the charge."))
+
+(define-object charge-updated-event-data (event-data)
+  (object
+   :type charge
+   :documentation "The charge.")
+  (previous-attributes
+   :type (or refund null)
+   :documentation "Previous attributes of the charge,
+if any.")
+  (:list-type nil))
+
+(define-event charge-updated-event (:type "charge.updated")
+  "Occurs whenever a charge description or metadata is updated, or upon
+an asynchronous capture."
+  (data
+   :type charge-updated-event-data
+   :documentation "The event data containing the charge."))
