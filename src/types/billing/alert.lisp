@@ -51,7 +51,7 @@ usage on a specific
    :documentation "The filters allow limiting the scope of this usage
 alert. You can only specify up to one filter at this time.")
   (gte
-   :type number
+   :type integer
    :documentation "The value at which this alert will trigger.")
   (meter
    :type (or string billing-meter)

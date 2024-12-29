@@ -75,11 +75,11 @@ user who initiated the payment."))
    :documentation "Two-letter ISO code representing the country where
 the payment originated.")
   (latitude
-   :type (or number null)
+   :type (or integer null)
    :documentation "The geographic latitude where the payment
 originated.")
   (longitude
-   :type (or number null)
+   :type (or integer null)
    :documentation "The geographic longitude where the payment
 originated.")
   (region

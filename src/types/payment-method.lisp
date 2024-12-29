@@ -335,7 +335,7 @@ Always `card_present`."))
 
 (define-object generated-from-payment-method-details-card-present ()
   (amount-authorized
-   :type (or number null)
+   :type (or integer null)
    :documentation "The authorized amount.")
   (brand
    :type (or string null)

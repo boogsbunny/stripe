@@ -24,7 +24,7 @@ seconds since the Unix epoch.")
    :documentation "Has the value `true` if the object exists in live
 mode or the value `false` if the object exists in test mode.")
   (value
-   :type number
+   :type integer
    :documentation "The value triggering the alert."))
 
 (defmethod initialize-instance :after ((instance billing-alert-triggered)
