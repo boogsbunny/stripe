@@ -306,7 +306,7 @@ if any.")
 if any.")
   (:list-type nil))
 
-(define-event charge-dispute-closed-event (:type "charge.dispute.created")
+(define-event charge-dispute-created-event (:type "charge.dispute.created")
   "Occurs whenever a customer disputes a charge with their bank."
   (data
    :type charge-dispute-created-event-data
