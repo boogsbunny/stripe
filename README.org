@@ -344,7 +344,7 @@ including details like all object attributes and complete endpoint coverage.
     <li>&#x2610; <a href="https://docs.stripe.com/api/account_sessions">Account Session</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/application_fees">Application Fees</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/fee_refunds">Application Fee Refunds</a></li>
-    <li>&#x2610; <a href="https://docs.stripe.com/api/capabilities">Capabilities</a></li>
+    <li>&#x2611; <a href="https://docs.stripe.com/api/capabilities">Capabilities</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/country_specs">Country Specs</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/external_accounts">External Bank Accounts</a></li>
     <li>&#x2610; <a href="https://docs.stripe.com/api/external_account_cards">External Account Cards</a></li>

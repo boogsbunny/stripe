@@ -37,6 +37,7 @@
       :components
       ((:file "configuration")
        (:file "session")))
+     (:file "capability")
      (:file "card")
      (:file "cash-balance")
      (:file "cash-balance-transaction")
@@ -82,6 +83,7 @@
       :components
       ((:file "configuration")
        (:file "session")))
+     (:file "capability")
      (:file "card")
      (:file "cash-balance")
      (:file "cash-balance-transaction")
