@@ -25,7 +25,8 @@ object represents.")
    :documentation "Has the value `true` if the object exists in live
 mode or the value `false` if the object exists in test mode.")
   (settings
-   :type cash-balance-settings))
+   :type cash-balance-settings)
+  (:list-type t))
 
 (define-object cash-balance-settings ()
   (reconciliation-mode

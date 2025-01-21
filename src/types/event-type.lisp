@@ -6,8 +6,7 @@
    :documentation "The application object.")
   (previous-attributes
    :type (or application null)
-   :documentation "Previous attributes of the application, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the application, if any."))
 
 (define-event account-application-authorized-event (:type "account.application.authorized")
   "Occurs whenever a user authorizes an application. Sent to the
@@ -22,8 +21,7 @@ related application only."
    :documentation "The application object.")
   (previous-attributes
    :type (or application null)
-   :documentation "Previous attributes of the application, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the application, if any."))
 
 (define-event account-application-deauthorized-event (:type "account.application.deauthorized")
   "Occurs whenever a user deauthorizes an application. Sent to the
@@ -38,8 +36,7 @@ related application only."
    :documentation "The external account object.")
   (previous-attributes
    :type (or external-account null)
-   :documentation "Previous attributes of the external account, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the external account, if any."))
 
 (define-event account-external-account-created-event (:type "account.external_account.created")
   "Occurs whenever an external account is created."
@@ -53,8 +50,7 @@ related application only."
    :documentation "The external account object.")
   (previous-attributes
    :type (or external-account null)
-   :documentation "Previous attributes of the external account, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the external account, if any."))
 
 (define-event account-external-account-deleted-event (:type "account.external_account.deleted")
   "Occurs whenever an external account is deleted."
@@ -68,8 +64,7 @@ related application only."
    :documentation "The external account object.")
   (previous-attributes
    :type (or external-account null)
-   :documentation "Previous attributes of the external account, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the external account, if any."))
 
 (define-event account-external-account-updated-event (:type "account.external_account.updated")
   "Occurs whenever an external account is updated."
@@ -83,8 +78,7 @@ related application only."
    :documentation "The account object.")
   (previous-attributes
    :type (or account null)
-   :documentation "Previous attributes of the account, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the account, if any."))
 
 (define-event account-updated-event (:type "account.updated")
   "Occurs whenever an account status or property has changed."
@@ -98,8 +92,7 @@ related application only."
    :documentation "The application fee object.")
   (previous-attributes
    :type (or application-fee null)
-   :documentation "Previous attributes of the application fee, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the application fee, if any."))
 
 (define-event application-fee-created-event (:type "application_fee.created")
   "Occurs whenever an application fee is created on a charge."
@@ -115,7 +108,7 @@ related application only."
 ;;   (previous-attributes
 ;;    :type (or fee-refund null)
 ;;    :documentation "Previous attributes of the fee refund, if any.")
-;;   (:list-type nil))
+;;   )
 ;;
 ;; (define-event application-fee-refund-updated-event (:type "application_fee.refund.updated")
 ;;   "Occurs whenever an application fee refund is updated."
@@ -129,8 +122,7 @@ related application only."
    :documentation "The application fee object.")
   (previous-attributes
    :type (or application-fee null)
-   :documentation "Previous attributes of the application fee, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the application fee, if any."))
 
 (define-event application-fee-refunded-event (:type "application_fee.refunded")
   "Occurs whenever an application fee is refunded, whether from
@@ -146,8 +138,7 @@ includes partial refunds."
    :documentation "The balance object.")
   (previous-attributes
    :type (or balance null)
-   :documentation "Previous attributes of the balance, if any.")
-  (:list-type nil))
+   :documentation "Previous attributes of the balance, if any."))
 
 (define-event balance-available-event (:type "balance.available")
   "Occurs whenever your Stripe balance has been updated (e.g., when a
@@ -165,8 +156,7 @@ This event is not fired for negative transactions."
   (previous-attributes
    :type (or billing-alert-triggered null)
    :documentation "Previous attributes of the billing alert triggered
-object, if any.")
-  (:list-type nil))
+object, if any."))
 
 (define-event billing-alert-triggered-event (:type "billing.alert.triggered")
   "Occurs whenever your custom alert threshold is met."
@@ -182,8 +172,7 @@ been triggered."))
   (previous-attributes
    :type (or billing-portal-configuration null)
    :documentation "Previous attributes of the billing portal
-configuration, if any.")
-  (:list-type nil))
+configuration, if any."))
 
 (define-event billing-portal-configuration-created-event (:type
                                                           "billing_portal.configuration.created")
@@ -200,8 +189,7 @@ configuration."))
   (previous-attributes
    :type (or billing-portal-configuration null)
    :documentation "Previous attributes of the billing portal
-configuration, if any.")
-  (:list-type nil))
+configuration, if any."))
 
 (define-event billing-portal-configuration-updated-event (:type
                                                           "billing_portal.configuration.updated")
@@ -218,8 +206,7 @@ configuration."))
   (previous-attributes
    :type (or billing-portal-session null)
    :documentation "Previous attributes of the billing portal session,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event billing-portal-session-created-event (:type "billing_portal.session.created")
   "Occurs whenever a portal session is created."
@@ -235,8 +222,7 @@ session."))
   (previous-attributes
    :type (or capability null)
    :documentation "Previous attributes of the account capability,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event capability-updated-event (:type "capability.updated")
   "Occurs whenever a capability has new requirements or a new status."
@@ -251,8 +237,7 @@ if any.")
   (previous-attributes
    :type (or cash-balance null)
    :documentation "Previous attributes of the cash balance,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event cash-balance-funds-available-event (:type "cash_balance.funds_available")
   "Occurs whenever there is a positive remaining cash balance after
@@ -270,8 +255,7 @@ are new funds into the cash balance."
   (previous-attributes
    :type (or charge null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-captured-event (:type "charge.captured")
   "Occurs whenever a previously uncaptured charge is captured."
@@ -286,8 +270,7 @@ if any.")
   (previous-attributes
    :type (or dispute null)
    :documentation "Previous attributes of the dispute,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-dispute-closed-event (:type "charge.dispute.closed")
   "Occurs when a dispute is closed and the dispute status changes to
@@ -303,8 +286,7 @@ if any.")
   (previous-attributes
    :type (or dispute null)
    :documentation "Previous attributes of the dispute,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-dispute-created-event (:type "charge.dispute.created")
   "Occurs whenever a customer disputes a charge with their bank."
@@ -319,8 +301,7 @@ if any.")
   (previous-attributes
    :type (or dispute null)
    :documentation "Previous attributes of the dispute,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-dispute-funds-reinstated-event (:type "charge.dispute.funds_reinstated")
   "Occurs when funds are reinstated to your account after a dispute is
@@ -336,8 +317,7 @@ closed. This includes [partially refunded payments](https://docs.stripe.com/disp
   (previous-attributes
    :type (or dispute null)
    :documentation "Previous attributes of the dispute,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-dispute-funds-withdrawn-event (:type "charge.dispute.funds_withdrawn")
   "Occurs when funds are removed from your account due to a dispute."
@@ -352,8 +332,7 @@ if any.")
   (previous-attributes
    :type (or dispute null)
    :documentation "Previous attributes of the dispute,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-dispute-updated-event (:type "charge.dispute.updated")
   "Occurs when the dispute is updated (usually with evidence)."
@@ -368,8 +347,7 @@ if any.")
   (previous-attributes
    :type (or charge null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-expired-event (:type "charge.expired")
   "Occurs whenever an uncaptured charge expires."
@@ -384,8 +362,7 @@ if any.")
   (previous-attributes
    :type (or charge null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-failed-event (:type "charge.failed")
   "Occurs whenever a failed charge attempt occurs."
@@ -400,8 +377,7 @@ if any.")
   (previous-attributes
    :type (or charge null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-pending-event (:type "charge.pending")
   "Occurs whenever a pending charge is created."
@@ -416,8 +392,7 @@ if any.")
   (previous-attributes
    :type (or refund null)
    :documentation "Previous attributes of the refund,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-refund-updated-event (:type "charge.refund.updated")
   "Occurs whenever a refund is updated, on selected payment methods."
@@ -432,8 +407,7 @@ if any.")
   (previous-attributes
    :type (or refund null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-refunded-event (:type "charge.refunded")
   "Occurs whenever a charge is refunded, including partial refunds."
@@ -448,8 +422,7 @@ if any.")
   (previous-attributes
    :type (or refund null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-succeeded-event (:type "charge.suceeded")
   "Occurs whenever a charge is successful."
@@ -464,8 +437,7 @@ if any.")
   (previous-attributes
    :type (or refund null)
    :documentation "Previous attributes of the charge,
-if any.")
-  (:list-type nil))
+if any."))
 
 (define-event charge-updated-event (:type "charge.updated")
   "Occurs whenever a charge description or metadata is updated, or upon

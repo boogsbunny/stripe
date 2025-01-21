@@ -14,7 +14,8 @@ the same type share the same value.")
 indicates deletion.")
   (name
    :type (or string null)
-   :documentation "The name of the application."))
+   :documentation "The name of the application.")
+  (:list-type t))
 
 (define-object deleted-application ()
   (id
@@ -30,4 +31,5 @@ the same type share the same value.")
    :documentation "Always true for a deleted object.")
   (name
    :type (or string null)
-   :documentation "The name of the application."))
+   :documentation "The name of the application.")
+  (:list-type t))

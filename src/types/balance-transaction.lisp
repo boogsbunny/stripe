@@ -36,7 +36,8 @@ Related guide: [Balance transaction types]
    :type string)
   (type
    :reader transaction-type
-   :type string))
+   :type string)
+  (:list-type t))
 
 (define-object fee ()
   (amount
@@ -49,7 +50,8 @@ Related guide: [Balance transaction types]
    :type (or string null))
   (type
    :reader fee-type
-   :type string))
+   :type string)
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance balance-transaction) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

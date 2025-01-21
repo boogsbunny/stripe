@@ -37,7 +37,8 @@ Related guides: [Integrate with the Invoicing API]
   subscription
   subscription-item
   unified-proration
-  unit-amount)
+  unit-amount
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance invoice-item) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

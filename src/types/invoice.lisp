@@ -84,7 +84,8 @@ Related guide: [Send invoices to customers]
   subtotal
   tax
   total
-  webhooks-delivered-at)
+  webhooks-delivered-at
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance invoice) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

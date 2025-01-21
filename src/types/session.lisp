@@ -19,4 +19,5 @@ object in a structured format.")
   payment-method-types
   payment-status
   success-url
-  (type :reader session-url))
+  (type :reader session-url)
+  (:list-type t))

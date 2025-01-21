@@ -67,6 +67,7 @@ details.")
    :documentation "An email address associated with the account. It's
 not used for authentication and Stripe doesn't market to this field
 without explicit approval from the platform.")
+  ;; TODO:
   (external-accounts
    :documentation "External accounts (bank accounts and debit cards)
 currently attached to this account. External accounts are only returned
@@ -106,4 +107,5 @@ within Stripe.")
   (type
    :reader account-type
    :documentation "The Stripe account type. Can be `standard`,
-`express`, `custom`, or `none`."))
+`express`, `custom`, or `none`.")
+  (:list-type t))

@@ -19,10 +19,12 @@
   funding
   last4
   name
-  tokenization-method)
+  tokenization-method
+  (:list-type t))
 
 (define-object deleted-card ()
   id
   object
   currency
-  deleted)
+  deleted
+  (:list-type t))

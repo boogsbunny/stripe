@@ -58,7 +58,8 @@ file. One of `account_requirement`, `additional_verification`,
   (url
    :type (or string null)
    :documentation "Use your live secret API key to download the file
-from this URL."))
+from this URL.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance file) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

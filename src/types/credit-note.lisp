@@ -19,7 +19,8 @@ Related guide: [Credit notes]
   reason
   refund
   status
-  (type :reader credit-note-type))
+  (type :reader credit-note-type)
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance credit-note) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

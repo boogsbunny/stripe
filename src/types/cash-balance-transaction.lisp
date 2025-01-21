@@ -78,7 +78,8 @@ about these types. One of `adjusted_for_overdraft`,
   (unapplied-from-payment
    :type (or unapplied-from-payment null)
    :documentation "If this is a `type=unapplied_from_payment`
-transaction, contains information about how funds were unapplied."))
+transaction, contains information about how funds were unapplied.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance cash-balance-transaction)
                                        &key data &allow-other-keys)

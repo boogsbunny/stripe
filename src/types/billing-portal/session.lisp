@@ -70,7 +70,8 @@ the portal's link to return to your website.")
   (url
    :type string
    :documentation "The short-lived URL of the session that gives
-customers access to the customer portal."))
+customers access to the customer portal.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance billing-portal-session) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)
@@ -107,8 +108,7 @@ customers access to the customer portal."))
    :reader flow-type
    :documentation "Type of flow that the customer will go through. One
 of `payment_method_update`, `subscription_cancel`,
-`subscription_update`, or `subscription_update_confirm`.")
-  (:list-type nil))
+`subscription_update`, or `subscription_update_confirm`."))
 
 (defmethod initialize-instance :after ((instance billing-portal-session-flow)
                                        &key data &allow-other-keys)
@@ -148,8 +148,7 @@ of `payment_method_update`, `subscription_cancel`,
    :type string
    :documentation "The specified type of behavior after the flow is
 completed. One of `hosted_confirmation`, `portal_homepage`, or
-`redirect`.")
-  (:list-type nil))
+`redirect`."))
 
 (defmethod initialize-instance :after ((instance flow-after-completion)
                                        &key data &allow-other-keys)
@@ -172,15 +171,13 @@ completed. One of `hosted_confirmation`, `portal_homepage`, or
   (custom-message
    :type (or string null)
    :documentation "A custom message to display to the customer after
-the flow is completed.")
-  (:list-type nil))
+the flow is completed."))
 
 (define-object flow-after-completion-redirect ()
   (return-url
    :type string
    :documentation "The URL the customer will be redirected to after the
-flow is completed.")
-  (:list-type nil))
+flow is completed."))
 
 (define-object flow-subscription-cancel ()
   (retention
@@ -189,8 +186,7 @@ flow is completed.")
 cancellation flow.")
   (subscription
    :type string
-   :documentation "The ID of the subscription to be canceled.")
-  (:list-type nil))
+   :documentation "The ID of the subscription to be canceled."))
 
 (defmethod initialize-instance :after ((instance flow-subscription-cancel)
                                        &key data &allow-other-keys)
@@ -213,8 +209,7 @@ cancellation flow.")
    :reader retention-type
    :type string
    :initform "coupon_offer"
-   :documentation "Type of retention strategy that will be used.")
-  (:list-type nil))
+   :documentation "Type of retention strategy that will be used."))
 
 (defmethod initialize-instance :after ((instance flow-subscription-cancel-retention)
                                        &key data &allow-other-keys)
@@ -233,14 +228,12 @@ cancellation flow.")
 (define-object flow-subscription-cancel-retention-coupon-offer ()
   (coupon
    :type string
-   :documentation "The ID of the coupon to be offered.")
-  (:list-type nil))
+   :documentation "The ID of the coupon to be offered."))
 
 (define-object flow-subscription-update ()
   (subscription
    :type string
-   :documentation "The ID of the subscription to be updated.")
-  (:list-type nil))
+   :documentation "The ID of the subscription to be updated."))
 
 (define-object flow-subscription-update-confirm ()
   (discounts
@@ -254,8 +247,7 @@ to be updated through this flow. Currently, only up to one may be
 specified and subscriptions with multiple items are not updatable.")
   (subscription
    :type string
-   :documentation "The ID of the subscription to be updated.")
-  (:list-type nil))
+   :documentation "The ID of the subscription to be updated."))
 
 (defmethod initialize-instance :after ((instance flow-subscription-update-confirm)
                                        &key data &allow-other-keys)
@@ -290,8 +282,7 @@ update.")
   (promotion-code
    :type (or string null)
    :documentation "The ID of a promotion code to apply to this
-subscription update.")
-  (:list-type nil))
+subscription update."))
 
 (define-object flow-subscription-update-confirm-item ()
   (id
@@ -306,5 +297,4 @@ this flow. The price must also be included in the configuration's
   (quantity
    :type (or integer null)
    :documentation "[Quantity](https://stripe.com/docs/subscriptions/quantities)
-for this item that the customer should subscribe to through this flow.")
-  (:list-type nil))
+for this item that the customer should subscribe to through this flow."))

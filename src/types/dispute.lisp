@@ -80,7 +80,8 @@ values are `bank_cannot_process`, `check_returned`,
    :type string
    :documentation "Current status of dispute. Possible values are
 `warning_needs_response`, `warning_under_review`, `warning_closed`,
-`needs_response`, `under_review`, `won`, or `lost`."))
+`needs_response`, `under_review`, `won`, or `lost`.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance dispute) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

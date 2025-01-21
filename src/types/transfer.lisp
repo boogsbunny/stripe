@@ -88,4 +88,5 @@ If null, the transfer was funded from the available balance.")
    :documentation "A string that identifies this transaction as part of
 a group. See the [Connect documentation]
 (https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options)
-for details."))
+for details.")
+  (:list-type t))

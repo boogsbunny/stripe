@@ -21,7 +21,8 @@ with conventional one-off [charges]
   percent-off
   redeem-by
   times-redeemed
-  valid)
+  valid
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance coupon) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

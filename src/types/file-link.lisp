@@ -37,7 +37,8 @@ object. This can be useful for storing additional information about the
 object in a structured format.")
   (url
    :type (or string null)
-   :documentation "The publicly accessible URL to download the file."))
+   :documentation "The publicly accessible URL to download the file.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance file-link) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

@@ -135,7 +135,8 @@ contains additional information specific to the PaymentMethod type.")
   (wechat-pay
    :type (or payment-method-wechat-pay null))
   (zip
-   :type (or payment-method-zip null)))
+   :type (or payment-method-zip null))
+  (:list-type t))
 
 (define-object payment-method-acss-debit ()
   (bank-name
@@ -324,7 +325,7 @@ used in the payment.")
 PaymentMethod, if any."))
 
 (define-object generated-from-payment-method-details ()
-  (card_present
+  (card-present
    :type (or generated-from-payment-method-details-card-present null))
   (type
    :reader payment-method-details-type

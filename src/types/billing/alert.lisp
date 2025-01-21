@@ -31,7 +31,8 @@ mode or the value `false` if the object exists in test mode.")
    :type (or billing-alert-usage-threshold null)
    :documentation "Encapsulates configuration of the alert to monitor
 usage on a specific
-[Billing Meter](https://stripe.com/docs/api/billing/meter)."))
+[Billing Meter](https://stripe.com/docs/api/billing/meter).")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance billing-alert) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

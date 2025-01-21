@@ -7,7 +7,8 @@ relationships."
   id
   created
   quantity
-  subscription)
+  subscription
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance subscription-item) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

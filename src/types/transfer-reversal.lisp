@@ -55,4 +55,5 @@ object in a structured format.")
 reversal.")
   (transfer
    :type (or string transfer)
-   :documentation "ID of the transfer that was reversed."))
+   :documentation "ID of the transfer that was reversed.")
+  (:list-type t))

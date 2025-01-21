@@ -90,7 +90,8 @@ about [failed refunds](https://stripe.com/docs/refunds#failed-refunds).")
    :type (or string transfer-reversal null)
    :documentation "This refers to the transfer reversal object if the
 accompanying transfer reverses. This is only applicable if the charge
-was created using the destination parameter."))
+was created using the destination parameter.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance refund) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

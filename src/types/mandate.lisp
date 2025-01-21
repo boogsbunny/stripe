@@ -37,7 +37,8 @@ mandate.")
    :reader mandate-type
    :type string
    :documentation "The type of the mandate (e.g., 'multi_use' or
-'single_use')."))
+'single_use').")
+  (:list-type t))
 
 (define-object mandate-customer-acceptance ()
   (accepted-at

@@ -64,7 +64,8 @@ One of `rule`, `manual`, `approved`, `refunded`, `refunded_as_fraud`,
   (session
    :type (or review-session null)
    :documentation "Information related to the browsing session of the
-user who initiated the payment."))
+user who initiated the payment.")
+  (:list-type t))
 
 (define-object review-ip-address-location ()
   (city

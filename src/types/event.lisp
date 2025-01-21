@@ -311,7 +311,8 @@ event.")
 `treasury.received_credit.created`,
 `treasury.received_credit.failed`,
 `treasury.received_credit.succeeded`,
-or `treasury.received_debit.created`."))
+or `treasury.received_debit.created`.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance event) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

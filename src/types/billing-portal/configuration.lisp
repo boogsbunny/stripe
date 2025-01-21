@@ -55,7 +55,8 @@ object in a structured format.")
   (updated
    :type time:timestamp
    :documentation "Time at which the object was last updated. Measured
-in seconds since the Unix epoch."))
+in seconds since the Unix epoch.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance billing-portal-configuration)
                                        &key data &allow-other-keys)
@@ -100,8 +101,7 @@ policy.")
   (terms-of-service-url
    :type (or string null)
    :documentation "A link to the business's publicly available terms of
-service.")
-  (:list-type nil))
+service."))
 
 (define-object configuration-features ()
   (customer-update
@@ -113,8 +113,7 @@ service.")
   (subscription-cancel
    :type features-subscription-cancel)
   (subscription-update
-   :type features-subscription-update)
-  (:list-type nil))
+   :type features-subscription-update))
 
 (defmethod initialize-instance :after ((instance configuration-features)
                                        &key data &allow-other-keys)
@@ -153,20 +152,17 @@ One of `address`, `email`, `name`, `phone`, `shipping`, `tax_id`. When
 empty, customers are not updateable.")
   (enabled
    :type boolean
-   :documentation "Whether the feature is enabled.")
-  (:list-type nil))
+   :documentation "Whether the feature is enabled."))
 
 (define-object features-invoice-history ()
   (enabled
    :type boolean
-   :documentation "Whether the feature is enabled.")
-  (:list-type nil))
+   :documentation "Whether the feature is enabled."))
 
 (define-object features-payment-method-update ()
   (enabled
    :type boolean
-   :documentation "Whether the feature is enabled.")
-  (:list-type nil))
+   :documentation "Whether the feature is enabled."))
 
 (define-object features-subscription-cancel ()
   (cancellation-reason
@@ -181,8 +177,7 @@ the end of the billing period. One of `at_period_end` or `immediately`.")
   (proration-behavior
    :type string
    :documentation "How to handle prorations when canceling. One of
-`always_invoice`, `create_prorations`, or `none`.")
-  (:list-type nil))
+`always_invoice`, `create_prorations`, or `none`."))
 
 (defmethod initialize-instance :after ((instance features-subscription-cancel)
                                        &key data &allow-other-keys)
@@ -205,8 +200,7 @@ the end of the billing period. One of `at_period_end` or `immediately`.")
    :type (vector string)
    :documentation "Which cancellation reasons will be given as options.
 One of `customer_service`, `low_quality`, `missing_features`, `other`,
-`switched_service`, `too_complex`, `too_expensive`, `unused`.")
-  (:list-type nil))
+`switched_service`, `too_complex`, `too_expensive`, `unused`."))
 
 (define-object subscription-update ()
   (default-allowed-updates
@@ -228,8 +222,7 @@ subscription updates. Valid values are `always_invoice`,
 `create_prorations`, or `none`. Defaults to a value of `none` if you
 don't set it during creation.")
   (schedule-at-period-end
-   :type (or schedule-at-period-end null))
-  (:list-type nil))
+   :type (or schedule-at-period-end null)))
 
 (defmethod initialize-instance :after ((instance subscription-update) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)
@@ -257,15 +250,13 @@ don't set it during creation.")
 subscription can be updated.")
   (product
    :type string
-   :documentation "The product ID.")
-  (:list-type nil))
+   :documentation "The product ID."))
 
 (define-object schedule-at-period-end ()
   (conditions
    :type (vector schedule-condition)
    :documentation "List of conditions. When any condition is true, an
-update will be scheduled at the end of the current period.")
-  (:list-type nil))
+update will be scheduled at the end of the current period."))
 
 (defmethod initialize-instance :after ((instance schedule-at-period-end)
                                        &key data &allow-other-keys)
@@ -288,8 +279,7 @@ update will be scheduled at the end of the current period.")
    :reader condition-type
    :type string
    :documentation "The type of condition. One of
-`decreasing_item_amount` or `shortening_interval`.")
-  (:list-type nil))
+`decreasing_item_amount` or `shortening_interval`."))
 
 (define-object login-page ()
   (enabled
@@ -303,8 +293,7 @@ deactivated.")
    :documentation "A shareable URL to the hosted portal login page.
 Your customers will be able to log in with their
 [email](https://stripe.com/docs/api/customers/object#customer_object-email)
-and receive a link to their customer portal.")
-  (:list-type nil))
+and receive a link to their customer portal."))
 
 (define-object api-login-page ()
   "The hosted login page for this configuration. Learn more about the
@@ -315,5 +304,4 @@ portal login page in our
    :documentation "Set to `true` to generate a shareable URL
 `login_page.url` that will take your customers to a hosted login page
 for the customer portal. Set to `false` to deactivate the
-`login_page.url`.")
-  (:list-type nil))
+`login_page.url`."))

@@ -29,7 +29,8 @@ tokenization."
   card
   client-ip
   created
-  used)
+  used
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance card-token) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

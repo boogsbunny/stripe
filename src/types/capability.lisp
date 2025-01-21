@@ -31,7 +31,8 @@ in seconds since the Unix epoch.")
   (status
    :type string
    :documentation "The status of the capability. One of `active`,
-`disabled`, `inactive`, `pending`, or `unrequested`."))
+`disabled`, `inactive`, `pending`, or `unrequested`.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance capability) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)
@@ -107,7 +108,7 @@ asynchronous verification is pending. If verification fails, these
 fields move to `eventually_due` or `currently_due`. Fields might appear
 in `eventually_due` or `currently_due` and in `pending_verification` if
 verification fails but another verification is still pending.")
-  (:list-type nil))
+  )
 
 (defmethod initialize-instance :after ((instance capability-future-requirements)
                                        &key data &allow-other-keys)
@@ -144,8 +145,7 @@ verification fails but another verification is still pending.")
   (original-fields-due
    :type (vector string)
    :documentation "Fields that are due and can be satisfied by
-providing all fields in `alternative_fields_due`.")
-  (:list-type nil))
+providing all fields in `alternative_fields_due`."))
 
 (define-object capability-future-requirements-error ()
   (code
@@ -249,8 +249,7 @@ and provides additional details about the error.")
   (requirement
    :type string
    :documentation "The specific user onboarding requirement field (in
-the requirements hash) that needs to be resolved.")
-  (:list-type nil))
+the requirements hash) that needs to be resolved."))
 
 (define-object capability-requirements ()
   (alternatives
@@ -298,8 +297,7 @@ asynchronous verification is pending. If verification fails, these
 fields move to `eventually_due`, `currently_due`, or `past_due`. Fields
 might appear in `eventually_due`, `currently_due`, or `past_due` and in
 `pending_verification` if verification fails but another verification
-is still pending.")
-  (:list-type nil))
+is still pending."))
 
 (defmethod initialize-instance :after ((instance capability-requirements)
                                        &key data &allow-other-keys)
@@ -336,8 +334,7 @@ is still pending.")
   (original-fields-due
    :type (vector string)
    :documentation "Fields that are due and can be satisfied by
-providing all fields in `alternative_fields_due`.")
-  (:list-type nil))
+providing all fields in `alternative_fields_due`."))
 
 (define-object capability-requirements-error ()
   (code
@@ -441,5 +438,4 @@ and provides additional details about the error.")
   (requirement
    :type string
    :documentation "The specific user onboarding requirement field that
-needs to be resolved.")
-  (:list-type nil))
+needs to be resolved."))

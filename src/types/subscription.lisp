@@ -26,7 +26,8 @@ Related guide: [Creating subscriptions]
   start-date
   status
   trial-end
-  trial-start)
+  trial-start
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance subscription) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

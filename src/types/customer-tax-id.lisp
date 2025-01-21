@@ -61,7 +61,8 @@ IDs have type `unknown`.")
    :documentation "Value of the tax ID.")
   (verification
    :type (or tax-id-verification null)
-   :documentation "Tax ID verification information."))
+   :documentation "Tax ID verification information.")
+  (:list-type t))
 
 (define-object tax-id-owner ()
   (account

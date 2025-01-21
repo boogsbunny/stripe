@@ -87,22 +87,19 @@ mapping.")
    :reader customer-mapping-type
    :type string
    :initform "by_id"
-   :documentation "The method for mapping a meter event to a customer.")
-  (:list-type nil))
+   :documentation "The method for mapping a meter event to a customer."))
 
 (define-object billing-meter-default-aggregation ()
   (formula
    :type string
    :documentation "Specifies how events are aggregated. One of `count`
-or `sum`.")
-  (:list-type nil))
+or `sum`."))
 
 (define-object billing-meter-status-transitions ()
   (deactivated-at
    :type (or time:timestamp null)
    :documentation "The time the meter was deactivated, if any, in Unix
-epoch seconds.")
-  (:list-type nil))
+epoch seconds."))
 
 (defmethod initialize-instance :after ((instance billing-meter-status-transitions)
                                        &key data &allow-other-keys)
@@ -119,5 +116,4 @@ epoch seconds.")
   (event-payload-key
    :type string
    :documentation "The key in the meter event payload to use as the
-value for this meter.")
-  (:list-type nil))
+value for this meter."))

@@ -27,7 +27,8 @@ Related guide: [Receiving payouts](https://stripe.com/docs/payouts)"
   source-type
   statement-descriptor
   status
-  (type :reader payout-type))
+  (type :reader payout-type)
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance payout) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

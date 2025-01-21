@@ -60,7 +60,8 @@ parameter.")
 is only partially refunded, this attribute will still be false.")
   (refunds
    :documentation "A list of refunds that have been applied to the
-fee."))
+fee.")
+  (:list-type t))
 
 (define-object fee-source ()
   (charge

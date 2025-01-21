@@ -39,7 +39,8 @@ expire.")
   (livemode
    :type boolean
    :documentation "Has the value `true` if the object exists in live
-mode or the value `false` if the object exists in test mode."))
+mode or the value `false` if the object exists in test mode.")
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance customer-session) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

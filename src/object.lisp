@@ -29,7 +29,7 @@ List Container Format (as per https://stripe.com/docs/api/pagination):
 Arguments:
   NAME          Symbol, the base name of the type to define
   SUPER-CLASSES List of parent classes (defaults to STRIPE-OBJECT)
-  ARGS         Can include (:list-type nil) to disable list container,
+  ARGS         Can include (:list-type t) to enable list container,
                and field definitions:
                  (field-name &key reader type initform
                   extra-initargs documentation)
@@ -45,7 +45,7 @@ Example:
 
   ;; For non-top-level objects, disable list container:
   (define-object event-data-object ()
-    (:list-type nil) ; Can appear anywhere in body
+    (:list-type t) ; Can appear anywhere in body
     (object
      :type event-data-object
      :documentation \"The event data object.\"))
@@ -86,8 +86,9 @@ package, including readers, type predicates, and collection types."
              (parse-object-specification (args)
                "Parse object specifications, extracting list-type directive and slots."
                (let* ((list-type-spec (find :list-type args :key #'alex:ensure-car))
-                      (list-disabled-p (when list-type-spec
-                                         (not (second list-type-spec))))
+                      (list-disabled-p (if list-type-spec
+                                           (not (second list-type-spec))
+                                           t))
                       (slots (remove :list-type args :key #'alex:ensure-car))
                       (slot-readers (compute-slot-readers slots)))
                  (make-object-spec

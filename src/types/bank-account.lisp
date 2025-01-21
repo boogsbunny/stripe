@@ -73,7 +73,8 @@ same.")
    :documentation "Information about the [upcoming new requirements for
 the bank account]
 (https://stripe.com/docs/connect/custom-accounts/future-requirements),
-including what information needs to be collected, and by when."))
+including what information needs to be collected, and by when.")
+  (:list-type t))
 
 (define-object bank-account-future-requirements ()
   (currently-due
@@ -243,4 +244,5 @@ the same type share the same value.")
   (deleted
    :type boolean
    :initform t
-   :documentation "Always true for a deleted object."))
+   :documentation "Always true for a deleted object.")
+  (:list-type t))

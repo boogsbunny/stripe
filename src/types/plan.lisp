@@ -31,7 +31,8 @@ and more about [products and prices]
   nickname
   product
   trial-period-days
-  usage-type)
+  usage-type
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance plan) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)

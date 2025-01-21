@@ -21,7 +21,8 @@ Related guide: [Customer balance]
   description
   ending-balance
   invoice
-  (type :reader transaction-type))
+  (type :reader transaction-type)
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance customer-balance-transaction)
                                        &key data &allow-other-keys)

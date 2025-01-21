@@ -155,4 +155,5 @@ PaymentIntent are intended. See the PaymentIntents [use case for
 connected accounts]
 (https://stripe.com/docs/payments/connected-accounts) for details.")
   (payment-method
-   :documentation "ID of the payment method used in this PaymentIntent."))
+   :documentation "ID of the payment method used in this PaymentIntent.")
+  (:list-type t))

@@ -33,7 +33,8 @@ Related guide: [Understanding Connect account balances]
    :documentation "")
   (livemode
    :type boolean
-   :documentation ""))
+   :documentation "")
+  (:list-type t))
 
 (define-object balance-funds ()
   (amount

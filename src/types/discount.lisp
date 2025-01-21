@@ -13,7 +13,8 @@ Related guide: [Applying discounts to subscriptions]
   customer
   end
   start
-  subscription)
+  subscription
+  (:list-type t))
 
 (defmethod initialize-instance :after ((instance discount) &key data &allow-other-keys)
   (with-hash-table-iterator (next-entry data)
