@@ -66,6 +66,7 @@
      (:file "refund")
      (:file "review")
      (:file "session")
+     (:file "shipping-rate")
      (:file "source")
      (:file "subscription")
      (:file "subscription-item")
