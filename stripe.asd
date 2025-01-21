@@ -68,6 +68,7 @@
      (:file "session")
      (:file "subscription")
      (:file "subscription-item")
+     (:file "tax-id")
      (:file "tax-rate")
      (:module "test-helpers"
       :components
