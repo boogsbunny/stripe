@@ -47,6 +47,7 @@
      (:file "customer")
      (:file "customer-balance-transaction")
      (:file "customer-session")
+     (:file "customer-source")
      (:file "customer-tax-id")
      (:file "discount")
      (:file "dispute")
