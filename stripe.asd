@@ -64,6 +64,7 @@
      (:file "payment-method")
      (:file "payout")
      (:file "plan")
+     (:file "price")
      (:file "product")
      (:file "refund")
      (:file "review")
