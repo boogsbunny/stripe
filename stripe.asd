@@ -58,6 +58,7 @@
      (:file "file-link")
      (:file "invoice")
      (:file "invoice-item")
+     (:file "line-item")
      (:file "mandate")
      (:file "payment-intent")
      (:file "payment-method")
