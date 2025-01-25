@@ -107,8 +107,7 @@ related application only."
 ;;    :documentation "The fee refund object.")
 ;;   (previous-attributes
 ;;    :type (or fee-refund null)
-;;    :documentation "Previous attributes of the fee refund, if any.")
-;;   )
+;;    :documentation "Previous attributes of the fee refund, if any."))
 ;;
 ;; (define-event application-fee-refund-updated-event (:type "application_fee.refund.updated")
 ;;   "Occurs whenever an application fee refund is updated."

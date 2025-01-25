@@ -107,8 +107,7 @@ results of verification or review. It's an empty array unless an
 asynchronous verification is pending. If verification fails, these
 fields move to `eventually_due` or `currently_due`. Fields might appear
 in `eventually_due` or `currently_due` and in `pending_verification` if
-verification fails but another verification is still pending.")
-  )
+verification fails but another verification is still pending."))
 
 (defmethod initialize-instance :after ((instance capability-future-requirements)
                                        &key data &allow-other-keys)
