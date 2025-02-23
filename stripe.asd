@@ -61,6 +61,7 @@
      (:file "line-item")
      (:file "mandate")
      (:file "payment-intent")
+     (:file "payment-link")
      (:file "payment-method")
      (:file "payout")
      (:file "plan")
