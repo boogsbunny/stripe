@@ -26,8 +26,10 @@ Connect Onboarding. Learn about the
    :initform "account"
    :documentation "String representing the object's type. Objects of
 the same type share the same value.")
+  ;; TODO: set type
   (business-profile
    :documentation "Business information about the account.")
+  ;; TODO: set type
   (business-type
    :documentation "The business type. After you create an
 [Account Link](https://stripe.com/api/account_links) or
@@ -36,12 +38,18 @@ property is only returned for accounts where
 [controller.requirement_collection]
 (https://stripe.com/api/accounts/object#account_object-controller-requirement_collection)
 is `application`, which includes Custom accounts.")
+  ;; TODO: set type
   (capabilities)
+  ;; TODO: set type
   (charges-enabled
-   :documentation "Whether the account can create live charges.")
+   :type boolean
+   :documentation "Whether the account can process charges.")
+  ;; TODO: set type
   (company)
+  ;; TODO: set type
   (controller)
   (country
+   :type string
    :documentation "The account's country.")
   (created
    :type time:timestamp
@@ -56,6 +64,7 @@ supports in the account's country](https://stripe.com/docs/payouts).")
    :documentation "Indicates whether the object is deleted. Presence
 indicates deletion.")
   (details-submitted
+   :type boolean
    :documentation "Whether account details have been submitted.
 Accounts with Stripe Dashboard access, which includes Standard
 accounts, cannot receive payouts before this is true. Accounts where
@@ -72,7 +81,12 @@ without explicit approval from the platform.")
    :documentation "External accounts (bank accounts and debit cards)
 currently attached to this account. External accounts are only returned
 for requests where `controller[is_controller]` is true.")
+  ;; TODO: set type
   (future-requirements)
+  ;; TODO: set type
+  (groups
+   :documentation "The groups associated with the account.")
+  ;; TODO: set type
   (individual
    :documentation "This is an object representing a person associated
 with a Stripe account.
@@ -99,10 +113,13 @@ object in a structured format.")
   (payouts-enabled
    :type boolean
    :documentation "Whether Stripe can send payouts to this account.")
+  ;; TODO: set type
   (requirements)
+  ;; TODO: set type
   (settings
    :documentation "Options for customizing how the account functions
 within Stripe.")
+  ;; TODO: set type
   (tos-acceptance)
   (type
    :reader account-type
