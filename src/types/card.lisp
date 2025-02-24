@@ -2,6 +2,11 @@
 
 (define-object card ()
   id
+  (object
+   :type string
+   :initform "card"
+   :documentation "String representing the object's type. Objects of
+the same type share the same value.")
   address-city
   address-country
   address-line1

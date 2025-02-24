@@ -1,0 +1,1036 @@
+(in-package #:stripe)
+
+(define-object setup-intent ()
+  "A SetupIntent guides you through the process of setting up and
+saving a customer's payment credentials for future payments. For
+example, you can use a SetupIntent to set up and save your customer's
+card without immediately collecting a payment. Later, you can use
+[PaymentIntents](https://stripe.com/docs/api#payment_intents) to drive the payment flow.
+
+Create a SetupIntent when you're ready to collect your customer's
+payment credentials. Don't maintain long-lived, unconfirmed
+SetupIntents because they might not be valid. The SetupIntent
+transitions through multiple
+[statuses](https://docs.stripe.com/payments/intents#intent-statuses) as it guides you through the setup process.
+
+Successful SetupIntents result in payment credentials that are
+optimized for future payments. For example, cardholders in
+[certain regions](https://stripe.com/guides/strong-customer-authentication)
+ might need to be run through
+[Strong Customer Authentication](https://docs.stripe.com/strong-customer-authentication)
+during payment method collection to streamline later
+[off-session payments](https://docs.stripe.com/payments/setup-intents).
+If you use the SetupIntent with a
+[Customer](https://stripe.com/docs/api#setup_intent_object-customer),
+it automatically attaches the resulting payment method to that Customer
+after successful setup. We recommend using SetupIntents or
+[setup_future_usage](https://stripe.com/docs/api#payment_intent_object-setup_future_usage)
+on PaymentIntents to save payment methods to prevent saving invalid or
+unoptimized payment methods.
+
+By using SetupIntents, you can reduce friction for your customers, even
+as regulations change over time.
+
+Related guide: [Setup Intents API](https://docs.stripe.com/payments/setup-intents)"
+  (id
+   :type string
+   :documentation "Unique identifier for the object.")
+  (object
+   :type string
+   :initform "setup_intent"
+   :documentation "String representing the object's type. Objects of
+the same type share the same value.")
+  (application
+   :type (or string application null)
+   :documentation "ID of the Connect application that created the
+SetupIntent.")
+  (attach-to-self
+   :type (or boolean null)
+   :documentation "If present, the SetupIntent's payment method will be
+attached to the in-context Stripe Account.
+
+It can only be used for this Stripe Account's own money movement flows
+like InboundTransfer and OutboundTransfers. It cannot be set to true
+when setting up a PaymentMethod for a Customer, and defaults to false
+when attaching a PaymentMethod to a Customer.")
+  (automatic-payment-methods
+   :type (or setup-intent-automatic-payment-methods null)
+   :documentation "Settings for dynamic payment methods compatible with
+this Setup Intent.")
+  (cancellation-reason
+   :type (or string null)
+   :documentation "Reason for cancellation of this SetupIntent, one of
+`abandoned`, `requested_by_customer`, or `duplicate`.")
+  (client-secret
+   :type (or string null)
+   :documentation "The client secret of this SetupIntent. Used for
+client-side retrieval using a publishable key.
+
+The client secret can be used to complete payment setup from your
+frontend. It should not be stored, logged, or exposed to anyone other
+than the customer. Make sure that you have TLS enabled on any page that
+includes the client secret.")
+  (created
+   :type time:timestamp
+   :documentation "Time at which the object was created. Measured in
+seconds since the Unix epoch.")
+  (customer
+   :type (or string customer deleted-customer null)
+   :documentation "ID of the Customer this SetupIntent belongs to, if
+one exists.
+
+If present, the SetupIntent's payment method will be attached to the
+Customer on successful setup. Payment methods attached to other
+Customers cannot be used with this SetupIntent.")
+  (description
+   :type (or string null)
+   :documentation "An arbitrary string attached to the object. Often
+useful for displaying to users.")
+  (flow-directions
+   :type (or (vector string) null)
+   :documentation "Indicates the directions of money movement for which
+this payment method is intended to be used.
+
+Include `inbound` if you intend to use the payment method as the origin
+to pull funds from. Include `outbound` if you intend to use the payment
+method as the destination to send funds to. You can include both if you
+intend to use the payment method for both purposes.
+
+One of `inbound` or `outbound`.")
+  (last-setup-error
+   :type (or setup-intent-last-setup-error null)
+   :documentation "The error encountered in the previous SetupIntent
+confirmation.")
+  (latest-attempt
+   :type (or string setup-attempt null)
+   :documentation "The most recent SetupAttempt for this SetupIntent.")
+  (livemode
+   :type boolean
+   :documentation "Has the value `true` if the object exists in live
+mode or the value `false` if the object exists in test mode.")
+  (mandate
+   :type (or string mandate null)
+   :documentation "ID of the multi use Mandate generated by the
+SetupIntent.")
+  (metadata
+   :type (hash-table :key-type string :value-type string)
+   :documentation "Set of [key-value pairs]
+(https://stripe.com/docs/api/metadata) that you can attach to an
+object. This can be useful for storing additional information about the
+object in a structured format.")
+  (next-action
+   :type (or setup-intent-next-action null)
+   :documentation "If present, this property tells you what actions you
+need to take in order for your customer to continue payment setup.")
+  (on-behalf-of
+   :type (or string account null)
+   :documentation "The account (if any) for which the setup is
+intended.")
+  (payment-method
+   :type (or string payment-method null)
+   :documentation "ID of the payment method used with this SetupIntent.
+If the payment method is `card_present` and isn't a digital wallet,
+then the
+[generated_card](https://docs.stripe.com/api/setup_attempts/object#setup_attempt_object-payment_method_details-card_present-generated_card)
+associated with the `latest_attempt` is attached to the Customer
+instead.")
+  (payment-method-configuration-details
+   :type (or setup-intent-payment-method-configuration-details null)
+   :documentation "Information about the payment method configuration
+used for this Setup Intent.")
+  (payment-method-options
+   :type (or setup-intent-payment-method-options null)
+   :documentation "Payment method-specific configuration for this
+SetupIntent.")
+  (payment-method-types
+   :type (vector string)
+   :documentation "The list of payment method types (e.g. card) that
+this SetupIntent is allowed to set up.")
+  (single-use-mandate
+   :type (or string mandate null)
+   :documentation "ID of the single_use Mandate generated by the
+SetupIntent.")
+  (status
+   :type string
+   :documentation "[Status](https://stripe.com/docs/payments/intents#intent-statuses)
+of this SetupIntent, one of `requires_payment_method`,
+`requires_confirmation`, `requires_action`, `processing`, `canceled`,
+or `succeeded`.")
+  (usage
+   :type string
+   :documentation "Indicates how the payment method is intended to be
+used in the future.
+
+Use `on_session` if you intend to only reuse the payment method when
+the customer is in your checkout flow. Use `off_session` if your
+customer may or may not be in your checkout flow. If not provided, this
+value defaults to `off_session`.")
+  (:list-type t))
+
+(defmethod initialize-instance :after ((instance setup-intent) &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:application
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%application)
+                   (make-instance 'application :data value))))
+          (:automatic-payment-methods
+           (unless (eql 'null value)
+             (setf (slot-value instance '%automatic-payment-methods)
+                   (make-instance 'setup-intent-automatic-payment-methods :data value))))
+          (:created
+           (setf (slot-value instance '%created) (decode-timestamp value)))
+          (:customer
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%customer)
+                   (make-instance (if (gethash :deleted value)
+                                      'deleted-customer
+                                      'customer)
+                                  :data value))))
+          (:last-setup-error
+           (unless (eql 'null value)
+             (setf (slot-value instance '%last-setup-error)
+                   (make-instance 'setup-intent-last-setup-error :data value))))
+          (:latest-attempt
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%latest-attempt)
+                   (make-instance 'setup-attempt :data value))))
+          (:mandate
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%mandate)
+                   (make-instance 'mandate :data value))))
+          (:next-action
+           (unless (eql 'null value)
+             (setf (slot-value instance '%next-action)
+                   (make-instance 'setup-intent-next-action :data value))))
+          (:on-behalf-of
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%on-behalf-of)
+                   (make-instance 'account :data value))))
+          (:payment-method
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%payment-method)
+                   (make-instance 'payment-method :data value))))
+          (:payment-method-configuration-details
+           (unless (eql 'null value)
+             (setf (slot-value instance '%payment-method-configuration-details)
+                   (make-instance 'setup-intent-payment-method-configuration-details
+                                  :data value))))
+          (:payment-method-options
+           (unless (eql 'null value)
+             (setf (slot-value instance '%payment-method-options)
+                   (make-instance 'setup-intent-payment-method-options :data value))))
+          (:single-use-mandate
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%single-use-mandate)
+                   (make-instance 'mandate :data value)))))))))
+
+(define-object setup-intent-automatic-payment-methods ()
+  (allow-redirects
+   :type (or string null)
+   :documentation "Controls whether this SetupIntent will accept
+redirect-based payment methods.
+
+Redirect-based payment methods may require your customer to be
+redirected to a payment method's app or site for authentication or
+additional steps. To
+[confirm](https://stripe.com/docs/api/setup_intents/confirm)
+this SetupIntent, you may be required to provide a `return_url` to
+redirect customers back to your site after they authenticate or
+complete the setup. One of `always` or `never`.")
+  (enabled
+   :type (or boolean null)
+   :documentation "Automatically calculates compatible payment
+methods."))
+
+(define-object setup-intent-last-setup-error ()
+  (charge
+   :type (or string null)
+   :documentation "For card errors, the ID of the failed charge.")
+  (code
+   :type (or string null)
+   :documentation "For some errors that could be handled
+programmatically, a short string indicating the
+[error code](https://stripe.com/docs/error-codes) reported.
+
+One of:
+`account_closed`,
+`account_country_invalid_address`,
+`account_error_country_change_requires_additional_steps`,
+`account_information_mismatch`,
+`account_invalid`,
+`account_number_invalid`,
+`acss_debit_session_incomplete`,
+`alipay_upgrade_required`,
+`amount_too_large`,
+`amount_too_small`,
+`api_key_expired`,
+`application_fees_not_allowed`,
+`authentication_required`,
+`balance_insufficient`,
+`balance_invalid_parameter`,
+`bank_account_bad_routing_numbers`,
+`bank_account_declined`,
+`bank_account_exists`,
+`bank_account_restricted`,
+`bank_account_unusable`,
+`bank_account_unverified`,
+`bank_account_verification_failed`,
+`billing_invalid_mandate`,
+`bitcoin_upgrade_required`,
+`capture_charge_authorization_expired`,
+`capture_unauthorized_payment`,
+`card_decline_rate_limit_exceeded`,
+`card_declined`,
+`cardholder_phone_number_required`,
+`charge_already_captured`,
+`charge_already_refunded`,
+`charge_disputed`,
+`charge_exceeds_source_limit`,
+`charge_exceeds_transaction_limit`,
+`charge_expired_for_capture`,
+`charge_invalid_parameter`,
+`charge_not_refundable`,
+`clearing_code_unsupported`,
+`country_code_invalid`,
+`country_unsupported`,
+`coupon_expired`,
+`customer_max_payment_methods`,
+`customer_max_subscriptions`,
+`customer_tax_location_invalid`,
+`debit_not_authorized`,
+`email_invalid`,
+`expired_card`,
+`financial_connections_account_inactive`,
+`financial_connections_no_successful_transaction_refresh`,
+`forwarding_api_inactive`,
+`forwarding_api_invalid_parameter`,
+`forwarding_api_upstream_connection_error`,
+`forwarding_api_upstream_connection_timeout`,
+`idempotency_key_in_use`,
+`incorrect_address`,
+`incorrect_cvc`,
+`incorrect_number`,
+`incorrect_zip`,
+`instant_payouts_config_disabled`,
+`instant_payouts_currency_disabled`,
+`instant_payouts_limit_exceeded`,
+`instant_payouts_unsupported`,
+`insufficient_funds`,
+`intent_invalid_state`,
+`intent_verification_method_missing`,
+`invalid_card_type`,
+`invalid_characters`,
+`invalid_charge_amount`,
+`invalid_cvc`,
+`invalid_expiry_month`,
+`invalid_expiry_year`,
+`invalid_mandate_reference_prefix_format`,
+`invalid_number`,
+`invalid_source_usage`,
+`invalid_tax_location`,
+`invoice_no_customer_line_items`,
+`invoice_no_payment_method_types`,
+`invoice_no_subscription_line_items`,
+`invoice_not_editable`,
+`invoice_on_behalf_of_not_editable`,
+`invoice_payment_intent_requires_action`,
+`invoice_upcoming_none`,
+`livemode_mismatch`,
+`lock_timeout`,
+`missing`,
+`no_account`,
+`not_allowed_on_standard_account`,
+`out_of_inventory`,
+`ownership_declaration_not_allowed`,
+`parameter_invalid_empty`,
+`parameter_invalid_integer`,
+`parameter_invalid_string_blank`,
+`parameter_invalid_string_empty`,
+`parameter_missing`,
+`parameter_unknown`,
+`parameters_exclusive`,
+`payment_intent_action_required`,
+`payment_intent_authentication_failure`,
+`payment_intent_incompatible_payment_method`,
+`payment_intent_invalid_parameter`,
+`payment_intent_konbini_rejected_confirmation_number`,
+`payment_intent_mandate_invalid`,
+`payment_intent_payment_attempt_expired`,
+`payment_intent_payment_attempt_failed`,
+`payment_intent_unexpected_state`,
+`payment_method_bank_account_already_verified`,
+`payment_method_bank_account_blocked`,
+`payment_method_billing_details_address_missing`,
+`payment_method_configuration_failures`,
+`payment_method_currency_mismatch`,
+`payment_method_customer_decline`,
+`payment_method_invalid_parameter`,
+`payment_method_invalid_parameter_testmode`,
+`payment_method_microdeposit_failed`,
+`payment_method_microdeposit_verification_amounts_invalid`,
+`payment_method_microdeposit_verification_amounts_mismatch`,
+`payment_method_microdeposit_verification_attempts_exceeded`,
+`payment_method_microdeposit_verification_descriptor_code_mismatch`,
+`payment_method_microdeposit_verification_timeout`,
+`payment_method_not_available`,
+`payment_method_provider_decline`,
+`payment_method_provider_timeout`,
+`payment_method_unactivated`,
+`payment_method_unexpected_state`,
+`payment_method_unsupported_type`,
+`payout_reconciliation_not_ready`,
+`payouts_limit_exceeded`,
+`payouts_not_allowed`,
+`platform_account_required`,
+`platform_api_key_expired`,
+`postal_code_invalid`,
+`processing_error`,
+`product_inactive`,
+`progressive_onboarding_limit_exceeded`,
+`rate_limit`,
+`refer_to_customer`,
+`refund_disputed_payment`,
+`resource_already_exists`,
+`resource_missing`,
+`return_intent_already_processed`,
+`routing_number_invalid`,
+`secret_key_required`,
+`sepa_unsupported_account`,
+`setup_attempt_failed`,
+`setup_intent_authentication_failure`,
+`setup_intent_invalid_parameter`,
+`setup_intent_mandate_invalid`,
+`setup_intent_setup_attempt_expired`,
+`setup_intent_unexpected_state`,
+`shipping_address_invalid`,
+`shipping_calculation_failed`,
+`sku_inactive`,
+`state_unsupported`,
+`status_transition_invalid`,
+`stripe_tax_inactive`,
+`tax_id_invalid`,
+`taxes_calculation_failed`,
+`terminal_location_country_unsupported`,
+`terminal_reader_busy`,
+`terminal_reader_hardware_fault`,
+`terminal_reader_invalid_location_for_activation`,
+`terminal_reader_invalid_location_for_payment`,
+`terminal_reader_offline`,
+`terminal_reader_timeout`,
+`testmode_charges_only`,
+`tls_version_unsupported`,
+`token_already_used`,
+`token_card_network_invalid`,
+`token_in_use`,
+`transfer_source_balance_parameters_mismatch`,
+`transfers_not_allowed`,
+or `url_invalid`.")
+  (decline-code
+   :type (or string null)
+   :documentation "For card errors resulting from a card issuer
+decline, a short string indicating the
+[card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines)
+if they provide one.")
+  (doc-url
+   :type (or string null)
+   :documentation "A URL to more information about the
+[error code](https://stripe.com/docs/error-codes) reported.")
+  (message
+   :type (or string null)
+   :documentation "A human-readable message providing more details
+about the error. For card errors, these messages can be shown to your
+users.")
+  (param
+   :type (or string null)
+   :documentation "If the error is parameter-specific, the parameter
+related to the error. For example, you can use this to display a
+message near the correct form field.")
+  (payment-intent
+   :type (or payment-intent null)
+   :documentation "A PaymentIntent guides you through the process of
+collecting a payment from your customer. We recommend that you create
+exactly one PaymentIntent for each order or customer session in your
+system. You can reference the PaymentIntent later to see the history of
+payment attempts for a particular session.
+
+A PaymentIntent transitions through
+[multiple statuses](https://stripe.com/docs/payments/intents#intent-statuses)
+throughout its lifetime as it interfaces with Stripe.js to perform
+authentication flows and ultimately creates at most one successful
+charge.
+
+Related guide: [Payment Intents API](https://stripe.com/docs/payments/payment-intents)")
+  (payment-method
+   :type (or payment-method null)
+   :documentation "If the error is specific to the type of payment
+method, the payment method type that had a problem. This field is only
+populated for invoice-related errors.")
+  (payment-method-type
+   :type (or string null)
+   :documentation "If the error is specific to the type of payment
+method, the payment method type that had a problem. This field is only
+populated for invoice-related errors.")
+  (request-log-url
+   :type (or string null)
+   :documentation "A URL to the request log entry in your dashboard.")
+  (setup-intent
+   :type (or setup-intent null)
+   :documentation "A SetupIntent guides you through the process of
+setting up and saving a customer's payment credentials for future
+payments. For example, you can use a SetupIntent to set up and save
+your customer's card without immediately collecting a payment. Later,
+you can use
+[PaymentIntents](https://stripe.com/docs/api#payment_intents) to drive
+the payment flow.
+
+Create a SetupIntent when you're ready to collect your customer's
+payment credentials. Don't maintain long-lived, unconfirmed
+SetupIntents because they might not be valid. The SetupIntent
+transitions through multiple
+[statuses](https://docs.stripe.com/payments/intents#intent-statuses) as
+it guides you through the setup process.
+
+Successful SetupIntents result in payment credentials that are
+optimized for future payments. For example, cardholders in
+[certain regions](https://stripe.com/guides/strong-customer-authentication)
+might need to be run through
+[Strong Customer Authentication](https://docs.stripe.com/strong-customer-authentication)
+during payment method collection to streamline later
+[off-session payments](https://docs.stripe.com/payments/setup-intents).
+If you use the SetupIntent with a
+[Customer](https://stripe.com/docs/api#setup_intent_object-customer),
+it automatically attaches the resulting payment method to that Customer
+after successful setup. We recommend using SetupIntents or
+[setup_future_usage](https://stripe.com/docs/api#payment_intent_object-setup_future_usage)
+on PaymentIntents to save payment methods to prevent saving invalid or
+unoptimized payment methods.
+
+By using SetupIntents, you can reduce friction for your customers, even
+as regulations change over time.
+
+Related guide: [Setup Intents API](https://docs.stripe.com/payments/setup-intents)")
+  (source
+   :type (or customer-source null))
+  (type
+   :reader last-setup-error-type
+   :documentation "The type of error returned. One of `api_error`,
+`card_error`, `idempotency_error`, or `invalid_request_error`."))
+
+(defmethod initialize-instance :after ((instance setup-intent-last-setup-error)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:payment-intent
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%payment-intent)
+                   (make-instance 'payment-intent :data value))))
+          (:payment-method
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%payment-method)
+                   (make-instance 'payment-method :data value))))
+          (:setup-intent
+           (when (and value (not (stringp value)))
+             (setf (slot-value instance '%setup-intent)
+                   (make-instance 'setup-intent :data value))))
+          (:source
+           (when (and value (not (stringp value)))
+             (let ((object-type (gethash :object value)))
+               (setf (slot-value instance '%source)
+                     (make-instance
+                      (case object-type
+                        ("account" 'account)
+                        ("bank_account" 'bank-account)
+                        ("card" 'card)
+                        ("source" 'source)
+                        (t (error "Unknown source type: ~A" object-type)))
+                      :data value))))))))))
+
+(define-object setup-intent-next-action ()
+  (cashapp-handle-redirect-or-display-qr-code
+   :type (or next-action-cashapp-handle-redirect-display-qr-code null))
+  (redirect-to-url
+   :type (or next-action-redirect-to-url null))
+  (type
+   :reader next-action-type
+   :type string
+   :documentation "Type of the next action to perform, one of
+`redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`,
+`oxxo_display_details`, or `verify_with_microdeposits`.")
+  (use-stripe-sdk
+   :type (or next-action-use-stripe-sdk null)
+   :documentation "When confirming a SetupIntent with Stripe.js,
+Stripe.js depends on the contents of this dictionary to invoke
+authentication flows. The shape of the contents is subject to change
+and is only intended to be used by Stripe.js.")
+  (verify-with-microdeposits
+   :type (or next-action-verify-with-microdeposits null)))
+
+(defmethod initialize-instance :after ((instance setup-intent-next-action)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:cashapp-handle-redirect-or-display-qr-code
+           (unless (eql 'null value)
+             (setf (slot-value instance '%cashapp-handle-redirect-or-display-qr-code)
+                   (make-instance 'next-action-cashapp-handle-redirect-display-qr-code
+                                  :data value))))
+          (:redirect-to-url
+           (unless (eql 'null value)
+             (setf (slot-value instance '%redirect-to-url)
+                   (make-instance 'next-action-redirect-to-url :data value))))
+          (:use-stripe-sdk
+           (unless (eql 'null value)
+             (setf (slot-value instance '%use-stripe-sdk)
+                   (make-instance 'next-action-use-stripe-sdk :data value))))
+          (:verify-with-microdeposits
+           (unless (eql 'null value)
+             (setf (slot-value instance '%verify-with-microdeposits)
+                   (make-instance 'next-action-verify-with-microdeposits :data value)))))))))
+
+(define-object next-action-cashapp-handle-redirect-display-qr-code ()
+  (hosted-instructions-url
+   :type string
+   :documentation "The URL to the hosted Cash App Pay instructions
+page, which allows customers to view the QR code, and supports QR code
+refreshing on expiration.")
+  (mobile-auth-url
+   :type string
+   :documentation "The url for mobile redirect based auth.")
+  (qr-code
+   :type cashapp-handle-redirect-display-qr-code-qr-code))
+
+(defmethod initialize-instance :after ((instance
+                                        next-action-cashapp-handle-redirect-display-qr-code)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:qr-code
+           (unless (eql 'null value)
+             (setf (slot-value instance '%qr-code)
+                   (make-instance 'cashapp-handle-redirect-display-qr-code-qr-code
+                                  :data value)))))))))
+
+(define-object cashapp-handle-redirect-display-qr-code-qr-code ()
+  (expires-at
+   :type time:timestamp
+   :documentation "The date (unix timestamp) when the QR code expires.")
+  (image-url-png
+   :type string
+   :documentation "The image_url_png string used to render QR code.")
+  (image-url-svg
+   :type string
+   :documentation "The image_url_svg string used to render QR code."))
+
+(defmethod initialize-instance :after ((instance
+                                        next-action-cashapp-handle-redirect-display-qr-code)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:expires-at
+           (setf (slot-value instance '%expires-at) (decode-timestamp value))))))))
+
+(define-object next-action-redirect-to-url ()
+  (return-url
+   :type (or string null)
+   :documentation "If the customer does not exit their browser while
+authenticating, they will be redirected to this specified URL after
+completion.")
+  (url
+   :type (or string null)
+   :documentation "The URL you must redirect your customer to in order
+to authenticate."))
+
+(define-object next-action-use-stripe-sdk ())
+
+(define-object next-action-verify-with-microdeposits ()
+  (arrival-date
+   :type time:timestamp
+   :documentation "The timestamp when the microdeposits are expected to
+land.")
+  (hosted-verification-url
+   :type string
+   :documentation "The URL for the hosted verification page, which
+allows customers to verify their bank account.")
+  (microdeposit-type
+   :type (or string null)
+   :documentation "The type of the microdeposit sent to the customer.
+Used to distinguish between different verification methods. One of
+`amounts` or `descriptor_code`."))
+
+(defmethod initialize-instance :after ((instance next-action-verify-with-microdeposits)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:arrival-date
+           (setf (slot-value instance '%arrival-date) (decode-timestamp value))))))))
+
+(define-object setup-intent-automatic-payment-method-options ()
+  (acss-debit
+   :type (or automatic-payment-method-options-accs-debit null))
+  (amazon-pay
+   :type (or automatic-payment-method-options-amazon-pay null))
+  (bacs-debit
+   :type (or automatic-payment-method-options-bacs-debit null))
+  (card
+   :type (or automatic-payment-method-options-card null))
+  (card-present
+   :type (or automatic-payment-method-options-card-present null))
+  (link
+   :type (or automatic-payment-method-options-link null))
+  (paypal
+   :type (or automatic-payment-method-options-paypal null))
+  (sepa-debit
+   :type (or automatic-payment-method-options-sepa-debit null))
+  (us-bank-account
+   :type (or automatic-payment-method-options-us-bank-account null)))
+
+(defmethod initialize-instance :after ((instance setup-intent-automatic-payment-method-options)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:acss-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%acss-debit)
+                   (make-instance 'automatic-payment-method-options-accs-debit
+                                  :data value))))
+          (:amazon-pay
+           (unless (eql 'null value)
+             (setf (slot-value instance '%amazon-pay)
+                   (make-instance 'automatic-payment-method-options-amazon-pay
+                                  :data value))))
+          (:bacs-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%bacs-debit)
+                   (make-instance 'automatic-payment-method-options-bacs-debit
+                                  :data value))))
+          (:card
+           (unless (eql 'null value)
+             (setf (slot-value instance '%card)
+                   (make-instance 'automatic-payment-method-options-card
+                                  :data value))))
+          (:card-present
+           (unless (eql 'null value)
+             (setf (slot-value instance '%card-present)
+                   (make-instance 'automatic-payment-method-options-card-present
+                                  :data value))))
+          (:link
+           (unless (eql 'null value)
+             (setf (slot-value instance '%link)
+                   (make-instance 'automatic-payment-method-options-link
+                                  :data value))))
+          (:paypal
+           (unless (eql 'null value)
+             (setf (slot-value instance '%paypal)
+                   (make-instance 'automatic-payment-method-options-paypal
+                                  :data value))))
+          (:sepa-debit
+           (unless (eql 'null value)
+             (setf (slot-value instance '%sepa-debit)
+                   (make-instance 'automatic-payment-method-options-sepa-debit
+                                  :data value))))
+          (:us-bank-account
+           (unless (eql 'null value)
+             (setf (slot-value instance '%us-bank-account)
+                   (make-instance 'automatic-payment-method-options-us-bank-account
+                                  :data value)))))))))
+
+(define-object automatic-payment-method-options-accs-debit ()
+  (currency
+   :type (or string null)
+   :documentation "Currency supported by the bank account. One of `cad`
+or `usd`.")
+  (mandate-options
+   :type (or automatic-payment-method-options-accs-debit-mandate-options null))
+  (verification-method
+   :type (or string null)
+   :documentation "Bank account verification method. One of
+`automatic`, `instant`, or `microdeposits`."))
+
+(defmethod initialize-instance :after ((instance automatic-payment-method-options-accs-debit)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:mandate-options
+           (unless (eql 'null value)
+             (setf (slot-value instance '%mandate-options)
+                   (make-instance 'automatic-payment-method-options-accs-debit-mandate-options
+                                  :data value)))))))))
+
+(define-object automatic-payment-method-options-accs-debit-mandate-options ()
+  (custom-mandate-url
+   :type (or string null)
+   :documentation "A URL for custom mandate text.")
+  (default-for
+   :type (or (vector string) null)
+   :documentation "List of Stripe products where this mandate can be
+selected automatically. One of `invoice` or `subscription`.")
+  (interval-description
+   :type (or string null)
+   :documentation "Description of the interval. Only required if the
+'payment_schedule' parameter is 'interval' or 'combined'.")
+  (payment-schedule
+   :type (or string null)
+   :documentation "Payment schedule for the mandate. One of `combined`,
+`interval`, or `sporadic`.")
+  (transaction-type
+   :type (or string null)
+   :documentation "Transaction type of the mandate. One of `business`
+or `personal`."))
+
+(define-object automatic-payment-method-options-amazon-pay ())
+
+(define-object automatic-payment-method-options-bacs-debit ()
+  (mandate-options
+   :type (or automatic-payment-method-options-bacs-debit-mandate-options null)))
+
+(define-object automatic-payment-method-options-bacs-debit-mandate-options ())
+
+(define-object automatic-payment-method-options-card ()
+  (mandate-options
+   :type (or automatic-payment-method-options-card-mandate-options null)
+   :documentation "Configuration options for setting up an eMandate for
+cards issued in India.")
+  (network
+   :type (or string null)
+   :documentation "Selected network to process this SetupIntent on.
+Depends on the available networks of the card attached to the setup
+intent. Can be only set confirm-time.
+
+One of `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`,
+`girocard`, `interac`, `jcb`, `mastercard`, `unionpay`, `unknown`, or
+`visa`.")
+  (request-three-d-secure
+   :type (or string null)
+   :documentation "We strongly recommend that you rely on our SCA
+Engine to automatically prompt your customers for authentication based
+on risk level and
+[other requirements](https://stripe.com/docs/strong-customer-authentication).
+However, if you wish to request 3D Secure based on logic from your own
+fraud engine, provide this option. If not provided, this value defaults
+to `automatic`. Read our guide on
+[manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds)
+for more information on how this configuration interacts with Radar and
+our SCA Engine.
+
+One of `any`, `automatic`, or `challenge`."))
+
+(defmethod initialize-instance :after ((instance automatic-payment-method-options-card)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:mandate-options
+           (unless (eql 'null value)
+             (setf (slot-value instance '%mandate-options)
+                   (make-instance 'automatic-payment-method-options-card-mandate-options
+                                  :data value)))))))))
+
+(define-object automatic-payment-method-options-card-mandate-options ()
+  (amount
+   :type integer
+   :documentation "Amount to be charged for future payments.")
+  (amount-type
+   :type string
+   :documentation "One of `fixed` or `maximum`. If `fixed`, the
+`amount` param refers to the exact amount to be charged in future
+payments. If `maximum`, the amount charged can be up to the value
+passed for the `amount` param.")
+  (currency
+   :type string
+   :documentation "Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html),
+in lowercase. Must be a
+[supported currency](https://stripe.com/docs/currencies).")
+  (description
+   :type (or string null)
+   :documentation "A description of the mandate or subscription that is
+meant to be displayed to the customer.")
+  (end-date
+   :type (or time:timestamp null)
+   :documentation "End date of the mandate or subscription. If not
+provided, the mandate will be active until canceled. If provided, end
+date should be after start date.")
+  (interval
+   :type string
+   :documentation "Specifies payment frequency. One of `day`, `week`,
+`month`, `year`, or `sporadic`.")
+  (interval-count
+   :type (or integer null)
+   :documentation "The number of intervals between payments. For
+example, `interval=month` and `interval_count=3` indicates one payment
+every three months. Maximum of one year interval allowed (1 year,
+12 months, or 52 weeks). This parameter is optional when
+`interval=sporadic`.")
+  (reference
+   :type string
+   :documentation "Unique identifier for the mandate or subscription.")
+  (start-date
+   :type time:timestamp
+   :documentation "Start date of the mandate or subscription. Start
+date should not be lesser than yesterday.")
+  (supported-types
+   :type (or (vector string) null)
+   :documentation "Specifies the type of mandates supported. Possible
+values are `india`."))
+
+(defmethod initialize-instance :after ((instance
+                                        automatic-payment-method-options-card-mandate-options)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:end-date
+           (setf (slot-value instance '%end-date) (decode-timestamp value)))
+          (:start-date
+           (setf (slot-value instance '%start-date) (decode-timestamp value))))))))
+
+(define-object automatic-payment-method-options-card-present ())
+
+(define-object automatic-payment-method-options-link ()
+  "[Deprecated] This is a legacy parameter that no longer has any
+function."
+  (persistent-token
+   :type (or string null)))
+
+(define-object automatic-payment-method-options-paypal ()
+  (billing-agreement-id
+   :type (or string null)
+   :documentation "The PayPal Billing Agreement ID (BAID). This is an
+ID generated by PayPal which represents the mandate between the
+merchant and the customer."))
+
+(define-object automatic-payment-method-options-sepa-debit ()
+  (mandate-options
+   :type (or automatic-payment-method-options-sepa-debit-mandate-options null)
+   :documentation ""))
+
+(defmethod initialize-instance :after ((instance automatic-payment-method-options-sepa-debit)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:mandate-options
+           (unless (eql 'null value)
+             (setf (slot-value instance '%mandate-options)
+                   (make-instance 'automatic-payment-method-options-sepa-debit-mandate-options
+                                  :data value)))))))))
+
+(define-object automatic-payment-method-options-sepa-debit-mandate-options ())
+
+(define-object automatic-payment-method-options-us-bank-account ()
+  (financial-connections
+   :type (or automatic-payment-method-options-us-bank-account-financial-connections null))
+  (mandate-options
+   :type (or automatic-payment-method-options-us-bank-account-mandate-options null))
+  (verification-method
+   :type (or string null)
+   :documentation "Bank account verification method."))
+
+(defmethod initialize-instance :after ((instance automatic-payment-method-options-us-bank-account)
+                                       &key data &allow-other-keys)
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:financial-connections
+           (unless (eql 'null value)
+             (setf (slot-value instance '%financial-connections)
+                   (make-instance
+                    'automatic-payment-method-options-us-bank-account-financial-connections
+                    :data value))))
+          (:mandate-options
+           (unless (eql 'null value)
+             (setf (slot-value instance '%financial-connections)
+                   (make-instance 'automatic-payment-method-options-us-bank-account-mandate-options
+                                  :data value)))))))))
+
+(define-object automatic-payment-method-options-us-bank-account-financial-connections ()
+  (filters
+   :type (or automatic-payment-method-options-us-bank-account-financial-connections-filters null))
+  (permissions
+   :type (or (vector string) null)
+   :documentation "The list of permissions to request. The
+`payment_method` permission must be included. One of `balances`,
+`ownership`, `payment_method`, or `transactions`.")
+  (prefetch
+   :type (or (vector string) null)
+   :documentation "Data features requested to be retrieved upon account
+creation. Permitted values include `balances`, `ownership`, and
+`transactions`.")
+  (return-url
+   :type (or string null)
+   :documentation "For webview integrations only. Upon completing OAuth
+login in the native browser, the user will be redirected to this URL to
+return to your app."))
+
+(defmethod initialize-instance :after
+    ((instance automatic-payment-method-options-us-bank-account-financial-connections)
+     &key data &allow-other-keys)
+
+  (with-hash-table-iterator (next-entry data)
+    (loop
+      (multiple-value-bind (more-entries key value)
+          (next-entry)
+        (unless more-entries (return))
+        (case key
+          (:filters
+           (unless (eql 'null value)
+             (setf (slot-value instance '%filters)
+                   (make-instance
+                    'automatic-payment-method-options-us-bank-account-financial-connections-filters
+                    :data value)))))))))
+
+(define-object automatic-payment-method-options-us-bank-account-financial-connections-filters ()
+  (account-subcategories
+   :type (or (vector string) null)
+   :documentation "The account subcategories to use to filter for
+possible accounts to link. Valid subcategories are `checking` and
+`savings`."))
+
+(define-object automatic-payment-method-options-us-bank-account-mandate-options ()
+  (collection-method
+   :type (or string null)
+   :documentation "Mandate collection method. Must be `paper`."))

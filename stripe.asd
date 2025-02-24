@@ -70,6 +70,8 @@
      (:file "refund")
      (:file "review")
      (:file "session")
+     (:file "setup-attempt")
+     (:file "setup-intent")
      (:file "shipping-rate")
      (:file "source")
      (:file "subscription")
