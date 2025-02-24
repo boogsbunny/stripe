@@ -37,6 +37,9 @@
       :components
       ((:file "configuration")
        (:file "session")))
+     (:module "checkout"
+      :components
+      ((:file "session")))
      (:file "capability")
      (:file "card")
      (:file "cash-balance")
@@ -69,7 +72,6 @@
      (:file "product")
      (:file "refund")
      (:file "review")
-     (:file "session")
      (:file "setup-attempt")
      (:file "setup-intent")
      (:file "shipping-rate")
